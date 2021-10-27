@@ -1,13 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class AuthController extends Controller
 {
-    public function customer(Request $request)
+    public function register(Request $request)
     {
         $nama_customer = $request->input('nama_customer');
         $nomor_telepon = $request->input('nomor_telepon');
@@ -17,7 +18,7 @@ class AuthController extends Controller
         $username = $request->input('username');
         $password = Hash::make($request->input('password'));
 
-       $customer = User::create([
+       $register = Customer::create([
            'nama_customer' => $nama_customer,
            'nomor_telepon' => $nomor_telepon,
            'alamat_customer' => $alamat_customer,
@@ -27,11 +28,11 @@ class AuthController extends Controller
            'password' => $password
         ]);
 
-        if ($customer){
+        if ($register){
             return response()->json([
                 'success' => true,
                 'message' => 'Register sukses',
-                'data' => $customer
+                'data' => $register
             ], 201);
         } else{
              return response()->json([

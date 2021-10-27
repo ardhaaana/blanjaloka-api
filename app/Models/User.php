@@ -18,10 +18,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @var array
      */
-    //public $table = "blanjalokarestapi";
-
     protected $fillable = [
-        'nama_customer','nomor_telepon','alamat_customer','tanggal_lahir','email_customer', 'username','password'
+        //'nama_customer','nomor_telepon','alamat_customer','tanggal_lahir','email_customer', 'username','password'
     ];
 
     /**
@@ -30,6 +28,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $hidden = [
-        'password',
+        //'password',
     ];
 }

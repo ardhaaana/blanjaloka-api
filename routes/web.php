@@ -22,5 +22,5 @@ $router->get('/key', function() {
     return \Illuminate\Support\Str::random(32);
 });
 
-$router->post('/customer', 'AuthController@customer');
+$router->post('/register', 'AuthController@register');
 $router->post('/login', 'AuthController@login');
