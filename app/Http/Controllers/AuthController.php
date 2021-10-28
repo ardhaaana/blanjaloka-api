@@ -13,6 +13,15 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        $this->validate($request, [
+            'nama_customer' => 'required|min:5',
+            'nomor_telepon' => 'required|min:10',
+            'email_customer' => 'required|email',
+            'username' => 'required|unique:customer|min:5',
+            'password' => 'required|min:8'
+
+        ]);
+
         $nama_customer = $request->input('nama_customer');
         $nomor_telepon = $request->input('nomor_telepon');
         $alamat_customer = $request->input( 'alamat_customer');
@@ -48,11 +57,17 @@ class AuthController extends Controller
     }
     public function login(Request $request)
     {
+        $this->validate($request, [
+            'username' => 'required',
+            'password' => 'required|min:8'
+        ]);
+
         $var = Str::random(40);
-        $email_customer = $request->input('email_customer');
+
+        $username = $request->input('username');
         $password = $request->input('password');
 
-        $login = Customer::where('email_customer', $email_customer)->first();
+        $login = Customer::where('username', $username)->first();
 
         if (Hash::check($password, $login->password)){
             $apiToken = base64_encode($var);
