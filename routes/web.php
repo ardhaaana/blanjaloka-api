@@ -28,7 +28,7 @@ $router->post('/login', 'AuthController@login');
 $router->get('/produk', 'ProdukController@index');
 $router->post('/produk', 'ProdukController@produk');
 
-
-
 $router->get('/produk/{kode_produk}', 'ProdukController@show');
 $router->put('/produk/{kode_produk}','ProdukController@update');
+
+$router->delete('/produk/{kode_produk}', 'ProdukController@destroy');

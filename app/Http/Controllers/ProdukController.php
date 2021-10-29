@@ -37,9 +37,11 @@ class ProdukController extends Controller
            'id_pedagang' => $id_pedagang
         ]);
 
+        $dataproduk = $request->all();
+        $produk = Produk::create($dataproduk);
+
         if ($produk){
             return response()->json([
-                'success' => true,
                 'message' => 'Penambahan data berhasil',
                 'data' => $produk
             ], 201);
@@ -48,7 +50,7 @@ class ProdukController extends Controller
     }
 
     public function index()
-    {
+    { 
         $produk = Produk::all();
         return response()->json($produk);
     }
@@ -63,9 +65,8 @@ class ProdukController extends Controller
     {
         $produk = Produk::find($kode_produk);
 
-       if ($produk){
+       if (!$produk){
             return response()->json([
-                'success' => true,
                 'message' => 'Data tidak ditemukan',
                 'data' => $produk
             ], 404);
@@ -87,4 +88,23 @@ class ProdukController extends Controller
         return response()->json($produk);
     }
 
+    public function destroy($kode_produk)
+    {
+        $produk = Produk::find($kode_produk);
+
+        if (!$produk){
+            return response()->json([
+                'message' => 'Data tidak ditemukan',
+                'data' => $produk
+            ], 404);
+        }
+        
+        $produk->delete();
+
+        return response()->json([
+                'message' => 'Data berhasil dihapus',
+                'data' => $produk
+            ], 200);
     }
+
+}

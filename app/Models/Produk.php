@@ -6,20 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Produk extends Model
 {
+    /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'kode_produk';
     public $table = 'produk';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
+     protected $fillable = [
         'nama_produk','satuan','harga_jual','stok_saat_ini','status_produk','id_pedagang',
     ];
 }
-
- 
- 
- 
- 
- 
