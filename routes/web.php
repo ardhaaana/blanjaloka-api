@@ -27,8 +27,12 @@ $router->post('/login', 'AuthController@login');
 
 $router->get('/produk', 'ProdukController@index');
 $router->post('/produk', 'ProdukController@produk');
-
 $router->get('/produk/{kode_produk}', 'ProdukController@show');
-$router->put('/produk/{kode_produk}','ProdukController@update');
-
+$router->put('/produk/{kode_produk}', 'ProdukController@update');
 $router->delete('/produk/{kode_produk}', 'ProdukController@destroy');
+
+$router->post('/jam_operasional_pasar', 'JamOperasionalPasarController@jam_operasional_pasar');
+$router->get('/jam_operasional_pasar', 'JamOperasionalPasarController@index');
+$router->get('/jam_operasional_pasar/{id_toko}', 'JamOperasionalPasarController@show');
+$router->put('/jam_operasional_pasar/{id_toko}', 'JamOperasionalPasarController@update');
+$router->delete('/jam_operasional_pasar/{id_toko}', 'JamOperasionalPasarController@destroy');
