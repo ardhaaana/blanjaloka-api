@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Customer extends Model
+class Jamoperasionalpasar extends Model
 {
     
-    public $table = "customer";
+    protected $primaryKey = 'id_toko';
+    public $table = "jam_operasional_pasar";
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +16,7 @@ class Customer extends Model
      * @var array
      */
     protected $fillable = [
-        'nama_customer','nomor_telepon','alamat_customer','tanggal_lahir','email_customer', 'username','password'
+        'hari_operasional', 'jam_operasional', 'id_pengelola',
     ];
 
     /**
@@ -23,7 +24,5 @@ class Customer extends Model
      *
      * @var array
      */
-    protected $hidden = [
-        'password',
-    ];
+ 
 }

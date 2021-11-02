@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 class ProdukController extends Controller
 {
     
-    public function produk(Request $request)
+    public function create(Request $request)
     {
         $this->validate($request, [
             'nama_produk' => 'required|min:5',
@@ -18,7 +18,7 @@ class ProdukController extends Controller
             'harga_jual' => 'required|numeric',
             'stok_saat_ini' => 'required|numeric',
             'status_produk' => 'required',
-            'id_pedagang' => 'required|numeric'
+            'id_pedagang' => 'required|numeric|unique:produk'
         ]);
 
             $nama_produk = $request->input('nama_produk');

@@ -43,13 +43,11 @@ class AuthController extends Controller
 
         if ($register){
             return response()->json([
-                'success' => true,
                 'message' => 'Register sukses',
                 'data' => $register
             ], 201);
         } else{
              return response()->json([
-                'success' => false,
                 'message' => 'Register gagal',
                 'data' => ''
             ], 400);
@@ -78,16 +76,14 @@ class AuthController extends Controller
             ]);
 
             return response()->json([
-                'success' => true,
                 'message' => 'Login sukses',
                 'data' => [
-                    'registrasi' => $login,
+                    'data' => $login,
                     'api_token' => $apiToken
                 ]
                 ],201);
         }else{
             return response()->json([
-                'success' => false,
                 'message' => 'Login gagal',
                 'data' => ''
                 ]);

@@ -19,9 +19,10 @@ class CreatePendaftaranTable extends Migration
             $table->string('alamat');
             $table->integer('nomor_telepon')->unique();
             $table->date('tanggal_lahir');
-            $table->integer('nomor_ktp')->unique();
-            $table->integer('foto_ktp');
-            $table->timestamp('email_verified_at')->nullable();
+            $table->bigInteger('nomor_ktp')->unique();
+            $table->string('foto_ktp');
+
+            $table->timestamps();
         });
     }
 

@@ -26,9 +26,25 @@ $router->post('/register', 'AuthController@register');
 $router->post('/login', 'AuthController@login');
 
 $router->get('/produk', 'ProdukController@index');
-$router->post('/produk', 'ProdukController@produk');
+$router->post('/produk', 'ProdukController@create');
 
 $router->get('/produk/{kode_produk}', 'ProdukController@show');
 $router->put('/produk/{kode_produk}','ProdukController@update');
 
 $router->delete('/produk/{kode_produk}', 'ProdukController@destroy');
+
+$router->post('/jamoperasional',['uses' => 'JamoperasionalpasarController@create'] );
+$router->get('/jamoperasional', ['uses' =>  'JamoperasionalpasarController@index']);
+
+$router->get('/jamoperasional/{id_toko}', ['uses' =>  'JamoperasionalpasarController@show']);
+$router->put('/jamoperasional/{id_toko}', ['uses' =>  'JamoperasionalpasarController@update']);
+$router->delete('/jamoperasional/{id_toko}', ['uses' =>  'JamoperasionalpasarController@destroy']);
+
+
+
+$router->post('/pendaftaran',['uses' => 'PendaftaranController@create'] );
+$router->get('/pendaftaran', ['uses' =>  'PendaftaranController@index']);
+
+$router->get('/pendaftaran/{id_pendaftaran}', ['uses' =>  'PendaftaranController@show']);
+$router->put('/pendaftaran/{id_pendaftaran}', ['uses' =>  'PendaftaranController@update']);
+$router->delete('/pendaftaran/{id_pendaftaran}', ['uses' =>  'PendaftaranController@destroy']);
