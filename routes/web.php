@@ -40,8 +40,6 @@ $router->get('/jamoperasional/{id_toko}', ['uses' =>  'JamoperasionalpasarContro
 $router->put('/jamoperasional/{id_toko}', ['uses' =>  'JamoperasionalpasarController@update']);
 $router->delete('/jamoperasional/{id_toko}', ['uses' =>  'JamoperasionalpasarController@destroy']);
 
-
-
 $router->post('/pendaftaran',['uses' => 'PendaftaranController@create'] );
 $router->get('/pendaftaran', ['uses' =>  'PendaftaranController@index']);
 

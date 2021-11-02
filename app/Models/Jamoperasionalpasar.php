@@ -4,25 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Jamoperasionalpasar extends Model
+class JamOperasionalPasar extends Model
 {
-    
-    protected $primaryKey = 'id_toko';
-    public $table = "jam_operasional_pasar";
-
     /**
-     * The attributes that are mass assignable.
+     * The primary key associated with the table.
      *
-     * @var array
+     * @var string
      */
+    protected $primaryKey = 'id_toko';
+    public $table = 'jam_operasional_pasar';
+
     protected $fillable = [
         'hari_operasional', 'jam_operasional', 'id_pengelola',
     ];
-
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
- 
 }
