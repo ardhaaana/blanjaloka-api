@@ -17,7 +17,7 @@ class CreatePendaftaranTable extends Migration
             $table->id('id_pendaftaran');
             $table->string('nama');
             $table->string('alamat');
-            $table->integer('nomor_telepon')->unique();
+            $table->bigInteger('nomor_telepon')->unique();
             $table->date('tanggal_lahir');
             $table->bigInteger('nomor_ktp')->unique();
             $table->string('foto_ktp');

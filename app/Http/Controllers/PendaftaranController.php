@@ -15,9 +15,9 @@ class PendaftaranController extends Controller
         $this->validate($request, [
             'nama' => 'required',
             'alamat' => 'required',
-            'nomor_telepon' => 'required|numeric',
+            'nomor_telepon' => 'required|',
             'tanggal_lahir' => 'required',
-            'nomor_ktp' => 'required|numeric|unique:pendaftaran',
+            'nomor_ktp' => 'required|unique:pendaftaran',
             'foto_ktp' => 'required'
         ]);
 
