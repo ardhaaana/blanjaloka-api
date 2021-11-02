@@ -13,7 +13,7 @@ class RoleController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'status_user' => 'required'
+            'status_user' => 'required|unique:role'
         ]);
 
         $role = [
