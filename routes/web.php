@@ -46,3 +46,11 @@ $router->get('/pendaftaran', ['uses' =>  'PendaftaranController@index']);
 $router->get('/pendaftaran/{id_pendaftaran}', ['uses' =>  'PendaftaranController@show']);
 $router->put('/pendaftaran/{id_pendaftaran}', ['uses' =>  'PendaftaranController@update']);
 $router->delete('/pendaftaran/{id_pendaftaran}', ['uses' =>  'PendaftaranController@destroy']);
+
+
+$router->post('/role',['uses' => 'RoleController@create'] );
+$router->get('/role', ['uses' =>  'RoleController@index']);
+
+$router->get('/role/{id_role}', ['uses' =>  'RoleController@show']);
+$router->put('/role/{id_role}', ['uses' =>  'RoleController@update']);
+$router->delete('/role/{id_role}', ['uses' =>  'RoleController@destroy']);
