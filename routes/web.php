@@ -25,32 +25,39 @@ $router->get('/', function () use ($router) {
 $router->post('/register', 'AuthController@register');
 $router->post('/login', 'AuthController@login');
 
-$router->get('/produk', 'ProdukController@index');
-$router->post('/produk', 'ProdukController@create');
 
-$router->get('/produk/{kode_produk}', 'ProdukController@show');
-$router->put('/produk/{kode_produk}','ProdukController@update');
+$router->group(['prefix' => 'api','middleware' => 'auth'], function() use ($router) {
 
-$router->delete('/produk/{kode_produk}', 'ProdukController@destroy');
+    $router->get('produk', ['uses' => 'ProdukController@index']);
+    $router->post('produk', ['uses' => 'ProdukController@create']);
 
-$router->post('/jamoperasional',['uses' => 'JamoperasionalpasarController@create'] );
-$router->get('/jamoperasional', ['uses' =>  'JamoperasionalpasarController@index']);
+    $router->get('produk/{kode_produk}', ['uses' => 'ProdukController@show']);
+    $router->put('produk/{kode_produk}', ['uses' =>  'ProdukController@update']);
 
-$router->get('/jamoperasional/{id_toko}', ['uses' =>  'JamoperasionalpasarController@show']);
-$router->put('/jamoperasional/{id_toko}', ['uses' =>  'JamoperasionalpasarController@update']);
-$router->delete('/jamoperasional/{id_toko}', ['uses' =>  'JamoperasionalpasarController@destroy']);
+    $router->delete('produk/{kode_produk}', ['uses' =>'ProdukController@destroy']);
 
-$router->post('/pendaftaran',['uses' => 'PendaftaranController@create'] );
-$router->get('/pendaftaran', ['uses' =>  'PendaftaranController@index']);
+   $router->post('jamoperasional',['uses' => 'JamoperasionalpasarController@create'] );
+    $router->get('jamoperasional', ['uses' =>  'JamoperasionalpasarController@index']);
 
-$router->get('/pendaftaran/{id_pendaftaran}', ['uses' =>  'PendaftaranController@show']);
-$router->put('/pendaftaran/{id_pendaftaran}', ['uses' =>  'PendaftaranController@update']);
-$router->delete('/pendaftaran/{id_pendaftaran}', ['uses' =>  'PendaftaranController@destroy']);
+    $router->get('jamoperasional/{id_toko}', ['uses' =>  'JamoperasionalpasarController@show']);
+    $router->put('jamoperasional/{id_toko}', ['uses' =>  'JamoperasionalpasarController@update']);
+    $router->delete('jamoperasional/{id_toko}', ['uses' =>  'JamoperasionalpasarController@destroy']);
+
+    $router->post('pendaftaran',['uses' => 'PendaftaranController@create'] );
+    $router->get('pendaftaran', ['uses' =>  'PendaftaranController@index']);
+
+    $router->get('pendaftaran/{id_pendaftaran}', ['uses' =>  'PendaftaranController@show']);
+    $router->put('pendaftaran/{id_pendaftaran}', ['uses' =>  'PendaftaranController@update']);
+    $router->delete('pendaftaran/{id_pendaftaran}', ['uses' =>  'PendaftaranController@destroy']);
 
 
-$router->post('/role',['uses' => 'RoleController@create'] );
-$router->get('/role', ['uses' =>  'RoleController@index']);
+    $router->post('role',['uses' => 'RoleController@create'] );
+    $router->get('role', ['uses' =>  'RoleController@index']);
 
-$router->get('/role/{id_role}', ['uses' =>  'RoleController@show']);
-$router->put('/role/{id_role}', ['uses' =>  'RoleController@update']);
-$router->delete('/role/{id_role}', ['uses' =>  'RoleController@destroy']);
+    $router->get('role/{id_role}', ['uses' =>  'RoleController@show']);
+    $router->put('role/{id_role}', ['uses' =>  'RoleController@update']);
+    $router->delete('role/{id_role}', ['uses' =>  'RoleController@destroy']);
+
+});
+
+ 

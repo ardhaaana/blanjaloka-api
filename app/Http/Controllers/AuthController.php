@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
-use App\Models\Produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -12,6 +11,7 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
+    
     public function register(Request $request)
     {
         $this->validate($request, [
@@ -61,27 +61,25 @@ class AuthController extends Controller
             'password' => 'required|min:8'
         ]);
 
-        $var = Str::random(40);
-
         $username = $request->input('username');
         $password = $request->input('password');
 
         $login = Customer::where('username', $username)->first();
 
         if (Hash::check($password, $login->password)){
-            $apiToken = base64_encode($var);
+            $token =  Str::random(40);
 
             $login->update([
-                'api_token' => $apiToken
+                'token' => $token
             ]);
 
             return response()->json([
                 'message' => 'Login sukses',
                 'data' => [
                     'data' => $login,
-                    'api_token' => $apiToken
+                    'token' => $token
                 ]
-                ],201);
+                ]);
         }else{
             return response()->json([
                 'message' => 'Login gagal',

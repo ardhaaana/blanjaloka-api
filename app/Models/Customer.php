@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
 {
-    
+    protected $primaryKey = 'id_customer';
     public $table = "customer";
 
     /**
@@ -15,7 +15,7 @@ class Customer extends Model
      * @var array
      */
     protected $fillable = [
-        'nama_customer','nomor_telepon','alamat_customer','tanggal_lahir','email_customer', 'username','password'
+        'nama_customer','nomor_telepon','alamat_customer','tanggal_lahir','email_customer', 'username','password', 'token',
     ];
 
     /**
@@ -23,7 +23,7 @@ class Customer extends Model
      *
      * @var array
      */
-    protected $hidden = [
-        'password',
-    ];
+    // protected $hidden = [
+    //     'password', 'token'
+    // ];
 }

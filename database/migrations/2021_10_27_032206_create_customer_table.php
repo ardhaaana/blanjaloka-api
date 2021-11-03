@@ -22,6 +22,8 @@ class CreateCustomerTable extends Migration
             $table->string('email_customer')->unique();
             $table->string('username')->unique();
             $table->string('password');
+
+            $table->string('token')->nullable();
             $table->timestamps();
         });
     }
