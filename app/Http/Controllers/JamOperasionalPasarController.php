@@ -9,13 +9,13 @@ use App\Http\Controllers\Controller;
 
 class JamOperasionalPasarController extends Controller
 {
-    
+
     public function __construct()
     {
         $this->middleware('auth');
     }
-    
-    public function jam_operasional_pasar(Request $request)
+
+    public function create(Request $request)
     {
         $this->validate($request, [
             'hari_operasional' => '',
@@ -30,7 +30,7 @@ class JamOperasionalPasarController extends Controller
         $jam_operasional_pasar = JamOperasionalPasar::create([
             'hari_operasional' => $hari_operasional,
             'jam_operasional' => $jam_operasional,
-            'id_pengelola' => $id_pengelola,
+            'id_pengelola' => $id_pengelola
         ]);
 
         $dataproduk = $request->all();
