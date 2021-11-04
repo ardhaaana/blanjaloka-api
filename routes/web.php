@@ -65,4 +65,12 @@ $router->group(['prefix' => 'api', 'middleware' => 'auth'], function () use ($ro
     $router->get('pedagang/{id_pedagang}', ['uses' =>  'PedagangController@show']);
     $router->put('pedagang/{id_pedagang}', ['uses' =>  'PedagangController@update']);
     $router->delete('pedagang/{id_pedagang}', ['uses' =>  'PedagangController@destroy']);
+
+
+    $router->post('tawar_menawar', ['uses' => 'TawarMenawarController@create']);
+    $router->get('tawar_menawar', ['uses' =>  'TawarMenawarController@index']);
+
+    $router->get('tawar_menawar/{id_tawar}', ['uses' =>  'TawarMenawarController@show']);
+    $router->put('tawar_menawar/{id_tawar}', ['uses' =>  'TawarMenawarController@update']);
+    $router->delete('tawar_menawar/{id_tawar}', ['uses' =>  'TawarMenawarController@destroy']);
 });
