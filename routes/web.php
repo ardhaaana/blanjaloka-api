@@ -22,8 +22,8 @@ $router->get('/', function () use ($router) {
 //     return \Illuminate\Support\Str::random(32);
 // });
 
-$router->post('/register', 'AuthController@register');
-$router->post('/login', 'AuthController@login');
+$router->post('/register', 'AuthCustomerController@register');
+$router->post('/login', 'AuthCustomerController@login');
 
 $router->post('/register', 'AuthPengelolaPasarController@register');
 $router->post('/login', 'AuthPengelolaPasarController@login');

@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 
 
-class AuthController extends Controller
+class AuthCustomerController extends Controller
 {
     
     public function register(Request $request)
