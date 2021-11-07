@@ -87,4 +87,15 @@ class AuthCustomerController extends Controller
         }
     }
 
+    public function logout(Request $request)
+    {
+            $login = $request->login();
+            $login->currentAccessTokenn()->delete();
+
+            dd($login);
+            return response()->json([
+                'message' => 'Logout sukses'
+                
+            ], 200);
+    }
 }

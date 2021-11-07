@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\PengelolaPasar;
 use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
@@ -29,7 +28,6 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->app['auth']->viaRequest('api', function ($request) {
             $token = $request->header('token');
-            $token_pp = $request->header('token_pp');
             // Here you may define how you wish users to be authenticated for your Lumen
             // application. The callback which receives the incoming request instance
             // should return either a User instance or null. You're free to obtain
@@ -37,9 +35,6 @@ class AuthServiceProvider extends ServiceProvider
 
             if ($token) {
                 return Customer::where('token', $token)->first();
-            }
-            if ($token_pp) {
-                return PengelolaPasar::where('token_pp', $token_pp)->first();
             }
         });
     }

@@ -33,9 +33,6 @@ class TawarMenawarController extends Controller
             'harga_nego' => $harga_nego
         ]);
 
-        $dataproduk = $request->all();
-        $tawar_menawar = TawarMenawar::create($dataproduk);
-
         if ($tawar_menawar) {
             return response()->json([
                 'message' => 'Penambahan data berhasil',

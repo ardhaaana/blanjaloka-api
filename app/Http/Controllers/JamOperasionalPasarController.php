@@ -33,9 +33,6 @@ class JamOperasionalPasarController extends Controller
             'id_pengelola' => $id_pengelola
         ]);
 
-        $dataproduk = $request->all();
-        $jam_operasional_pasar = JamOperasionalPasar::create($dataproduk);
-
         if ($jam_operasional_pasar) {
             return response()->json([
                 'message' => 'Penambahan data berhasil',

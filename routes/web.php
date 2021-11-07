@@ -22,15 +22,15 @@ $router->get('/', function () use ($router) {
 //     return \Illuminate\Support\Str::random(32);
 // });
 
+
 $router->post('/register', 'AuthCustomerController@register');
 $router->post('/login', 'AuthCustomerController@login');
 
-$router->post('/register', 'AuthPengelolaPasarController@register');
-$router->post('/login', 'AuthPengelolaPasarController@login');
+// 'middleware' => 'auth'
 
+$router->group(['prefix' => 'api'], function () use ($router) {
 
-$router->group(['prefix' => 'api', 'middleware' => 'auth'], function () use ($router) {
-
+    $router->get('list', ['uses' => 'ProdukController@list']);
     $router->get('produk', ['uses' => 'ProdukController@index']);
     $router->post('produk', ['uses' => 'ProdukController@create']);
 
@@ -76,4 +76,20 @@ $router->group(['prefix' => 'api', 'middleware' => 'auth'], function () use ($ro
     $router->get('tawar_menawar/{id_tawar}', ['uses' =>  'TawarMenawarController@show']);
     $router->put('tawar_menawar/{id_tawar}', ['uses' =>  'TawarMenawarController@update']);
     $router->delete('tawar_menawar/{id_tawar}', ['uses' =>  'TawarMenawarController@destroy']);
+
+
+    
+    $router->post('resep', ['uses' => 'ResepController@create']);
+    $router->get('resep', ['uses' =>  'ResepController@index']);
+
+    $router->get('resep/{kode_resep}', ['uses' =>  'ResepController@show']);
+    $router->put('resep/{kode_resep}', ['uses' =>  'ResepController@update']);
+    $router->delete('resep/{kode_resep}', ['uses' =>  'ResepController@destroy']);
+
+    $router->post('kategori', ['uses' => 'KategoriProdukController@create']);
+    $router->get('kategori', ['uses' =>  'KategoriProdukController@index']);
+
+    $router->get('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@show']);
+    $router->put('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@update']);
+    $router->delete('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@destroy']);
 });

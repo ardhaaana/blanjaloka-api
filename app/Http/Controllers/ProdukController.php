@@ -5,15 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Produk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Str;
 
 
 class ProdukController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    // }
 
     public function create(Request $request)
     {
@@ -41,9 +40,6 @@ class ProdukController extends Controller
             'status_produk' => $status_produk,
             'id_pedagang' => $id_pedagang
         ]);
-
-        $dataproduk = $request->all();
-        $produk = Produk::create($dataproduk);
 
         if ($produk) {
             return response()->json([
@@ -110,4 +106,5 @@ class ProdukController extends Controller
             'data' => $produk
         ], 200);
     }
+
 }
