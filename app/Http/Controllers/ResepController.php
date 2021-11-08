@@ -81,6 +81,36 @@ class ResepController extends Controller
         return response()->json($resep);
     }
 
+    public function search(Request $request)
+    {
+        # code...
+        $query = $request->query('query');
+
+        if (empty($query)) {
+            return response()->json(['error' => 'Query not specified!'], 400);
+        }
+
+        $fulltext = $request->query('fulltext', 'false');
+        $sortBy = $request->query('sort_by', 'judul_resep.asc');
+        $sorts = explode('.', $sortBy);
+
+
+        if ($fulltext == 'true') {
+            $data = Resep::query()
+                ->whereRaw("MATCH(judul_resep) AGAINST(? IN BOOLEAN MODE)", array($query))
+                ->orderBy($sorts[0], $sorts[1])
+                ->get();
+            return response()->json($data);
+        }
+
+        $data = Resep::query()
+            ->where('judul_resep', 'like', '%' . $query . '%')
+            ->orderBy($sorts[0], $sorts[1])
+            ->get();
+
+        return response()->json($data);
+    }
+
     public function destroy($kode_resep)
     {
         $resep = Resep::find($kode_resep);

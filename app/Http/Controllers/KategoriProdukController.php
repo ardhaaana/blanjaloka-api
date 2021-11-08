@@ -72,6 +72,36 @@ class KategoriProdukController extends Controller
         return response()->json($kategori);
     }
 
+    public function search(Request $request)
+    {
+        # code...
+        $query = $request->query('query');
+
+        if (empty($query)) {
+            return response()->json(['error' => 'Query not specified!'], 400);
+        }
+
+        $fulltext = $request->query('fulltext', 'false');
+        $sortBy = $request->query('sort_by', 'jenis_kategori.asc');
+        $sorts = explode('.', $sortBy);
+
+
+        if ($fulltext == 'true') {
+            $data = KategoriProduk::query()
+                ->whereRaw("MATCH(jenis_kategori) AGAINST(? IN BOOLEAN MODE)", array($query))
+                ->orderBy($sorts[0], $sorts[1])
+                ->get();
+            return response()->json($data);
+        }
+
+        $data = KategoriProduk::query()
+            ->where('jenis_kategori', 'like', '%' . $query . '%')
+            ->orderBy($sorts[0], $sorts[1])
+            ->get();
+
+        return response()->json($data);
+    }
+
     public function destroy($id_kategori)
     {
         $kategori = KategoriProduk::find($id_kategori);

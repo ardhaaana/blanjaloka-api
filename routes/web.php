@@ -81,6 +81,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     
     $router->post('resep', ['uses' => 'ResepController@create']);
     $router->get('resep', ['uses' =>  'ResepController@index']);
+    $router->get('resep/search', ['uses' =>  'ResepController@search']);
 
     $router->get('resep/{kode_resep}', ['uses' =>  'ResepController@show']);
     $router->put('resep/{kode_resep}', ['uses' =>  'ResepController@update']);
@@ -89,6 +90,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('kategori', ['uses' => 'KategoriProdukController@create']);
     $router->get('kategori', ['uses' =>  'KategoriProdukController@index']);
 
+    $router->get('search', ['uses' => 'KategoriProdukController@search']);
     $router->get('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@show']);
     $router->put('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@update']);
     $router->delete('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@destroy']);

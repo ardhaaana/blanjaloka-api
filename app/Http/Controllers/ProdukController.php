@@ -21,6 +21,7 @@ class ProdukController extends Controller
             'satuan' => 'required',
             'harga_jual' => 'required|numeric',
             'stok_saat_ini' => 'required|numeric',
+            'deskripsi' => 'required',
             'status_produk' => 'required',
             'id_pedagang' => 'required|numeric'
         ]);
@@ -29,6 +30,7 @@ class ProdukController extends Controller
         $satuan = $request->input('satuan');
         $harga_jual = $request->input('harga_jual');
         $stok_saat_ini = $request->input('stok_saat_ini');
+        $deskripsi = $request->input('deskripsi');
         $status_produk = $request->input('status_produk');
         $id_pedagang = $request->input('id_pedagang');
 
@@ -37,6 +39,7 @@ class ProdukController extends Controller
             'satuan' => $satuan,
             'harga_jual' => $harga_jual,
             'stok_saat_ini' => $stok_saat_ini,
+            'deskripsi' => $deskripsi,
             'status_produk' => $status_produk,
             'id_pedagang' => $id_pedagang
         ]);
@@ -77,6 +80,7 @@ class ProdukController extends Controller
             'satuan' => 'required',
             'harga_jual' => 'required|numeric',
             'stok_saat_ini' => 'required|numeric',
+            'deskripsi' => 'required',
             'status_produk' => 'required',
             'id_pedagang' => 'required|numeric'
         ]);
@@ -104,7 +108,7 @@ class ProdukController extends Controller
 
         if ($fulltext == 'true') {
             $data = Produk::query()
-                ->whereRaw("MATCH(nama_produk) AGAINST(? IN BOOLEAN MODE)", array($query))
+                ->whereRaw("MATCH(nama_produk,deskripsi) AGAINST(? IN BOOLEAN MODE)", array($query))
                 ->orderBy($sorts[0], $sorts[1])
                 ->get();
             return response()->json($data);
@@ -112,6 +116,7 @@ class ProdukController extends Controller
 
         $data = Produk::query()
             ->where('nama_produk', 'like', '%' . $query . '%')
+            ->orWhere('deskripsi', 'like', '%' . $query . '%')
             ->orderBy($sorts[0], $sorts[1])
             ->get();
 
