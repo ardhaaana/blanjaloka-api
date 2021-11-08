@@ -76,8 +76,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('tawar_menawar/{id_tawar}', ['uses' =>  'TawarMenawarController@show']);
     $router->put('tawar_menawar/{id_tawar}', ['uses' =>  'TawarMenawarController@update']);
     $router->delete('tawar_menawar/{id_tawar}', ['uses' =>  'TawarMenawarController@destroy']);
-
-
     
     $router->post('resep', ['uses' => 'ResepController@create']);
     $router->get('resep', ['uses' =>  'ResepController@index']);
@@ -94,4 +92,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@show']);
     $router->put('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@update']);
     $router->delete('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@destroy']);
+
+    
+    $router->post('toko', ['uses' => 'TokoController@create']);
+    $router->get('toko', ['uses' =>  'TokoController@index']);
+
+    $router->get('toko/search', ['uses' => 'TokoController@search']);
+    $router->get('toko/{id_toko}', ['uses' =>  'TokoController@show']);
+    $router->put('toko/{id_toko}', ['uses' =>  'TokoController@update']);
+    $router->delete('toko/{id_toko}', ['uses' =>  'TokoController@destroy']);
 });
