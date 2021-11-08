@@ -102,12 +102,4 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->put('toko/{id_toko}', ['uses' =>  'TokoController@update']);
     $router->delete('toko/{id_toko}', ['uses' =>  'TokoController@destroy']);
 
-    
-    $router->get('shopcart', ['uses' => 'ShopController@index']);
-    $router->post('shopcart', ['uses' => 'ShopController@create']);
-
-    $router->get('shopcart/{id_produk}', ['uses' => 'ShopController@show']);
-    $router->put('shopcart/{id_produk}', ['uses' =>  'ShopController@update']);
-
-    $router->delete('shopcart/{id_produk}', ['uses' => 'ShopController@destroy']);
 });
