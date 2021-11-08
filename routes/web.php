@@ -30,7 +30,7 @@ $router->post('/login', 'AuthCustomerController@login');
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
-    $router->get('search', ['uses' => 'ProdukController@search']);
+    $router->get('/produk/search', ['uses' => 'ProdukController@search']);
     $router->get('produk', ['uses' => 'ProdukController@index']);
     $router->post('produk', ['uses' => 'ProdukController@create']);
 
@@ -90,7 +90,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('kategori', ['uses' => 'KategoriProdukController@create']);
     $router->get('kategori', ['uses' =>  'KategoriProdukController@index']);
 
-    $router->get('search', ['uses' => 'KategoriProdukController@search']);
+    $router->get('kategori/search', ['uses' => 'KategoriProdukController@search']);
     $router->get('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@show']);
     $router->put('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@update']);
     $router->delete('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@destroy']);
