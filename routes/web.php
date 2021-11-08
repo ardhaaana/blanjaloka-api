@@ -76,7 +76,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('tawar_menawar/{id_tawar}', ['uses' =>  'TawarMenawarController@show']);
     $router->put('tawar_menawar/{id_tawar}', ['uses' =>  'TawarMenawarController@update']);
     $router->delete('tawar_menawar/{id_tawar}', ['uses' =>  'TawarMenawarController@destroy']);
-    
+
+
+
     $router->post('resep', ['uses' => 'ResepController@create']);
     $router->get('resep', ['uses' =>  'ResepController@index']);
     $router->get('resep/search', ['uses' =>  'ResepController@search']);
@@ -85,15 +87,16 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->put('resep/{kode_resep}', ['uses' =>  'ResepController@update']);
     $router->delete('resep/{kode_resep}', ['uses' =>  'ResepController@destroy']);
 
+
     $router->post('kategori', ['uses' => 'KategoriProdukController@create']);
     $router->get('kategori', ['uses' =>  'KategoriProdukController@index']);
 
-    $router->get('kategori/search', ['uses' => 'KategoriProdukController@search']);
+    $router->get('/kategori/search', ['uses' => 'KategoriProdukController@search']);
     $router->get('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@show']);
     $router->put('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@update']);
     $router->delete('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@destroy']);
 
-    
+
     $router->post('toko', ['uses' => 'TokoController@create']);
     $router->get('toko', ['uses' =>  'TokoController@index']);
 
@@ -102,4 +105,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->put('toko/{id_toko}', ['uses' =>  'TokoController@update']);
     $router->delete('toko/{id_toko}', ['uses' =>  'TokoController@destroy']);
 
+
+    $router->post('keranjang', ['uses' => 'KeranjangProdukController@create']);
+    $router->get('keranjang', ['uses' =>  'KeranjangProdukController@index']);
+
+    $router->get('/keranjang/search', ['uses' => 'KeranjangProdukController@search']);
+    $router->get('keranjang/{id_keranjang}', ['uses' =>  'KeranjangProdukController@show']);
+    $router->put('keranjang/{id_keranjang}', ['uses' =>  'KeranjangProdukController@update']);
+    $router->delete('keranjang/{id_keranjang}', ['uses' =>  'KeranjangProdukController@destroy']);
 });
