@@ -88,6 +88,36 @@ class ProdukController extends Controller
         return response()->json($produk);
     }
 
+    public function search(Request $request)
+    {
+        # code...
+        $query = $request->query('query');
+
+        if (empty($query)) {
+            return response()->json(['error' => 'Query not specified!'], 400);
+        }
+
+        $fulltext = $request->query('fulltext', 'false');
+        $sortBy = $request->query('sort_by', 'nama_produk.asc');
+        $sorts = explode('.', $sortBy);
+
+
+        if ($fulltext == 'true') {
+            $data = Produk::query()
+                ->whereRaw("MATCH(nama_produk) AGAINST(? IN BOOLEAN MODE)", array($query))
+                ->orderBy($sorts[0], $sorts[1])
+                ->get();
+            return response()->json($data);
+        }
+
+        $data = Produk::query()
+            ->where('nama_produk', 'like', '%' . $query . '%')
+            ->orderBy($sorts[0], $sorts[1])
+            ->get();
+
+        return response()->json($data);
+    }
+
     public function destroy($kode_produk)
     {
         $produk = Produk::find($kode_produk);

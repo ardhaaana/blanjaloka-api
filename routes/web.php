@@ -30,7 +30,7 @@ $router->post('/login', 'AuthCustomerController@login');
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
-    $router->get('list', ['uses' => 'ProdukController@list']);
+    $router->get('search', ['uses' => 'ProdukController@search']);
     $router->get('produk', ['uses' => 'ProdukController@index']);
     $router->post('produk', ['uses' => 'ProdukController@create']);
 
