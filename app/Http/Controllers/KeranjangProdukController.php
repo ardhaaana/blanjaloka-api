@@ -55,6 +55,19 @@ class KeranjangProdukController extends Controller
     public function show($id_keranjang)
     {
         $keranjang = KeranjangProduk::find($id_keranjang);
+
+        if ($keranjang) {
+            return response()->json([
+                'message' => 'Success',
+                'data' => $keranjang
+            ], 201);
+        } else if (!$keranjang) {
+            return response()->json([
+                'message' => 'Fail',
+                'data' => $keranjang
+            ], 404);
+        }
+
         return response()->json($keranjang);
     }
 
