@@ -17,7 +17,7 @@ class ProdukController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'nama_produk' => 'required|min:5',
+            'nama_produk' => 'required',
             'satuan' => 'required',
             'harga_jual' => 'required|numeric',
             'stok_saat_ini' => 'required|numeric',
@@ -26,57 +26,119 @@ class ProdukController extends Controller
             'id_pedagang' => 'required|numeric'
         ]);
 
-        $nama_produk = $request->input('nama_produk');
-        $satuan = $request->input('satuan');
-        $harga_jual = $request->input('harga_jual');
-        $stok_saat_ini = $request->input('stok_saat_ini');
-        $deskripsi = $request->input('deskripsi');
-        $status_produk = $request->input('status_produk');
-        $id_pedagang = $request->input('id_pedagang');
+        //    $foto_produk = $request->file('foto_produk')->getClientOriginalName();
+        //    $request->file('foto_produk')->move('upload',$foto_produk);
 
-        $produk = Produk::create([
-            'nama_produk' => $nama_produk,
-            'satuan' => $satuan,
-            'harga_jual' => $harga_jual,
-            'stok_saat_ini' => $stok_saat_ini,
-            'deskripsi' => $deskripsi,
-            'status_produk' => $status_produk,
-            'id_pedagang' => $id_pedagang
+        // $produk = [
+        //     'nama_produk' => $request->input('nama_produk'),
+        //     'satuan' => $request->input('satuan'),
+        //     'harga_jual' => $request->input('harga_jual'),
+        //     'stok_saat_ini' => $request->input('stok_saat_ini'),
+        //     'deskripsi' => $request->input('deskripsi'),
+        //     'foto_produk' => url('upload/'.$foto_produk),
+        //     'status_produk' => $request->input('status_produk'),
+        //     'id_pedagang' => $request->input('id_pedagang')
+        // ];
+
+        // $produk = Produk::create($produk);
+
+        // if ($produk){
+        //     $result = [
+        //         'message' => 'Data berhasil ditambahkan',
+        //         'data' => $produk
+        //     ];
+        // } else {
+        //     $result = [
+        //         'message' => 'Data tidak berhasil ditambahkan',
+        //         'data' => ''
+        //     ];
+        // }
+
+        //  if (empty($produk)) {
+        //     return response()->json(['error' => 'unknown error'], 501);
+        // }
+
+        // return response()->json([
+        //     'message' => 'Produk create success!',
+        //     'code' => 201,
+        //     'data' => $produk
+        // ]);
+
+        // return response()->json($produk);     
+
+        if ($request->has('foto_produk')) {
+            $produk = Produk::query()->create(
+                [
+                    'nama_produk' => $request->input('nama_produk'),
+                    'satuan' => $request->input('satuan'),
+                    'harga_jual' => $request->input('harga_jual'),
+                    'stok_saat_ini' => $request->input('stok_saat_ini'),
+                    'deskripsi' => $request->input('deskripsi'),
+                    'foto_produk' => $request->input('foto_produk'),
+                    'status_produk' => $request->input('status_produk'),
+                    'id_pedagang' => $request->input('id_pedagang')
+                ]
+            );
+        } else {
+            $produk = Produk::query()->create(
+                [
+                    'nama_produk' => $request->input('nama_produk'),
+                    'satuan' => $request->input('satuan'),
+                    'harga_jual' => $request->input('harga_jual'),
+                    'stok_saat_ini' => $request->input('stok_saat_ini'),
+                    'deskripsi' => $request->input('deskripsi'),
+                    'status_produk' => $request->input('status_produk'),
+                    'id_pedagang' => $request->input('id_pedagang')
+                ]
+            );
+        }
+
+        if (empty($produk)) {
+            return response()->json(['error' => 'unknown error'], 501);
+        }
+
+        return response()->json([
+            'message' => 'Product create success!',
+            'code' => 201,
+            'data' => $produk
         ]);
 
-        if ($produk) {
-            return response()->json([
-                'message' => 'Penambahan data berhasil',
-                'data' => $produk
-            ], 201);
-        }
     }
-
     public function index()
     {
         $produk = Produk::all();
+
+        if (empty($produk)) {
+            return response()->json(['error' => 'Produk Tidak Ditemukan'], 402);
+        }
         return response()->json($produk);
     }
 
     public function show($kode_produk)
     {
         $produk = Produk::find($kode_produk);
+        
+        if (empty($produk)) {
+            return response()->json(['error' => 'Produk Tidak Ditemukan'], 402);
+        }
+
         return response()->json($produk);
+        
     }
 
     public function update(Request $request, $kode_produk)
     {
-        $produk = Produk::find($kode_produk);
+        // $produk = Produk::find($kode_produk);
 
-        if (!$produk) {
-            return response()->json([
-                'message' => 'Data tidak ditemukan',
-                'data' => $produk
-            ], 404);
-        }
+        // if (!$produk) {
+        //     return response()->json([
+        //         'message' => 'Data tidak ditemukan',
+        //         'data' => $produk
+        //     ], 404);
+        // }
 
         $this->validate($request, [
-            'nama_produk' => 'required|min:5',
+            'nama_produk' => 'required',
             'satuan' => 'required',
             'harga_jual' => 'required|numeric',
             'stok_saat_ini' => 'required|numeric',
@@ -85,11 +147,46 @@ class ProdukController extends Controller
             'id_pedagang' => 'required|numeric'
         ]);
 
-        $dataproduk = $request->all();
-        $produk->fill($dataproduk);
-        $produk->save();
+        if ($request->has('foto_produk')) {
+            $update = Produk::query()->find($kode_produk)->update(
+                [
+                    'nama_produk' => $request->input('nama_produk'),
+                    'satuan' => $request->input('satuan'),
+                    'harga_jual' => $request->input('harga_jual'),
+                    'stok_saat_ini' => $request->input('stok_saat_ini'),
+                    'deskripsi' => $request->input('deskripsi'),
+                    'foto_produk' => $request->input('foto_produk'),
+                    'status_produk' => $request->input('status_produk'),
+                    'id_pedagang' => $request->input('id_pedagang')
+                ]
+            );
+        } else {
+            $update = Produk::query()->find($kode_produk)->update(
+                [
+                   'nama_produk' => $request->input('nama_produk'),
+                    'satuan' => $request->input('satuan'),
+                    'harga_jual' => $request->input('harga_jual'),
+                    'stok_saat_ini' => $request->input('stok_saat_ini'),
+                    'deskripsi' => $request->input('deskripsi'),
+                    'status_produk' => $request->input('status_produk'),
+                    'id_pedagang' => $request->input('id_pedagang')
+                ]
+            );
+        }
 
-        return response()->json($produk);
+        if (!$update) {
+            return response()->json(['error' => 'unknown error'], 500);
+        }
+       
+        // $dataproduk = $request->all();
+        // $produk->fill($dataproduk);
+        // $produk->save();
+        
+        return response()->json([
+            'message' => 'Produk update!',
+            'code' => 200
+        ]);
+
     }
 
     public function search(Request $request)

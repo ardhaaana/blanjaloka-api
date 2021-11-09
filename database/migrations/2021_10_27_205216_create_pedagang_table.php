@@ -16,10 +16,10 @@ class CreatePedagangTable extends Migration
         Schema::create('pedagang', function (Blueprint $table) {
             $table->id('id_pedagang');
             $table->string('nama_pedagang');
-            $table->string('nomor_telepon');
+            $table->bigInteger('nomor_telepon');
             $table->string('alamat_pedagang');
             $table->date('tanggal_lahir');
-            $table->string('nomor_ktp');
+            $table->bigInteger('nomor_ktp');
             $table->string('foto_rekening');
             $table->integer('id_pendaftaran');
 

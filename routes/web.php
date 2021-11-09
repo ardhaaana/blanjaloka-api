@@ -26,6 +26,9 @@ $router->get('/', function () use ($router) {
 $router->post('/register', 'AuthCustomerController@register');
 $router->post('/login', 'AuthCustomerController@login');
 
+$router->put('/profile/{id_customer}', 'AuthCustomerController@update');
+$router->get('/profile', 'AuthCustomerController@index');
+
 // 'middleware' => 'auth'
 
 $router->group(['prefix' => 'api'], function () use ($router) {
@@ -101,4 +104,32 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('toko/{id_toko}', ['uses' =>  'TokoController@show']);
     $router->put('toko/{id_toko}', ['uses' =>  'TokoController@update']);
     $router->delete('toko/{id_toko}', ['uses' =>  'TokoController@destroy']);
+
+
+    
+    $router->post('pesanan', ['uses' => 'PesananController@create']);
+    $router->get('pesanan', ['uses' =>  'PesananController@index']);
+
+    $router->get('pesanan/search', ['uses' => 'PesananController@search']);
+    $router->get('pesanan/{id_pesanan}', ['uses' =>  'PesananController@show']);
+    $router->put('pesanan/{id_pesanan}', ['uses' =>  'PesananController@update']);
+    $router->delete('pesanan/{id_pesanan}', ['uses' =>  'PesananController@destroy']);
+    
+    $router->post('review', ['uses' => 'ReviewProdukController@create']);
+    $router->get('review', ['uses' =>  'ReviewProdukController@index']);
+
+    $router->get('review/{kode_review_produk}', ['uses' =>  'ReviewProdukController@show']);
+    $router->put('review/{kode_review_produk}', ['uses' =>  'ReviewProdukController@update']);
+    $router->delete('review/{kode_review_produk}', ['uses' =>  'ReviewProdukController@destroy']);
+
+    
+    
+    $router->post('voucher', ['uses' => 'VoucherController@create']);
+    $router->get('voucher', ['uses' =>  'VoucherController@index']);
+    
+    $router->get('voucher/search', ['uses' => 'VoucherController@search']);
+
+    $router->get('voucher/{id}', ['uses' =>  'VoucherController@show']);
+    $router->put('voucher/{id}', ['uses' =>  'VoucherController@update']);
+    $router->delete('voucher/{id}', ['uses' =>  'VoucherController@destroy']);
 });

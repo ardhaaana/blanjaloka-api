@@ -38,7 +38,7 @@ class ResepController extends Controller
 
         if ($resep) {
             return response()->json([
-                'message' => 'Penambahan data berhasil',
+                'message' => 'Resep Makanan create success!',
                 'data' => $resep
             ], 201);
         }
@@ -47,12 +47,20 @@ class ResepController extends Controller
     public function index()
     {
         $resep = Resep::all();
+
+        if (empty($resep)) {
+            return response()->json(['error' => 'Resep Tidak Ditemukan'], 402);
+        }
         return response()->json($resep);
     }
 
     public function show($kode_resep)
     {
         $resep = Resep::find($kode_resep);
+
+        if (empty($resep)) {
+            return response()->json(['error' => 'Resep Tidak Ditemukan'], 402);
+        }
         return response()->json($resep);
     }
 
@@ -77,8 +85,15 @@ class ResepController extends Controller
         $dataresep = $request->all();
         $resep->fill($dataresep);
         $resep->save();
+        
+        if (!$resep) {
+            return response()->json(['error' => 'unknown error'], 500);
+        }
 
-        return response()->json($resep);
+         return response()->json([
+            'message' => 'Resep Makanan update!',
+            'code' => 200
+        ]);
     }
 
     public function search(Request $request)

@@ -98,4 +98,60 @@ class AuthCustomerController extends Controller
                 
             ], 200);
     }
+
+    public function update(Request $request, $id_customer)
+    {
+      
+        $this->validate($request, [
+            'nama_customer' => 'required|min:5',
+            'nomor_telepon' => 'required',
+            'email_customer' => 'required|email',
+            'username' => 'required|min:5',
+            'password' => 'required|min:8'
+        ]);
+
+      if ($request->has('email_customer')) {
+            $update = Customer::query()->find($id_customer)->update(
+                [
+                'nama_customer' => $request->input('nama_customer'),
+                'nomor_telepon' => $request->input('nomor_telepon'),
+                'email_customer' => $request->input('email_customer'),
+                'alamat_customer' => $request->input( 'alamat_customer'),
+                'tanggal_lahir' => $request->input( 'tanggal_lahir'),
+                'username' => $request->input('username'),
+                'password' => Hash::make($request->input('password')),
+                ]
+            );
+        } else {
+            $update = Customer::query()->find($id_customer)->update(
+                [
+                'nama_customer' => $request->input('nama_customer'),
+                'nomor_telepon' => $request->input('nomor_telepon'),
+                'alamat_customer' => $request->input( 'alamat_customer'),
+                'tanggal_lahir' => $request->input( 'tanggal_lahir'),
+                'username' => $request->input('username'),
+                'password' => Hash::make($request->input('password'))
+                ]
+            );
+        }
+
+        
+        if (!$update) {
+            return response()->json(['error' => 'unknown error'], 500);
+        }
+
+         return response()->json([
+            'message' => 'Edit Profile update!',
+            'code' => 200
+        ]);
+    }
+    public function index()
+    {
+        $customer = Customer::all();
+
+        if (empty($customer)) {
+            return response()->json(['error' => 'Data Akun Tidak Ditemukan'], 402);
+        }
+        return response()->json($customer);
+    }
 }

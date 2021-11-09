@@ -31,7 +31,7 @@ class KategoriProdukController extends Controller
 
         if ($kategori) {
             return response()->json([
-                'message' => 'Penambahan data berhasil',
+                'message' => 'Kategori Produk create success!',
                 'data' => $kategori
             ], 201);
         }
@@ -46,6 +46,11 @@ class KategoriProdukController extends Controller
     public function show($id_kategori)
     {
         $kategori = KategoriProduk::find($id_kategori);
+
+         if (empty($produk)) {
+            return response()->json(['error' => 'Kategori Produk Tidak Ditemukan'], 402);
+        }
+
         return response()->json($kategori);
     }
 
@@ -59,6 +64,9 @@ class KategoriProdukController extends Controller
                 'data' => $kategori
             ], 404);
         }
+        if (!$kategori) {
+            return response()->json(['error' => 'unknown error'], 500);
+        }
 
         $this->validate($request, [
             'jenis_kategori' => 'required',
@@ -68,6 +76,11 @@ class KategoriProdukController extends Controller
         $datakategori = $request->all();
         $kategori->fill($datakategori);
         $kategori->save();
+        
+         return response()->json([
+            'message' => 'Kategori Produk update!',
+            'code' => 200
+        ]);
 
         return response()->json($kategori);
     }

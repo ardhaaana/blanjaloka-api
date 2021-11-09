@@ -16,10 +16,10 @@ class CreateDriverTable extends Migration
         Schema::create('driver', function (Blueprint $table) {
             $table->increments('id_driver');
             $table->string('nama_driver');
-            $table->integer('nomor_telepon');
+            $table->bigInteger('nomor_telepon');
             $table->string('alamat_driver');
             $table->date('tanggal_lahir');
-            $table->integer('nomor_ktp');
+            $table->bigInteger('nomor_ktp');
             $table->string('kendaraan');
             $table->string('foto_stnk');
             $table->integer('id_pendaftaran');

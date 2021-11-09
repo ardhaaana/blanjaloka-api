@@ -16,7 +16,7 @@ class CreateCustomerTable extends Migration
         Schema::create('customer', function (Blueprint $table) {
             $table->id('id_customer');
             $table->string('nama_customer');
-            $table->integer('nomor_telepon');
+            $table->bigInteger('nomor_telepon');
             $table->string('alamat_customer')->nullable();
             $table->date('tanggal_lahir');
             $table->string('email_customer')->unique();
