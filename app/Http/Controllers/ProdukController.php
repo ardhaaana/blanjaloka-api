@@ -108,9 +108,6 @@ class ProdukController extends Controller
     {
         $produk = Produk::all();
 
-        if (empty($produk)) {
-            return response()->json(['error' => 'Produk Tidak Ditemukan'], 402);
-        }
         return response()->json($produk);
     }
 

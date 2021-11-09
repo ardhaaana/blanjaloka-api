@@ -59,12 +59,21 @@ class PedagangController extends Controller
     public function index()
     {
         $pedagang = Pedagang::all();
+
+        
+        if (empty($pedagang)) {
+            return response()->json(['error' => 'Pedagang Tidak Ditemukan'], 402);
+        }
         return response()->json($pedagang);
     }
 
     public function show($id_pedagang)
     {
         $pedagang = Pedagang::find($id_pedagang);
+   
+        if (empty($pedagang)) {
+            return response()->json(['error' => 'Pedagang Tidak Ditemukan'], 402);
+        }
         return response()->json($pedagang);
     }
 

@@ -40,6 +40,10 @@ class KategoriProdukController extends Controller
     public function index()
     {
         $kategori = KategoriProduk::all();
+
+        if (empty($kategori)) {
+            return response()->json(['error' => 'Kategori Produk Tidak Ditemukan'], 402);
+        }
         return response()->json($kategori);
     }
 
@@ -47,7 +51,7 @@ class KategoriProdukController extends Controller
     {
         $kategori = KategoriProduk::find($id_kategori);
 
-         if (empty($produk)) {
+         if (empty($kategori)) {
             return response()->json(['error' => 'Kategori Produk Tidak Ditemukan'], 402);
         }
 
@@ -64,6 +68,7 @@ class KategoriProdukController extends Controller
                 'data' => $kategori
             ], 404);
         }
+
         if (!$kategori) {
             return response()->json(['error' => 'unknown error'], 500);
         }
@@ -111,7 +116,7 @@ class KategoriProdukController extends Controller
             ->where('jenis_kategori', 'like', '%' . $query . '%')
             ->orderBy($sorts[0], $sorts[1])
             ->get();
-
+                    
         return response()->json($data);
     }
 
