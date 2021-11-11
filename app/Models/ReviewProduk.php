@@ -11,11 +11,12 @@ class ReviewProduk extends Model
      *
      * @var string
      */
-    protected $primaryKey = 'kode_review_produk';
+    protected $primaryKey = 'id';
     public $table = 'review_produk';
 
      protected $fillable = [
         'nama_customer','review', 'star',
     ];
+
    
 }

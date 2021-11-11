@@ -23,8 +23,7 @@ class PedagangController extends Controller
             'alamat_pedagang' => 'required',
             'tanggal_lahir' => 'required',
             'nomor_ktp' => 'required|unique:pedagang',
-            'foto_rekening' => 'required',
-            'id_pendaftaran' => 'required'
+            'foto_rekening' => 'required'
         ]);
 
         $foto_rekening = $request->file('foto_rekening')->getClientOriginalName();
@@ -36,8 +35,7 @@ class PedagangController extends Controller
             'alamat_pedagang' => $request->input('alamat_pedagang'),
             'tanggal_lahir' => $request->input('tanggal_lahir'),
             'nomor_ktp' => $request->input('nomor_ktp'),
-            'foto_rekening' => url('upload/' . $foto_rekening),
-            'id_pendaftaran' => $request->input('id_pendaftaran')
+            'foto_rekening' => url('upload/' . $foto_rekening)
         ];
 
         $pedagang = Pedagang::create($pedagang);
@@ -94,8 +92,7 @@ class PedagangController extends Controller
             'alamat_pedagang' => 'required',
             'tanggal_lahir' => 'required',
             'nomor_ktp' => 'required|unique:pedagang',
-            'foto_rekening' => 'required',
-            'id_pendaftaran' => 'required'
+            'foto_rekening' => 'required'
         ]);
 
         $dataproduk = $request->all();

@@ -17,7 +17,7 @@ class CreateJamOperasionalPasarTable extends Migration
             $table->id('id_toko');
             $table->date('hari_operasional');
             $table->time('jam_operasional');
-            $table->integer('id_pengelola');
+            $table->unsignedInteger('id_pengelola')->unique();
 
             $table->timestamps();
         });

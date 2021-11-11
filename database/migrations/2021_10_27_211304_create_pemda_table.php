@@ -14,7 +14,7 @@ class CreatePemdaTable extends Migration
     public function up()
     {
         Schema::create('pemda', function (Blueprint $table) {
-            $table->id('id_pemda');
+            $table->bigIncrements('id_pemda');
             $table->string('nama_pemda');
             $table->string('alamat_pemda')->nullable();
             $table->string('nomor_telepon');
@@ -22,9 +22,11 @@ class CreatePemdaTable extends Migration
             $table->string('nomor_ktp');
             $table->string('username')->unique();
             $table->string('password');
-            $table->integer('kode_produk');
+            $table->unsignedBigInteger('id_produk')->nullable();
 
             $table->timestamps();
+
+            $table->foreign('id_produk')->references('id_produk')->on('produk')->onDelete('cascade');
         });
     }
 

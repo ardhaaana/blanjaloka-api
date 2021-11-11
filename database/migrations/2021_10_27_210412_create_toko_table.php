@@ -14,12 +14,14 @@ class CreateTokoTable extends Migration
     public function up()
     {
         Schema::create('toko', function (Blueprint $table) {
-            $table->id('id_toko');
+            $table->bigIncrements('id_toko');
             $table->string('nama_toko');
             $table->string('alamat_toko');
-            $table->integer('id_pedagang');
+            $table->unsignedBigInteger('id_pedagang')->nullable();
 
             $table->timestamps();
+
+            $table->foreign('id_pedagang')->references('id_pedagang')->on('pedagang')->onDelete('cascade');
         });
     }
 

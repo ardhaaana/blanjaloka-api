@@ -14,14 +14,17 @@ class CreateTransaksiTable extends Migration
     public function up()
     {
         Schema::create('transaksi', function (Blueprint $table) {
-            $table->id('kode_transaksi');
+            $table->bigIncrements('id_transaksi');
             $table->string('jenis_pembayaran');
             $table->integer('pajak');
-            $table->integer('id_customer');
-            $table->integer('id_pedagang');
+            $table->unsignedBigInteger('id_customer')->nullable();
+            $table->unsignedBigInteger('id_pedagang')->nullable();
             $table->integer('total_pembayaran');
 
             $table->timestamps();
+
+            $table->foreign('id_customer')->references('id_customer')->on('customer')->onDelete('cascade');
+            $table->foreign('id_pedagang')->references('id_pedagang')->on('pedagang')->onDelete('cascade');
         });
     }
 

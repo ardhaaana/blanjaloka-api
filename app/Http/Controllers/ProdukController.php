@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produk;
+use App\Models\ReviewProduk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-
 class ProdukController extends Controller
 {
+    
     // public function __construct()
     // {
     //     $this->middleware('auth');
@@ -17,13 +18,13 @@ class ProdukController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
+
             'nama_produk' => 'required',
             'satuan' => 'required',
             'harga_jual' => 'required|numeric',
             'stok_saat_ini' => 'required|numeric',
             'deskripsi' => 'required',
-            'status_produk' => 'required',
-            'id_pedagang' => 'required|numeric'
+            'status_produk' => 'required'
         ]);
 
         //    $foto_produk = $request->file('foto_produk')->getClientOriginalName();
@@ -75,8 +76,7 @@ class ProdukController extends Controller
                     'stok_saat_ini' => $request->input('stok_saat_ini'),
                     'deskripsi' => $request->input('deskripsi'),
                     'foto_produk' => $request->input('foto_produk'),
-                    'status_produk' => $request->input('status_produk'),
-                    'id_pedagang' => $request->input('id_pedagang')
+                    'status_produk' => $request->input('status_produk')
                 ]
             );
         } else {
@@ -86,9 +86,7 @@ class ProdukController extends Controller
                     'satuan' => $request->input('satuan'),
                     'harga_jual' => $request->input('harga_jual'),
                     'stok_saat_ini' => $request->input('stok_saat_ini'),
-                    'deskripsi' => $request->input('deskripsi'),
-                    'status_produk' => $request->input('status_produk'),
-                    'id_pedagang' => $request->input('id_pedagang')
+                    'deskripsi' => $request->input('deskripsi')
                 ]
             );
         }
@@ -111,9 +109,9 @@ class ProdukController extends Controller
         return response()->json($produk);
     }
 
-    public function show($kode_produk)
+    public function show($id_produk)
     {
-        $produk = Produk::find($kode_produk);
+        $produk = Produk::find($id_produk);
         
         if (empty($produk)) {
             return response()->json(['error' => 'Produk Tidak Ditemukan'], 402);
@@ -123,7 +121,7 @@ class ProdukController extends Controller
         
     }
 
-    public function update(Request $request, $kode_produk)
+    public function update(Request $request, $id_produk)
     {
         // $produk = Produk::find($kode_produk);
 
@@ -135,17 +133,17 @@ class ProdukController extends Controller
         // }
 
         $this->validate($request, [
+
             'nama_produk' => 'required',
             'satuan' => 'required',
             'harga_jual' => 'required|numeric',
             'stok_saat_ini' => 'required|numeric',
             'deskripsi' => 'required',
-            'status_produk' => 'required',
-            'id_pedagang' => 'required|numeric'
+            'status_produk' => 'required'
         ]);
 
         if ($request->has('foto_produk')) {
-            $update = Produk::query()->find($kode_produk)->update(
+            $update = Produk::query()->find($id_produk)->update(
                 [
                     'nama_produk' => $request->input('nama_produk'),
                     'satuan' => $request->input('satuan'),
@@ -153,20 +151,18 @@ class ProdukController extends Controller
                     'stok_saat_ini' => $request->input('stok_saat_ini'),
                     'deskripsi' => $request->input('deskripsi'),
                     'foto_produk' => $request->input('foto_produk'),
-                    'status_produk' => $request->input('status_produk'),
-                    'id_pedagang' => $request->input('id_pedagang')
+                    'status_produk' => $request->input('status_produk')
                 ]
             );
         } else {
-            $update = Produk::query()->find($kode_produk)->update(
+            $update = Produk::query()->find($id_produk)->update(
                 [
-                   'nama_produk' => $request->input('nama_produk'),
+                    'nama_produk' => $request->input('nama_produk'),
                     'satuan' => $request->input('satuan'),
                     'harga_jual' => $request->input('harga_jual'),
                     'stok_saat_ini' => $request->input('stok_saat_ini'),
                     'deskripsi' => $request->input('deskripsi'),
-                    'status_produk' => $request->input('status_produk'),
-                    'id_pedagang' => $request->input('id_pedagang')
+                    'status_produk' => $request->input('status_produk')
                 ]
             );
         }
@@ -217,9 +213,9 @@ class ProdukController extends Controller
         return response()->json($data);
     }
 
-    public function destroy($kode_produk)
+    public function destroy($id_produk)
     {
-        $produk = Produk::find($kode_produk);
+        $produk = Produk::find($id_produk);
 
         if (!$produk) {
             return response()->json([

@@ -14,7 +14,7 @@ class CreateDriverTable extends Migration
     public function up()
     {
         Schema::create('driver', function (Blueprint $table) {
-            $table->increments('id_driver');
+            $table->bigIncrements('id_driver');
             $table->string('nama_driver');
             $table->bigInteger('nomor_telepon');
             $table->string('alamat_driver');
@@ -22,9 +22,11 @@ class CreateDriverTable extends Migration
             $table->bigInteger('nomor_ktp');
             $table->string('kendaraan');
             $table->string('foto_stnk');
-            $table->integer('id_pendaftaran');
+            $table->unsignedBigInteger('id_pendaftaran')->nullable();
 
             $table->timestamps();
+
+            $table->foreign('id_pendaftaran')->references('id_pendaftaran')->on('pendaftaran')->onDelete('cascade');
         });
     }
 

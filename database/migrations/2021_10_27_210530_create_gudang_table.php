@@ -14,12 +14,14 @@ class CreateGudangTable extends Migration
     public function up()
     {
         Schema::create('gudang', function (Blueprint $table) {
-            $table->id('id_gudang');
-            $table->integer('id_toko');
-            $table->integer('id_produk');
-            $table->integer('stok_saat');
+            $table->bigIncrements('id_gudang');
+            $table->bigInteger('id_toko')->unsigned()->nullable();
+            $table->unsignedBigInteger('id_produk')->nullable();
+            $table->integer('stok_saat_ini');
 
             $table->timestamps();
+
+            $table->foreign('id_produk')->references('id_produk')->on('produk')->onDelete('cascade');
         });
     }
 

@@ -14,13 +14,17 @@ class CreateRekomendasiBahanMasakanTable extends Migration
     public function up()
     {
         Schema::create('rekomendasi_bahan_masakan', function (Blueprint $table) {
-            $table->id('id_rekomendasi');
-            $table->integer('kode_produk');
+            $table->bigIncrements('id_rekomendasi');
+            $table->unsignedBigInteger('id_produk')->nullable();
             $table->string('resep_masakan');
-            $table->integer('id_customer');
-            $table->integer('id_pedagang');
+            $table->unsignedBigInteger('id_customer')->nullable();
+            $table->unsignedBigInteger('id_pedagang')->nullable();
 
             $table->timestamps();
+            
+            $table->foreign('id_produk')->references('id_produk')->on('produk')->onDelete('cascade');
+            $table->foreign('id_customer')->references('id_customer')->on('customer')->onDelete('cascade');
+            $table->foreign('id_pedagang')->references('id_pedagang')->on('pedagang')->onDelete('cascade');
         });
     }
 

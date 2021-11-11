@@ -14,17 +14,18 @@ class CreatePengelolaPasarTable extends Migration
     public function up()
     {
         Schema::create('pengelola_pasar', function (Blueprint $table) {
-            $table->id('id_pengelola');
+            $table->bigIncrements('id_pengelola');
             $table->string('nama_pengelola');
             $table->string('alamat_pengelola')->nullable();
             $table->integer('nomor_telepon');
             $table->string('email')->unique();
             $table->string('username')->unique();
             $table->string('password');
-            $table->integer('id_role');
+            $table->unsignedBigInteger('id_role')->nullable();
 
-            $table->string('token_pp')->nullable();
             $table->timestamps();
+
+            $table->foreign('id_role')->references('id_role')->on('role')->onDelete('cascade');
         });
     }
 

@@ -14,11 +14,22 @@ class CreateReviewProdukTable extends Migration
     public function up()
     {
         Schema::create('review_produk', function (Blueprint $table) {
-            $table->id('kode_review_produk');
+            $table->id();
+            $table->bigInteger('id_produk')->unsigned()->nullable();;
             $table->string('nama_customer');
             $table->text('review');
             $table->integer('star');
             $table->timestamps();
+
+            $table->foreign('id_produk')
+                  ->references('id_produk')
+                  ->on('produk')
+                  ->onDelete('cascade');
+
+                  $table->foreign('id_produk')->references('id_produk')->on('produk')
+                  ->onUpdate('cascade')->onDelete('cascade');
+
+
         });
     }
 

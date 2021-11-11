@@ -37,10 +37,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('produk', ['uses' => 'ProdukController@index']);
     $router->post('produk', ['uses' => 'ProdukController@create']);
 
-    $router->get('produk/{kode_produk}', ['uses' => 'ProdukController@show']);
-    $router->put('produk/{kode_produk}', ['uses' =>  'ProdukController@update']);
+    $router->get('produk/{id_produk}', ['uses' => 'ProdukController@show']);
+    $router->put('produk/{id_produk}', ['uses' =>  'ProdukController@update']);
 
-    $router->delete('produk/{kode_produk}', ['uses' => 'ProdukController@destroy']);
+    $router->delete('produk/{id_produk}', ['uses' => 'ProdukController@destroy']);
 
     $router->post('jamoperasional', ['uses' => 'JamOperasionalPasarController@create']);
     $router->get('jamoperasional', ['uses' =>  'JamOperasionalPasarController@index']);
@@ -118,9 +118,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('review', ['uses' => 'ReviewProdukController@create']);
     $router->get('review', ['uses' =>  'ReviewProdukController@index']);
 
-    $router->get('review/{kode_review_produk}', ['uses' =>  'ReviewProdukController@show']);
-    $router->put('review/{kode_review_produk}', ['uses' =>  'ReviewProdukController@update']);
-    $router->delete('review/{kode_review_produk}', ['uses' =>  'ReviewProdukController@destroy']);
+    $router->get('review/{id}', ['uses' =>  'ReviewProdukController@show']);
+    $router->put('review/{id}', ['uses' =>  'ReviewProdukController@update']);
+    $router->delete('review/{id}', ['uses' =>  'ReviewProdukController@destroy']);
 
     
     

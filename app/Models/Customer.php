@@ -15,7 +15,8 @@ class Customer extends Model
      * @var array
      */
     protected $fillable = [
-        'nama_customer','nomor_telepon','alamat_customer','tanggal_lahir','email_customer', 'username','password', 'token',
+        'nama_customer','nomor_telepon','alamat_customer','tanggal_lahir',
+        'email_customer', 'username','password', 'token','id_role'
     ];
 
     /**
@@ -23,7 +24,7 @@ class Customer extends Model
      *
      * @var array
      */
-    // protected $hidden = [
-    //     'password', 'token'
-    // ];
+    protected $hidden = [
+        'password', 'token'
+    ];
 }

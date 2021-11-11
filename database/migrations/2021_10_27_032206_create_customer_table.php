@@ -14,7 +14,7 @@ class CreateCustomerTable extends Migration
     public function up()
     {
         Schema::create('customer', function (Blueprint $table) {
-            $table->id('id_customer');
+            $table->bigIncrements('id_customer');
             $table->string('nama_customer');
             $table->bigInteger('nomor_telepon');
             $table->string('alamat_customer')->nullable();
@@ -22,9 +22,11 @@ class CreateCustomerTable extends Migration
             $table->string('email_customer')->unique();
             $table->string('username')->unique();
             $table->string('password');
-
+            $table->bigInteger('id_role')->unsigned()->nullable();
             $table->string('token')->nullable();
             $table->timestamps();
+
+            $table->foreign('id_role')->references('id_role')->on('role')->onDelete('cascade');
         });
     }
 

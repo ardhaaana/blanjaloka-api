@@ -17,7 +17,11 @@ class CreateKategoriProdukTable extends Migration
             $table->id('id_kategori');
             $table->string('jenis_kategori');
             $table->string('daftar_produk');
+            $table->unsignedBigInteger('id_produk')->nullable();
             $table->timestamps();
+
+            $table->foreign('id_produk')->references('id_produk')->on('produk')
+            ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

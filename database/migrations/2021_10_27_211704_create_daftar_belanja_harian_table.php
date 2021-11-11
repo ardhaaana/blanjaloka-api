@@ -15,8 +15,8 @@ class CreateDaftarBelanjaHarianTable extends Migration
     {
         Schema::create('daftar_belanja_harian', function (Blueprint $table) {
             $table->id('id_daftar');
-            $table->integer('kode_produk');
-            $table->integer('id_customer');
+            $table->unsignedInteger('id_produk')->unique();
+            $table->unsignedInteger('kdoe_customer')->unique();
 
             $table->timestamps();
         });

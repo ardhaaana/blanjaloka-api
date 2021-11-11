@@ -15,8 +15,8 @@ class CreateTawaMenawarTable extends Migration
     {
         Schema::create('tawa_menawar', function (Blueprint $table) {
             $table->id('id_tawar');
-            $table->integer('id_pedagang');
-            $table->integer('id_customer');
+            $table->unsignedInteger('id_pedagang')->unique();
+            $table->unsignedInteger('id_customer')->unique();
             $table->integer('harga_nego');
 
             $table->timestamps();

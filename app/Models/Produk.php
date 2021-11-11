@@ -11,10 +11,13 @@ class Produk extends Model
      *
      * @var string
      */
+
     protected $primaryKey = 'kode_produk';
     public $table = 'produk';
 
      protected $fillable = [
-        'nama_produk','satuan','harga_jual','stok_saat_ini','deskripsi','foto_produk','status_produk','id_pedagang',
+        'nama_produk','satuan','harga_jual','stok_saat_ini','deskripsi','foto_produk','status_produk', 'id_pedagang'
     ];
+
+
 }

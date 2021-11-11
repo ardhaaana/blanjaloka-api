@@ -14,16 +14,21 @@ class CreatePedagangTable extends Migration
     public function up()
     {
         Schema::create('pedagang', function (Blueprint $table) {
-            $table->id('id_pedagang');
+            $table->bigIncrements('id_pedagang');
             $table->string('nama_pedagang');
             $table->bigInteger('nomor_telepon');
             $table->string('alamat_pedagang');
             $table->date('tanggal_lahir');
             $table->bigInteger('nomor_ktp');
             $table->string('foto_rekening');
-            $table->integer('id_pendaftaran');
-
+            $table->unsignedBigInteger('id_pendaftaran')->nullable();
             $table->timestamps();
+
+
+            $table->foreign('id_pendaftaran')->references('id_pendaftaran')->on('pendaftaran')
+            ->onUpdate('cascade')->onDelete('cascade');
+                  
+                  
         });
     }
 
@@ -35,5 +40,6 @@ class CreatePedagangTable extends Migration
     public function down()
     {
         Schema::dropIfExists('pedagang');
+        
     }
 }

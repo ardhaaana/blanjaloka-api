@@ -14,7 +14,7 @@ class CreateProdukTable extends Migration
     public function up()
     {
         Schema::create('produk', function (Blueprint $table) {
-            $table->id('kode_produk');
+            $table->bigIncrements('id_produk');
             $table->string('nama_produk');
             $table->string('satuan');
             $table->integer('harga_jual');
@@ -22,9 +22,12 @@ class CreateProdukTable extends Migration
             $table->text('deskripsi');
             $table->string('foto_produk', 500);
             $table->string('status_produk');
-            $table->integer('id_pedagang');
+            $table->unsignedBigInteger('id_pedagang')->nullable();
 
             $table->timestamps();
+
+            $table->foreign('id_pedagang')->references('id_pedagang')->on('pedagang')
+            ->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

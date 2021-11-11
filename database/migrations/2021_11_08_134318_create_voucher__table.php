@@ -13,11 +13,14 @@ class CreateVoucherTable extends Migration
      */
     public function up()
     {
-        Schema::create('voucher_', function (Blueprint $table) {
+        Schema::create('voucher', function (Blueprint $table) {
             $table->id();
             $table->string('nama_voucher');
-            $table->string('kode_voucher');
+            $table->string('id_voucher');
+            $table->unsignedBigInteger('id_customer')->nullable();
             $table->timestamps();
+
+            $table->foreign('id_customer')->references('id_customer')->on('customer')->onDelete('cascade');
         });
     }
 
@@ -28,6 +31,6 @@ class CreateVoucherTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('voucher_');
+        Schema::dropIfExists('voucher');
     }
 }

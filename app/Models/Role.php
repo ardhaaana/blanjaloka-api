@@ -15,6 +15,6 @@ class Role extends Model
     public $table = 'role';
 
      protected $fillable = [
-        'status_user',
+        'status_user'
     ];
 }
