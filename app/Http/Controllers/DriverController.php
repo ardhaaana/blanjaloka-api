@@ -8,12 +8,12 @@ use App\Models\Driver;
 
 class DriverController extends Controller
 {
-    
+
     // public function __construct()
     // {
     //     $this->middleware('auth');
     // }
- 
+
     public function create(Request $request)
     {
         $this->validate($request, [
@@ -100,11 +100,10 @@ class DriverController extends Controller
         }
 
         return response()->json([
-            'message' => 'Product create success!',
+            'message' => 'Driver telah terdaftar!',
             'code' => 201,
             'data' => $driver
         ]);
-
     }
     public function index()
     {
@@ -116,13 +115,12 @@ class DriverController extends Controller
     public function show($id_driver)
     {
         $driver = Driver::find($id_driver);
-        
+
         if (empty($driver)) {
             return response()->json(['error' => 'Produk Tidak Ditemukan'], 402);
         }
 
         return response()->json($driver);
-        
     }
 
     public function update(Request $request, $id_driver)
@@ -178,16 +176,15 @@ class DriverController extends Controller
         if (!$driver) {
             return response()->json(['error' => 'unknown error'], 500);
         }
-       
+
         // $dataproduk = $request->all();
         // $produk->fill($dataproduk);
         // $produk->save();
-        
+
         return response()->json([
             'message' => 'Produk update!',
             'code' => 200
         ]);
-
     }
 
     public function search(Request $request)
@@ -239,5 +236,4 @@ class DriverController extends Controller
             'data' => $driver
         ], 200);
     }
-
 }
