@@ -26,7 +26,6 @@ class CreateReviewProdukTable extends Migration
                   ->on('produk')
                   ->onDelete('cascade');
 
-
         });
     }
 
