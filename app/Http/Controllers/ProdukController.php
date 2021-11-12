@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Produk;
 use App\Models\ReviewProduk;
+use App\Models\SpesialProduk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ProdukController extends Controller
 {
-    
+
     // public function __construct()
     // {
     //     $this->middleware('auth');
@@ -100,7 +101,6 @@ class ProdukController extends Controller
             'code' => 201,
             'data' => $produk
         ]);
-
     }
     public function index()
     {
@@ -112,13 +112,24 @@ class ProdukController extends Controller
     public function show($id_produk)
     {
         $produk = Produk::find($id_produk);
-        
+
         if (empty($produk)) {
             return response()->json(['error' => 'Produk Tidak Ditemukan'], 402);
         }
 
         return response()->json($produk);
-        
+    }
+
+    public function spesialshow($id_produk, $id)
+    {
+        $produk = Produk::find($id_produk);
+        $spesialproduk = SpesialProduk::find($id);
+
+        return response()->json([
+            'messages' => 'Diskon produk',
+            'produk' => $produk,
+            'diskon' => $spesialproduk
+        ], 200);
     }
 
     public function update(Request $request, $id_produk)
@@ -170,16 +181,15 @@ class ProdukController extends Controller
         if (!$update) {
             return response()->json(['error' => 'unknown error'], 500);
         }
-       
+
         // $dataproduk = $request->all();
         // $produk->fill($dataproduk);
         // $produk->save();
-        
+
         return response()->json([
             'message' => 'Produk update!',
             'code' => 200
         ]);
-
     }
 
     public function search(Request $request)
@@ -231,5 +241,4 @@ class ProdukController extends Controller
             'data' => $produk
         ], 200);
     }
-
 }
