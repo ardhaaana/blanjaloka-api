@@ -15,9 +15,14 @@ class Produk extends Model
     protected $primaryKey = 'id_produk';
     public $table = 'produk';
 
-     protected $fillable = [
-        'nama_produk','satuan','harga_jual','stok_saat_ini','deskripsi','foto_produk','status_produk', 'id_pedagang'
+    protected $fillable = [
+        'nama_produk', 'satuan', 'harga_jual', 'stok_saat_ini', 'deskripsi', 'foto_produk', 'status_produk', 'id_pedagang'
     ];
-
-
+    public function spesialproduk()
+    {
+        return $this->hasOne(SpesialProduk::class);
+    }
+    protected $hidden = [
+        'id_pedagang'
+    ];
 }
