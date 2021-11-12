@@ -38,9 +38,18 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('produk', ['uses' => 'ProdukController@create']);
 
     $router->get('produk/{id_produk}', ['uses' => 'ProdukController@show']);
+    $router->get('produk/{id_produk}/spesial/{id}', ['uses' => 'ProdukController@spesialshow']);
     $router->put('produk/{id_produk}', ['uses' =>  'ProdukController@update']);
-
     $router->delete('produk/{id_produk}', ['uses' => 'ProdukController@destroy']);
+
+
+    $router->get('/spesial_produk/search', ['uses' => 'SpesialProdukController@search']);
+    $router->get('spesial_produk', ['uses' => 'SpesialProdukController@index']);
+    $router->post('spesial_produk', ['uses' => 'SpesialProdukController@create']);
+
+    $router->get('spesial_produk/{id}', ['uses' => 'SpesialProdukController@show']);
+    $router->put('spesial_produk/{id}', ['uses' =>  'SpesialProdukController@update']);
+    $router->delete('spesial_produk/{id}', ['uses' => 'SpesialProdukController@destroy']);
 
     $router->post('jamoperasional', ['uses' => 'JamOperasionalPasarController@create']);
     $router->get('jamoperasional', ['uses' =>  'JamOperasionalPasarController@index']);
@@ -79,7 +88,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('tawar_menawar/{id_tawar}', ['uses' =>  'TawarMenawarController@show']);
     $router->put('tawar_menawar/{id_tawar}', ['uses' =>  'TawarMenawarController@update']);
     $router->delete('tawar_menawar/{id_tawar}', ['uses' =>  'TawarMenawarController@destroy']);
-    
+
     $router->post('resep', ['uses' => 'ResepController@create']);
     $router->get('resep', ['uses' =>  'ResepController@index']);
     $router->get('resep/search', ['uses' =>  'ResepController@search']);
@@ -96,7 +105,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->put('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@update']);
     $router->delete('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@destroy']);
 
-    
+
     $router->post('toko', ['uses' => 'TokoController@create']);
     $router->get('toko', ['uses' =>  'TokoController@index']);
 
@@ -106,7 +115,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->delete('toko/{id_toko}', ['uses' =>  'TokoController@destroy']);
 
 
-    
+
     $router->post('pesanan', ['uses' => 'PesananController@create']);
     $router->get('pesanan', ['uses' =>  'PesananController@index']);
 
@@ -114,7 +123,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('pesanan/{id_pesanan}', ['uses' =>  'PesananController@show']);
     $router->put('pesanan/{id_pesanan}', ['uses' =>  'PesananController@update']);
     $router->delete('pesanan/{id_pesanan}', ['uses' =>  'PesananController@destroy']);
-    
+
     $router->post('review', ['uses' => 'ReviewProdukController@create']);
     $router->get('review', ['uses' =>  'ReviewProdukController@index']);
 
@@ -122,23 +131,31 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->put('review/{id}', ['uses' =>  'ReviewProdukController@update']);
     $router->delete('review/{id}', ['uses' =>  'ReviewProdukController@destroy']);
 
-    
+
     $router->post('voucher', ['uses' => 'VoucherController@create']);
     $router->get('voucher', ['uses' =>  'VoucherController@index']);
-    
+
     $router->get('voucher/search', ['uses' => 'VoucherController@search']);
 
     $router->get('voucher/{id}', ['uses' =>  'VoucherController@show']);
     $router->put('voucher/{id}', ['uses' =>  'VoucherController@update']);
     $router->delete('voucher/{id}', ['uses' =>  'VoucherController@destroy']);
-    
-    
+
+
     $router->post('driver', ['uses' => 'DriverController@create']);
     $router->get('driver', ['uses' =>  'DriverController@index']);
-    
-    $router->get('driver/search', ['uses' => 'DriverController@search']);
 
+    $router->get('driver/search', ['uses' => 'DriverController@search']);
     $router->get('driver/{id_driver}', ['uses' =>  'DriverController@show']);
     $router->put('driver/{id_driver}', ['uses' =>  'DriverController@update']);
     $router->delete('driver/{id_driver}', ['uses' =>  'DriverController@destroy']);
+
+
+    $router->post('transaksi', ['uses' => 'TransaksiController@create']);
+    $router->get('transaksi', ['uses' =>  'TransaksiController@index']);
+
+    $router->get('transaksi/search', ['uses' => 'TransaksiController@search']);
+    $router->get('transaksi/{id}', ['uses' =>  'TransaksiController@show']);
+    $router->put('transaksi/{id}', ['uses' =>  'TransaksiController@update']);
+    $router->delete('transaksi/{id}', ['uses' =>  'TransaksiController@destroy']);
 });
