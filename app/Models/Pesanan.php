@@ -15,7 +15,7 @@ class Pesanan extends Model
      * @var array
      */
     protected $fillable = [
-        'nama_customer','nomor_telepon','alamat_customer', 'kode_produk', 'id_pedagang', 'kode_transaksi', 'pilihan_penawaran', 'id_driver',
+        'nama_customer','nomor_telepon','alamat_customer', 'id_produk', 'id_pedagang', 'id_transaksi', 'pilihan_penawaran', 'id_driver',
     ];
 
     /**

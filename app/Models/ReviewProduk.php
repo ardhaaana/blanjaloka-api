@@ -15,7 +15,7 @@ class ReviewProduk extends Model
     public $table = 'review_produk';
 
      protected $fillable = [
-        'nama_customer','review', 'star',
+        'id_produk','nama_customer','review', 'star',
     ];
 
    

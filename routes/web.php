@@ -123,7 +123,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->delete('review/{id}', ['uses' =>  'ReviewProdukController@destroy']);
 
     
-    
     $router->post('voucher', ['uses' => 'VoucherController@create']);
     $router->get('voucher', ['uses' =>  'VoucherController@index']);
     
@@ -132,4 +131,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('voucher/{id}', ['uses' =>  'VoucherController@show']);
     $router->put('voucher/{id}', ['uses' =>  'VoucherController@update']);
     $router->delete('voucher/{id}', ['uses' =>  'VoucherController@destroy']);
+    
+    
+    $router->post('driver', ['uses' => 'DriverController@create']);
+    $router->get('driver', ['uses' =>  'DriverController@index']);
+    
+    $router->get('driver/search', ['uses' => 'DriverController@search']);
+
+    $router->get('driver/{id_driver}', ['uses' =>  'DriverController@show']);
+    $router->put('driver/{id_driver}', ['uses' =>  'DriverController@update']);
+    $router->delete('driver/{id_driver}', ['uses' =>  'DriverController@destroy']);
 });

@@ -19,13 +19,13 @@ class VoucherController extends Controller
     {
         $this->validate($request, [
             'nama_voucher' => 'required',
-            'kode_voucher' => 'required',
+            'id_voucher' => 'required',
             
         ]);
 
         $voucher = [
             'nama_voucher' => $request->input('nama_voucher'),
-            'kode_voucher' => $request->input('kode_voucher')
+            'id_voucher' => $request->input('id_voucher')
         ];
 
         $voucher = Voucher::create($voucher);
@@ -78,7 +78,7 @@ class VoucherController extends Controller
 
         $this->validate($request, [
             'nama_voucher' => 'required',
-            'kode_voucher' => 'required',
+            'id_voucher' => 'required',
         ]);
 
         $datavoucher = $request->all();
@@ -109,7 +109,7 @@ class VoucherController extends Controller
 
         if ($fulltext == 'true') {
             $data = Voucher::query()
-                ->whereRaw("MATCH(nama_toko,kode_voucher) AGAINST(? IN BOOLEAN MODE)", array($query))
+                ->whereRaw("MATCH(nama_toko,id_voucher) AGAINST(? IN BOOLEAN MODE)", array($query))
                 ->orderBy($sorts[0], $sorts[1])
                 ->get();
             return response()->json($data);
@@ -117,7 +117,7 @@ class VoucherController extends Controller
 
         $data = Voucher::query()
             ->where('nama_voucher', 'like', '%' . $query . '%')
-            ->orWhere('kode_voucher', 'like', '%' . $query . '%')
+            ->orWhere('id_voucher', 'like', '%' . $query . '%')
             ->orderBy($sorts[0], $sorts[1])
             ->get();
 

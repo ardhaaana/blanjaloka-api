@@ -19,17 +19,23 @@ class ReviewProdukController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
+            
+            'id_produk' => 'required',
             'nama_customer' => 'required|unique:review_produk',
             'review' => 'required',
             'star' => 'required'
         ]);
 
+        
+        $id_produk = $request->input('id_produk');
         $nama_customer = $request->input('nama_customer');
         $review = $request->input('review');
         $star = $request->input('star');
        
 
         $review = ReviewProduk::create([
+            
+            'id_produk' => $id_produk,
             'nama_customer' => $nama_customer,
             'review' => $review,
             'star' => $star
@@ -76,6 +82,8 @@ class ReviewProdukController extends Controller
         }
 
         $this->validate($request, [
+            
+            'id_produk' => 'required',
             'nama_customer' => 'required|unique:review_produk',
             'review' => 'required',
             'star' => 'required'

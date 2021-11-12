@@ -12,9 +12,9 @@ class Voucher extends Model
      * @var string
      */
     protected $primaryKey = 'id';
-    public $table = 'voucher_';
+    public $table = 'voucher';
 
      protected $fillable = [
-        'nama_voucher', 'kode_voucher',
+        'nama_voucher', 'id_voucher', 'id_customer'
     ];
 }

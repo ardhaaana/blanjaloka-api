@@ -20,9 +20,9 @@ class PesananController extends Controller
             'nama_customer' => 'required',
             'nomor_telepon' => 'required',
             'alamat_customer' => 'required',
-            'kode_produk' => 'required|numeric',
+            'id_produk' => 'required|numeric',
             'id_pedagang' => 'required|numeric',
-            'kode_transaksi' => 'required|numeric',
+            'id_transaksi' => 'required|numeric',
             'pilihan_penawaran' => 'required',
             'id_driver' => 'required'
         ]);
@@ -30,9 +30,9 @@ class PesananController extends Controller
         $nama_customer = $request->input('nama_customer');
         $nomor_telepon = $request->input('nomor_telepon');
         $alamat_customer = $request->input('alamat_customer');
-        $kode_produk = $request->input('kode_produk');
+        $id_produk = $request->input('id_produk');
         $id_pedagang = $request->input('id_pedagang');
-        $kode_transaksi = $request->input('kode_transaksi');
+        $id_transaksi = $request->input('id_transaksi');
         $pilihan_penawaran = $request->input('pilihan_penawaran');
         $id_driver = $request->input('id_driver');
 
@@ -40,9 +40,9 @@ class PesananController extends Controller
             'nama_customer' => $nama_customer,
             'nomor_telepon' => $nomor_telepon,
             'alamat_customer' => $alamat_customer,
-            'kode_produk' => $kode_produk,
+            'id_produk' => $id_produk,
             'id_pedagang' => $id_pedagang,
-            'kode_transaksi' => $kode_transaksi,
+            'id_transaksi' => $id_transaksi,
             'pilihan_penawaran' => $pilihan_penawaran,
             'id_driver' => $id_driver
         ]);
@@ -82,9 +82,9 @@ class PesananController extends Controller
             'nama_customer' => 'required',
             'nomor_telepon' => 'required',
             'alamat_customer' => 'required',
-            'kode_produk' => 'required|numeric',
+            'id_produk' => 'required|numeric',
             'id_pedagang' => 'required|numeric',
-            'kode_transaksi' => 'required|numeric',
+            'id_transaksi' => 'required|numeric',
             'pilihan_penawaran' => 'required',
             'id_driver' => 'required|numeric'
         ]);

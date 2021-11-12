@@ -26,9 +26,6 @@ class CreateReviewProdukTable extends Migration
                   ->on('produk')
                   ->onDelete('cascade');
 
-                  $table->foreign('id_produk')->references('id_produk')->on('produk')
-                  ->onUpdate('cascade')->onDelete('cascade');
-
 
         });
     }

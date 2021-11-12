@@ -12,7 +12,7 @@ class Produk extends Model
      * @var string
      */
 
-    protected $primaryKey = 'kode_produk';
+    protected $primaryKey = 'id_produk';
     public $table = 'produk';
 
      protected $fillable = [
