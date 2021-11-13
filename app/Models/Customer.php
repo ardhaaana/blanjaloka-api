@@ -16,7 +16,7 @@ class Customer extends Model
      */
     protected $fillable = [
         'nama_customer','nomor_telepon','alamat_customer','tanggal_lahir',
-        'email_customer', 'username','password', 'token','id_role'
+        'email_customer', 'username','password', 'token',
     ];
 
     /**
@@ -25,6 +25,10 @@ class Customer extends Model
      * @var array
      */
     protected $hidden = [
-        'password', 'token'
+        'password', 'token', 'id_role'
     ];
+
+     public function role(){
+        return $this->belongsTo(Role::class);
+    }
 }

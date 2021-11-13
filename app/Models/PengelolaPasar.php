@@ -15,15 +15,19 @@ class PengelolaPasar extends Model
      * @var array
      */
     protected $fillable = [
-        'nama_pengelola', 'alamat_pengelola', 'nomor_telepon', 'email', 'username', 'password', 'id_role', 'token_pp'
+        'nama_pengelola', 'alamat_pengelola', 'nomor_telepon', 'email', 'username', 'password',
     ];
+
+      public function role(){
+        return $this->belongsTo(Role::class);
+    }
 
     /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
      */
-    // protected $hidden = [
-    //     'password', 'token'
-    // ];
+    protected $hidden = [
+        'password', 'token',  'id_role',
+    ];
 }

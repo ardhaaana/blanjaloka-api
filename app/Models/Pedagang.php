@@ -15,6 +15,18 @@ class Pedagang extends Model
     public $table = 'pedagang';
 
     protected $fillable = [
-        'nama_pedagang', 'nomor_telepon', 'alamat_pedagang', 'tanggal_lahir', 'nomor_ktp', 'foto_rekening', 'id_pendaftaran'
+        'nama_pedagang', 'nomor_telepon', 'alamat_pedagang', 'tanggal_lahir', 'nomor_ktp', 'foto_rekening', 
     ];
+
+    public function role(){
+        return $this->belongsTo(Role::class);
+    }
+    
+    public function toko(){
+        return $this->hasOne(Toko::class);
+    }
+    protected $hidden = [
+        'id_pendaftaran',
+    ];
+
 }

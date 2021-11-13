@@ -6,6 +6,7 @@ use App\Models\Produk;
 use App\Models\ReviewProduk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\SpesialProduk;
 
 class ProdukController extends Controller
 {
@@ -26,46 +27,6 @@ class ProdukController extends Controller
             'deskripsi' => 'required',
             'status_produk' => 'required'
         ]);
-
-        //    $foto_produk = $request->file('foto_produk')->getClientOriginalName();
-        //    $request->file('foto_produk')->move('upload',$foto_produk);
-
-        // $produk = [
-        //     'nama_produk' => $request->input('nama_produk'),
-        //     'satuan' => $request->input('satuan'),
-        //     'harga_jual' => $request->input('harga_jual'),
-        //     'stok_saat_ini' => $request->input('stok_saat_ini'),
-        //     'deskripsi' => $request->input('deskripsi'),
-        //     'foto_produk' => url('upload/'.$foto_produk),
-        //     'status_produk' => $request->input('status_produk'),
-        //     'id_pedagang' => $request->input('id_pedagang')
-        // ];
-
-        // $produk = Produk::create($produk);
-
-        // if ($produk){
-        //     $result = [
-        //         'message' => 'Data berhasil ditambahkan',
-        //         'data' => $produk
-        //     ];
-        // } else {
-        //     $result = [
-        //         'message' => 'Data tidak berhasil ditambahkan',
-        //         'data' => ''
-        //     ];
-        // }
-
-        //  if (empty($produk)) {
-        //     return response()->json(['error' => 'unknown error'], 501);
-        // }
-
-        // return response()->json([
-        //     'message' => 'Produk create success!',
-        //     'code' => 201,
-        //     'data' => $produk
-        // ]);
-
-        // return response()->json($produk);     
 
         if ($request->has('foto_produk')) {
             $produk = Produk::query()->create(
@@ -119,6 +80,29 @@ class ProdukController extends Controller
 
         return response()->json($produk);
         
+    }
+
+    public function produkreview()
+    {
+        $review = ReviewProduk::all();
+        $produk = Produk::all();
+        
+        return response()->json(['message'=>'',
+        'produk'=>$produk,
+        'review'=>$review],200);
+    
+    }
+
+    public function spesialshow($id_produk, $id)
+    {
+        $produk = Produk::find($id_produk);
+        $spesialproduk = SpesialProduk::find($id);
+
+        return response()->json([
+            'messages' => 'Diskon produk',
+            'produk' => $produk,
+            'diskon' => $spesialproduk
+        ], 200);
     }
 
     public function update(Request $request, $id_produk)
@@ -211,6 +195,7 @@ class ProdukController extends Controller
             ->get();
 
         return response()->json($data);
+     
     }
 
     public function destroy($id_produk)

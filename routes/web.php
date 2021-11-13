@@ -22,12 +22,20 @@ $router->get('/', function () use ($router) {
 //     return \Illuminate\Support\Str::random(32);
 // });
 
+//Customer
+$router->post('/register/customer', 'AuthCustomerController@register');
+$router->post('/login/customer', 'AuthCustomerController@login');
 
-$router->post('/register', 'AuthCustomerController@register');
-$router->post('/login', 'AuthCustomerController@login');
+$router->put('/profile/customer/{id_customer}', 'AuthCustomerController@update');
+$router->get('/profile/customer', 'AuthCustomerController@index');
 
-$router->put('/profile/{id_customer}', 'AuthCustomerController@update');
-$router->get('/profile', 'AuthCustomerController@index');
+//pengelola pasar
+$router->post('/register/pengelola', 'AuthPengelolaPasarController@register');
+$router->post('/login/pengelola', 'AuthPengelolaPasarController@login');
+
+$router->put('/profile/pengelola/{id_pengelola}', 'AuthPengelolaPasarController@update');
+$router->get('/profile/pengelola', 'AuthPengelolaPasarController@index');
+
 
 // 'middleware' => 'auth'
 
@@ -37,10 +45,23 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('produk', ['uses' => 'ProdukController@index']);
     $router->post('produk', ['uses' => 'ProdukController@create']);
 
-    $router->get('produk/{id_produk}', ['uses' => 'ProdukController@show']);
+    $router->get('data/produk/{id_produk}', ['uses' => 'ProdukController@show']);
+
+    $router->get('produk/review', ['uses' => 'ProdukController@produkreview']);
+
+     $router->get('produk/{id_produk}/spesial/{id}', ['uses' => 'ProdukController@spesialshow']);
+
     $router->put('produk/{id_produk}', ['uses' =>  'ProdukController@update']);
 
     $router->delete('produk/{id_produk}', ['uses' => 'ProdukController@destroy']);
+
+    $router->get('/spesial_produk/search', ['uses' => 'SpesialProdukController@search']);
+    $router->get('spesial_produk', ['uses' => 'SpesialProdukController@index']);
+    $router->post('spesial_produk', ['uses' => 'SpesialProdukController@create']);
+
+    $router->get('spesial_produk/{id}', ['uses' => 'SpesialProdukController@show']);
+    $router->put('spesial_produk/{id}', ['uses' =>  'SpesialProdukController@update']);
+    $router->delete('spesial_produk/{id}', ['uses' => 'SpesialProdukController@destroy']);
 
     $router->post('jamoperasional', ['uses' => 'JamOperasionalPasarController@create']);
     $router->get('jamoperasional', ['uses' =>  'JamOperasionalPasarController@index']);
@@ -60,7 +81,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('role', ['uses' => 'RoleController@create']);
     $router->get('role', ['uses' =>  'RoleController@index']);
 
-    $router->get('role/{id_role}', ['uses' =>  'RoleController@show']);
+    $router->get('role/customer/pengelola/pedagang', ['uses' =>  'RoleController@show']);
     $router->put('role/{id_role}', ['uses' =>  'RoleController@update']);
     $router->delete('role/{id_role}', ['uses' =>  'RoleController@destroy']);
 
@@ -68,7 +89,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('pedagang', ['uses' => 'PedagangController@create']);
     $router->get('pedagang', ['uses' =>  'PedagangController@index']);
 
-    $router->get('pedagang/{id_pedagang}', ['uses' =>  'PedagangController@show']);
+    $router->get('data/pedagang/{id_pedagang}', ['uses' =>  'PedagangController@show']);
+    $router->get('pedagang/toko', ['uses' =>  'PedagangController@tokoshow']);
+
     $router->put('pedagang/{id_pedagang}', ['uses' =>  'PedagangController@update']);
     $router->delete('pedagang/{id_pedagang}', ['uses' =>  'PedagangController@destroy']);
 
@@ -101,11 +124,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('toko', ['uses' =>  'TokoController@index']);
 
     $router->get('toko/search', ['uses' => 'TokoController@search']);
-    $router->get('toko/{id_toko}', ['uses' =>  'TokoController@show']);
+    $router->get('data/toko/{id_toko}', ['uses' =>  'TokoController@show']);
     $router->put('toko/{id_toko}', ['uses' =>  'TokoController@update']);
     $router->delete('toko/{id_toko}', ['uses' =>  'TokoController@destroy']);
-
-
     
     $router->post('pesanan', ['uses' => 'PesananController@create']);
     $router->get('pesanan', ['uses' =>  'PesananController@index']);
@@ -117,6 +138,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     
     $router->post('review', ['uses' => 'ReviewProdukController@create']);
     $router->get('review', ['uses' =>  'ReviewProdukController@index']);
+
+    $router->get('review/{id}','ReviewController@show_produk');
 
     $router->get('review/{id}', ['uses' =>  'ReviewProdukController@show']);
     $router->put('review/{id}', ['uses' =>  'ReviewProdukController@update']);
@@ -141,4 +164,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('driver/{id_driver}', ['uses' =>  'DriverController@show']);
     $router->put('driver/{id_driver}', ['uses' =>  'DriverController@update']);
     $router->delete('driver/{id_driver}', ['uses' =>  'DriverController@destroy']);
+
+    $router->post('transaksi', ['uses' => 'TransaksiController@create']);
+    $router->get('transaksi', ['uses' =>  'TransaksiController@index']);
+
+    $router->get('transaksi/search', ['uses' => 'TransaksiController@search']);
+    $router->get('transaksi/{id}', ['uses' =>  'TransaksiController@show']);
+    $router->put('transaksi/{id}', ['uses' =>  'TransaksiController@update']);
+    $router->delete('transaksi/{id}', ['uses' =>  'TransaksiController@destroy']);
 });

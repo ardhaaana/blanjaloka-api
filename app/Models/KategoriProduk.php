@@ -15,6 +15,11 @@ class KategoriProduk extends Model
     public $table = 'kategori_produk';
 
      protected $fillable = [
-        'jenis_kategori', 'daftar_produk',
+        'jenis_kategori', 'daftar_produk'
     ];
+
+    // public function produk(){
+    //     return $this->belongsTo(Produk::class);
+    // }
+    
 }

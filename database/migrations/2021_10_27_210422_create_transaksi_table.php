@@ -14,7 +14,8 @@ class CreateTransaksiTable extends Migration
     public function up()
     {
         Schema::create('transaksi', function (Blueprint $table) {
-            $table->bigIncrements('id_transaksi');
+            $table->id();
+            $table->bigInteger('id_transaksi')->unsigned()->nullable();
             $table->string('jenis_pembayaran');
             $table->integer('pajak');
             $table->unsignedBigInteger('id_customer')->nullable();
@@ -23,6 +24,7 @@ class CreateTransaksiTable extends Migration
 
             $table->timestamps();
 
+            $table->foreign('id_transaksi')->references('id_pesanan')->on('pesanan')->onDelete('cascade');
             $table->foreign('id_customer')->references('id_customer')->on('customer')->onDelete('cascade');
             $table->foreign('id_pedagang')->references('id_pedagang')->on('pedagang')->onDelete('cascade');
         });

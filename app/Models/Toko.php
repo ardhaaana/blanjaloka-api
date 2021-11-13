@@ -17,4 +17,8 @@ class Toko extends Model
      protected $fillable = [
         'nama_toko', 'alamat_toko', 'id_pedagang',
     ];
+    
+    public function pedagang(){
+        return $this->belongsTo(Pedagang::class);
+    }
 }

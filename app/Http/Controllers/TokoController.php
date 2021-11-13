@@ -47,11 +47,11 @@ class TokoController extends Controller
 
     public function index()
     {
-        $toko = Toko::all();
-
+        
         if (empty($toko)) {
             return response()->json(['error' => 'Toko Tidak Ditemukan'], 402);
         }
+        $toko = Toko::all();
         return response()->json($toko);
     }
 

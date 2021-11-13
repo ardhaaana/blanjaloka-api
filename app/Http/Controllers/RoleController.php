@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Models\Customer;
+use App\Models\PengelolaPasar;
+use App\Models\Pedagang;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -13,11 +16,11 @@ class RoleController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'status_user' => 'required|unique:role'
+            // 'status_user' => 'required|unique:role'
         ]);
 
         $role = [
-            'status_user' => $request->input('status_user')
+            // 'status_user' => $request->input('status_user')
         ];
 
         $role = Role::create($role);
@@ -44,10 +47,16 @@ class RoleController extends Controller
         return response()->json($role);
     }
 
-    public function show($id_role)
+    public function show()
     {
-        $role = Role::find($id_role);
-        return response()->json($role);
+        $id_customer = Customer::all();
+        $id_pengelola = PengelolaPasar::all();
+        $id_pedagang = Pedagang::all();
+        
+         return response()->json(['message'=>'Success',
+        'Data Customer'=>$id_customer,
+        'Data Pengelola'=>$id_pengelola,
+        'Data Pedagang'=>$id_pedagang],200);
     }
 
     public function update(Request $request, $id_role)

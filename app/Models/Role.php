@@ -17,4 +17,16 @@ class Role extends Model
      protected $fillable = [
         'status_user'
     ];
+
+     public function customer(){
+        return $this->hasOne(Customer::class);
+    }
+
+     public function pengelola(){
+        return $this->hasOne(PengelolaPasar::class);
+    }
+
+     public function pedagang(){
+        return $this->hasOne(Pedagang::class);
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\KategoriProduk;
+use App\Models\Produk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -57,6 +58,22 @@ class KategoriProdukController extends Controller
 
         return response()->json($kategori);
     }
+   
+    // public function produkshow()
+    // {
+    //     $kategori = KategoriProduk::all();
+    //     $produk = Produk::all();
+
+    //     //  if (empty($kategori)) {
+    //     //     return response()->json(['error' => 'Kategori Produk Tidak Ditemukan'], 402);
+    //     // }
+
+    //     return response()->json([
+    //         'Message' => 'Kategori',
+    //         'Kategori' => $kategori,
+    //         'Produk' => $produk
+    //     ]);
+    // }
 
     public function update(Request $request, $id_kategori)
     {

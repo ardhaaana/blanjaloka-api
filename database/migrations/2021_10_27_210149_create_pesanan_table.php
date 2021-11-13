@@ -28,7 +28,6 @@ class CreatePesananTable extends Migration
 
             $table->foreign('id_produk')->references('id_produk')->on('produk')->onDelete('cascade');
             $table->foreign('id_pedagang')->references('id_pedagang')->on('pedagang')->onDelete('cascade');
-            $table->foreign('id_transaksi')->references('id_transaksi')->on('transaksi')->onDelete('cascade');
             $table->foreign('id_driver')->references('id_driver')->on('driver')->onDelete('cascade');
             
         });

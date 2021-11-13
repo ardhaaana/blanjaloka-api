@@ -70,9 +70,14 @@ class ReviewProdukController extends Controller
         return response()->json($review);
     }
 
-    public function update(Request $request, $kode_review_produk)
+    public function show_produk(Produk $review)
     {
-        $review = ReviewProduk::find($kode_review_produk);
+        return response()->json(['message'=>'','data'=>$review->produk],200);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $review = ReviewProduk::find($id);
 
         if (!$review) {
             return response()->json([
@@ -103,6 +108,37 @@ class ReviewProdukController extends Controller
             'code' => 200
         ]);
     }
+
+    public function search(Request $request)
+    {
+        # code...
+        $query = $request->query('query');
+
+        if (empty($query)) {
+            return response()->json(['error' => 'Query not specified!'], 400);
+        }
+
+        $fulltext = $request->query('fulltext', 'false');
+        $sortBy = $request->query('sort_by', 'review.asc');
+        $sorts = explode('.', $sortBy);
+
+
+        if ($fulltext == 'true') {
+            $data = Produk::query()
+                ->whereRaw("MATCH(review) AGAINST(? IN BOOLEAN MODE)", array($query))
+                ->orderBy($sorts[0], $sorts[1])
+                ->get();
+            return response()->json($data);
+        }
+
+        $data = Produk::query()
+            ->where('review', 'like', '%' . $query . '%')
+            ->orderBy($sorts[0], $sorts[1])
+            ->get();
+
+        return response()->json($data);
+    }
+
 
     public function destroy($id)
     {

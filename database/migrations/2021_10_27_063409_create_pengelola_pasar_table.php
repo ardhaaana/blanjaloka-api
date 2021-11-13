@@ -17,7 +17,7 @@ class CreatePengelolaPasarTable extends Migration
             $table->bigIncrements('id_pengelola');
             $table->string('nama_pengelola');
             $table->string('alamat_pengelola')->nullable();
-            $table->integer('nomor_telepon');
+            $table->bigInteger('nomor_telepon');
             $table->string('email')->unique();
             $table->string('username')->unique();
             $table->string('password');

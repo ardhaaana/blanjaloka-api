@@ -19,5 +19,19 @@ class Produk extends Model
         'nama_produk','satuan','harga_jual','stok_saat_ini','deskripsi','foto_produk','status_produk', 'id_pedagang'
     ];
 
+    public function review(){
+        return $this->hasOne(ReviewProduk::class);
+    }
+    public function kategori(){
+        return $this->hasOne(KategoriProduk::class);
+    }
+     public function spesialproduk()
+    {
+        return $this->hasOne(SpesialProduk::class);
+    }
+    protected $hidden = [
+        'id_pedagang'
+    ];
+
 
 }

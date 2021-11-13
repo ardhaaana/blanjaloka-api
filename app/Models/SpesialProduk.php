@@ -4,25 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ReviewProduk extends Model
+class SpesialProduk extends Model
 {
     /**
      * The primary key associated with the table.
      *
      * @var string
      */
+
     protected $primaryKey = 'id';
-    public $table = 'review_produk';
+    public $table = 'spesial_produk';
 
-     protected $fillable = [
-        'id_produk','nama_customer','review', 'star',
+    protected $fillable = [
+        'id_produk', 'diskon',
     ];
-
-    public function produk(){
+    public function produk()
+    {
         return $this->belongsTo(Produk::class);
     }
-
-     protected $hidden = [
-        'created_at', 'updated_at'
+    protected $hidden = [
+        'created_at',
+        'updated_at', 'id_produk'
     ];
 }
