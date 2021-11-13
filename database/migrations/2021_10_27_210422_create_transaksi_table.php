@@ -1,4 +1,3 @@
-<<<<<<< HEAD:database/migrations/2021_10_27_210422_create_transaksi_table.php
 <?php
 
 use Illuminate\Database\Migrations\Migration;
