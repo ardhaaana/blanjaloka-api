@@ -27,6 +27,10 @@ $router->post('/register/customer', 'AuthCustomerController@register');
 $router->post('/login/customer', 'AuthCustomerController@login');
 
 $router->put('/profile/customer/{id_customer}', 'AuthCustomerController@update');
+$router->put('/profile/customer/email/{id_customer}', 'AuthCustomerController@emailupdate');
+$router->put('/profile/customer/password/{id_customer}', 'AuthCustomerController@passwordupdate');
+$router->put('/profile/customer/telepon/{id_customer}', 'AuthCustomerController@teleponupdate');
+
 $router->get('/profile/customer', 'AuthCustomerController@index');
 
 //pengelola pasar
