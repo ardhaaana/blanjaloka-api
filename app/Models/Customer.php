@@ -16,7 +16,7 @@ class Customer extends Model
      */
     protected $fillable = [
         'nama_customer','nomor_telepon','alamat_customer','tanggal_lahir',
-        'email_customer', 'username','password', 'token',
+        'email_customer', 'username','password', 'jenis_kelamin', 'token',
     ];
 
     /**
