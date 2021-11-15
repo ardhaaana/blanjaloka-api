@@ -15,11 +15,15 @@ class KategoriProduk extends Model
     public $table = 'kategori_produk';
 
      protected $fillable = [
-        'jenis_kategori', 'daftar_produk'
+        'jenis_kategori',
     ];
 
-    // public function produk(){
-    //     return $this->belongsTo(Produk::class);
-    // }
+    public function produk(){
+        return $this->belongsTo(Produk::class);
+    }
+    
+     protected $hidden =[
+        'id_produk', 'created_at', 'updated_at'
+    ];
     
 }
