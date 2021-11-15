@@ -18,16 +18,13 @@ class KategoriProdukController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'jenis_kategori' => 'required',
-            'daftar_produk' => 'required'
+            'jenis_kategori' => 'required'
         ]);
 
         $jenis_kategori = $request->input('jenis_kategori');
-        $daftar_produk = $request->input('daftar_produk');
 
         $kategori = KategoriProduk::create([
-            'jenis_kategori' => $jenis_kategori,
-            'daftar_produk' => $daftar_produk
+            'jenis_kategori' => $jenis_kategori
         ]);
 
         if ($kategori) {
@@ -58,22 +55,49 @@ class KategoriProdukController extends Controller
 
         return response()->json($kategori);
     }
-   
-    // public function produkshow()
-    // {
-    //     $kategori = KategoriProduk::all();
-    //     $produk = Produk::all();
+    public function produkshow(Request $request, $id_kategori)
+    {
+        $kategori = KategoriProduk::find($id_kategori);
+        $produk = Produk::all();
+         $query = $request->query('query');
 
-    //     //  if (empty($kategori)) {
-    //     //     return response()->json(['error' => 'Kategori Produk Tidak Ditemukan'], 402);
-    //     // }
+        if (empty($query)) {
+            return response()->json(['error' => 'Query not specified!'], 400);
+        }
 
-    //     return response()->json([
-    //         'Message' => 'Kategori',
-    //         'Kategori' => $kategori,
-    //         'Produk' => $produk
-    //     ]);
-    // }
+        $fulltext = $request->query('fulltext', 'false');
+        $sortBy = $request->query('sort_by', 'nama_produk.asc');
+        $sorts = explode('.', $sortBy);
+
+
+        if ($fulltext == 'true') {
+            $produk = Produk::query()
+                ->whereRaw("MATCH(nama_produk,deskripsi) AGAINST(? IN BOOLEAN MODE)", array($query))
+                ->orderBy($sorts[0], $sorts[1])
+                ->get();
+             return response()->json(['message' => 'Success',
+            'Kategori' => $kategori,
+            'Produk' => $produk
+        ]);
+        }
+
+        $produk = Produk::query()
+            ->where('nama_produk', 'like', '%' . $query . '%')
+            ->orWhere('deskripsi', 'like', '%' . $query . '%')
+            ->orderBy($sorts[0], $sorts[1])
+            ->get();
+
+        if (empty($kategori)) {
+            return response()->json(['error' => 'Kategori Produk Tidak Ditemukan'], 402);
+        }
+
+        return response()->json(['message' => 'Success',
+        'Kategori' => $kategori,
+        'Produk' => $produk
+    ]);
+    
+    }
+
 
     public function update(Request $request, $id_kategori)
     {
@@ -105,36 +129,6 @@ class KategoriProdukController extends Controller
         ]);
 
         return response()->json($kategori);
-    }
-
-    public function search(Request $request)
-    {
-        # code...
-        $query = $request->query('query');
-
-        if (empty($query)) {
-            return response()->json(['error' => 'Query not specified!'], 400);
-        }
-
-        $fulltext = $request->query('fulltext', 'false');
-        $sortBy = $request->query('sort_by', 'jenis_kategori.asc');
-        $sorts = explode('.', $sortBy);
-
-
-        if ($fulltext == 'true') {
-            $data = KategoriProduk::query()
-                ->whereRaw("MATCH(jenis_kategori) AGAINST(? IN BOOLEAN MODE)", array($query))
-                ->orderBy($sorts[0], $sorts[1])
-                ->get();
-            return response()->json($data);
-        }
-
-        $data = KategoriProduk::query()
-            ->where('jenis_kategori', 'like', '%' . $query . '%')
-            ->orderBy($sorts[0], $sorts[1])
-            ->get();
-                    
-        return response()->json($data);
     }
 
     public function destroy($id_kategori)
