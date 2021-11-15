@@ -19,7 +19,8 @@ class AuthCustomerController extends Controller
             'nomor_telepon' => 'required',
             'email_customer' => 'required|email',
             'username' => 'required|unique:customer|min:5',
-            'password' => 'required|min:8'
+            'password' => 'required|min:8',
+            'jenis_kelamin' => 'required'
 
         ]);
 
@@ -30,6 +31,7 @@ class AuthCustomerController extends Controller
         $email_customer = $request->input( 'email_customer');
         $username = $request->input('username');
         $password = Hash::make($request->input('password'));
+        $jenis_kelamin = $request->input('jenis_kelamin');
 
        $register = Customer::create([
            'nama_customer' => $nama_customer,
@@ -38,7 +40,8 @@ class AuthCustomerController extends Controller
            'tanggal_lahir' => $tanggal_lahir,
            'email_customer' => $email_customer, 
            'username' => $username, 
-           'password' => $password
+           'password' => $password,
+           'jenis_kelamin' => $jenis_kelamin
         ]);
 
         if ($register){
@@ -111,7 +114,8 @@ class AuthCustomerController extends Controller
                 [
                 'nama_customer' => $request->input('nama_customer'),
                 'alamat_customer' => $request->input( 'alamat_customer'),
-                'tanggal_lahir' => $request->input( 'tanggal_lahir')
+                'tanggal_lahir' => $request->input( 'tanggal_lahir'),
+                'jenis_kelamin' => $request->input('jenis_kelamin')
                 ]
             );
         } else {
@@ -119,7 +123,8 @@ class AuthCustomerController extends Controller
                 [
                 'nama_customer' => $request->input('nama_customer'),
                 'alamat_customer' => $request->input( 'alamat_customer'),
-                'tanggal_lahir' => $request->input( 'tanggal_lahir')
+                'tanggal_lahir' => $request->input( 'tanggal_lahir'),
+                'jenis_kelamin' => $request->input('jenis_kelamin')
                 ]
             );
         }
