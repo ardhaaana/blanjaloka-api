@@ -46,7 +46,8 @@ $router->get('/profile/pengelola', 'AuthPengelolaPasarController@index');
 $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->get('/produk/search', ['uses' => 'ProdukController@search']);
-    $router->get('produk', ['uses' => 'ProdukController@index']);
+    $router->get('produk/semua-produk', ['uses' => 'ProdukController@index']);
+
     $router->post('produk', ['uses' => 'ProdukController@create']);
 
     $router->get('data/produk/{id_produk}', ['uses' => 'ProdukController@show']);
@@ -119,6 +120,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('kategori', ['uses' =>  'KategoriProdukController@index']);
 
     $router->get('kategori/search', ['uses' => 'KategoriProdukController@search']);
+    $router->get('kategori/{id_kategori}/produk/search', ['uses' => 'KategoriProdukController@produkshow']);
+
     $router->get('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@show']);
     $router->put('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@update']);
     $router->delete('kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@destroy']);
