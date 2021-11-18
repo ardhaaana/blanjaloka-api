@@ -17,7 +17,7 @@ class FavoritProdukController extends Controller
        $favoritproduk = favoritproduk::with('produk')->get();
 
         if (!$favoritproduk) {
-            return response()->json(['success' => 0, 'message' => 'Keranjang tidak ditemukan'], 404);
+            return response()->json(['success' => 0, 'message' => 'Favorit tidak ditemukan'], 404);
         }
 
         return response()->json([
@@ -52,7 +52,7 @@ class FavoritProdukController extends Controller
 
         return response()->json([
             'success' => 1,
-            'message' => 'Produk di tambahkan ke keranjang',
+            'message' => 'Produk ditambah di favorit',
             'Favorit Produk' => $produk
         ], 200);
     }
@@ -62,7 +62,7 @@ class FavoritProdukController extends Controller
         $favoritproduk = favoritproduk::with('produk')->find($id);
 
         if (!$favoritproduk) {
-            return response()->json(['success' => 0, 'message' => 'Keranjang tidak ditemukan'], 404);
+            return response()->json(['success' => 0, 'message' => 'Favorit tidak ditemukan'], 404);
         }
 
         return response()->json(['item' => $favoritproduk], 200);
@@ -73,11 +73,11 @@ class FavoritProdukController extends Controller
         $favoritproduk = FavoritProduk::with('produk')->find($id);
 
         if (!$favoritproduk) {
-            return response()->json(['success' => 0, 'message' => 'Cart item not found'], 404);
+            return response()->json(['success' => 0, 'message' => 'Favorit tidak ditemukan'], 404);
         }
 
         $favoritproduk->delete();
 
-        return response()->json(['success' => 1, 'message' => 'Item removed successfully from cart'], 200);
+        return response()->json(['success' => 1, 'message' => 'Produk Berhasil Dihapus Di Favorit'], 200);
     }
 }
