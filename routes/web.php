@@ -201,5 +201,6 @@ $router->group(['prefix' => 'api/keranjang'], function () use ($router) {
 // $router->get('transaksi/search', ['uses' => 'TransaksiController@search']);
 // $router->get('transaksi/{id}', ['uses' =>  'TransaksiController@show']);
 // $router->put('transaksi/{id}', ['uses' =>  'TransaksiController@update']);
-// $router->delete('transaksi/{id}', ['uses' =>  'TransaksiController@destroy']);<?php
+// $router->delete('transaksi/{id}', ['uses' =>  'TransaksiController@destroy']);
+
 
