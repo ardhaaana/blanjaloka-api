@@ -42,19 +42,24 @@ class KeranjangProdukController extends Controller
             return response()->json(['success' => 0, 'message' => 'Produk Tidak Ditemukan'], 404);
         }
         
-        
         $keranjangproduk = new KeranjangProduk();
         
         $produk->harga_jual = $produk->harga_jual;
         $keranjangproduk->id_produk = $request->input('id_produk');
         $keranjangproduk->id_customer = $request->input('id_customer');
-        $keranjangproduk->jumlah_produk = $request->input('jumlah_produk');
+
+        //validasi Stok
+    	if($keranjangproduk->jumlah_produk = $request->input('jumlah_produk') > $produk->jumlah_produk)
+    	{
+            return response()->json([
+            'message' => 'Stok Tidak Tercukupi',
+            'code' => 200
+            ]);
+    	}
         
         $keranjangproduk->jumlah_produk = $keranjangproduk->jumlah_produk;
         
         $keranjangproduk->subtotal = $produk->harga_jual*$request->jumlah_produk;
-
-        
         $keranjangproduk->save();
         
         return response()->json([
