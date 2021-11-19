@@ -106,7 +106,7 @@ class KeranjangProdukController extends Controller
 
         $keranjangproduk->delete();
 
-        return response()->json(['success' => 1, 'message' => 'Keranjang Produk Berhasil'], 200);
+        return response()->json(['success' => 1, 'message' => 'Keranjang Produk Berhasil Dihapus'], 200);
     }
 
 }
