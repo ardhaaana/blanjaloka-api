@@ -12,16 +12,16 @@ class KeranjangProdukController extends Controller
 {
     public function index()
     {
-         $keranjangproduk = KeranjangProduk::with('produk')->get();
+        $produk = KeranjangProduk::with('produk')->get();
 
-        if (!$keranjangproduk) {
+        if (!$produk) {
             return response()->json(['success' => 0, 'message' => 'Keranjang Produk tidak ditemukan'], 404);
         }
 
          return response()->json([
-            'success' => true,
+            'success' => 1,
             'message' => 'Data Keranjang Produk',
-            'Keranjang Produk' => $keranjangproduk,
+            'Keranjang Produk' => $produk,
         ], 200);
     }
 
@@ -53,15 +53,17 @@ class KeranjangProdukController extends Controller
     	if($keranjangproduk->jumlah_produk > $produk->jumlah_produk)
     	{
             return response()->json([
-            'message' => 'Stok Tidak Tercukupi',
+            'message' => 'Pembelian Produk Melebihi Stok',
             'code' => 200
             ]);
     	}
         
         $keranjangproduk->jumlah_produk = $keranjangproduk->jumlah_produk;
-        
         $keranjangproduk->subtotal = $produk->harga_jual*$request->jumlah_produk;
         $keranjangproduk->save();
+        
+        $produk->jumlah_produk = $produk->jumlah_produk-$request->jumlah_produk;
+        $produk->save();
         
         return response()->json([
             'success' => true,
