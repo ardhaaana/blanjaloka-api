@@ -15,11 +15,16 @@ class ReviewProduk extends Model
     public $table = 'review_produk';
 
      protected $fillable = [
-        'id_produk','nama_customer','review', 'star',
+        'id_produk','id_customer','review', 'star',
     ];
 
     public function produk(){
-        return $this->belongsTo(Produk::class);
+        return $this->belongsTo(Produk::class, 'id_produk');
+    }
+    
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'id_customer');
     }
 
      protected $hidden = [
