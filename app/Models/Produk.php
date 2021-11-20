@@ -29,7 +29,7 @@ class Produk extends Model
     }
     
     public function keranjangproduk(){
-        return $this->hasOne(KeranjangProduk::class, 'id','jumlah_produk');
+        return $this->hasOne(KeranjangProduk::class);
     }
 
     protected $primaryKey = 'id_produk';
