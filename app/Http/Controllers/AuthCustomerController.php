@@ -17,8 +17,8 @@ class AuthCustomerController extends Controller
         $this->validate($request, [
             'nama_customer' => 'required|min:5',
             'nomor_telepon' => 'required',
-            'email_customer' => 'required|email',
-            'username' => 'required|unique:customer|min:5',
+            'email_customer' => 'required|email|unique:customer',
+            'username' => 'required|min:5',
             'password' => 'required|min:8',
             'jenis_kelamin' => 'required'
 
@@ -59,7 +59,7 @@ class AuthCustomerController extends Controller
     public function loginemail(Request $request)
     {
         $this->validate($request, [
-            'email_customer' => 'required',
+            'email_customer' => 'required|email',
             'password' => 'required|min:8'
         ]);
 
