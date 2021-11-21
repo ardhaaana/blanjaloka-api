@@ -112,14 +112,6 @@ class ProdukController extends Controller
 
     public function update(Request $request, $id_produk)
     {
-        // $produk = Produk::find($kode_produk);
-
-        // if (!$produk) {
-        //     return response()->json([
-        //         'message' => 'Data tidak ditemukan',
-        //         'data' => $produk
-        //     ], 404);
-        // }
 
         $this->validate($request, [
 
@@ -137,9 +129,7 @@ class ProdukController extends Controller
                     'nama_produk' => $request->input('nama_produk'),
                     'satuan' => $request->input('satuan'),
                     'harga_jual' => $request->input('harga_jual'),
-                    'jumlah_produk' => $request->input('jumlah_produk'),
                     'deskripsi' => $request->input('deskripsi'),
-                    'foto_produk' => $request->input('foto_produk'),
                     'status_produk' => $request->input('status_produk')
                 ]
             );
@@ -149,20 +139,22 @@ class ProdukController extends Controller
                     'nama_produk' => $request->input('nama_produk'),
                     'satuan' => $request->input('satuan'),
                     'harga_jual' => $request->input('harga_jual'),
-                    'jumlah_produk' => $request->input('jumlah_produk'),
                     'deskripsi' => $request->input('deskripsi'),
                     'status_produk' => $request->input('status_produk')
                 ]
             );
         }
+            
+            $produk = Produk::find($request->input('id_produk'));
+            
+            $produk->jumlah_produk =$produk->jumlah_produk+$request->jumlah_produk;
+            $produk->save();
+        
 
         if (!$update) {
             return response()->json(['error' => 'unknown error'], 500);
         }
        
-        // $dataproduk = $request->all();
-        // $produk->fill($dataproduk);
-        // $produk->save();
         
         return response()->json([
             'message' => 'Produk update!',
