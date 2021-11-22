@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Validator;
 
 class KeranjangProdukController extends Controller
 {
+     public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     public function index()
     {
         $produk = KeranjangProduk::with('produk')->get();

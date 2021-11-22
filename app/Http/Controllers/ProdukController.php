@@ -17,8 +17,7 @@ class ProdukController extends Controller
     {
         $this->middleware('auth');
     }
-  
-   
+
     
     public function create(Request $request)
     {
