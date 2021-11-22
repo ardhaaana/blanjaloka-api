@@ -25,7 +25,11 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
      */
     protected $fillable = [
         'nama_customer','nomor_telepon','alamat_customer','tanggal_lahir',
+<<<<<<< HEAD
         'email_customer', 'username','password', 'jenis_kelamin', 'token'
+=======
+        'email_customer', 'username','password', 'jenis_kelamin','token',
+>>>>>>> 5c62385410c10963254565518959848154714eda
     ];
 
     /**
@@ -34,7 +38,11 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
      * @var array
      */
     protected $hidden = [
+<<<<<<< HEAD
         'password', 'id_role',  'created_at', 'updated_at'
+=======
+        'password', 'token', 'id_role',  'created_at', 'updated_at'
+>>>>>>> 5c62385410c10963254565518959848154714eda
     ];
 
      public function role(){
@@ -49,6 +57,7 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
         return $this->hasOne(ReviewProduk::class);
     }
 
+<<<<<<< HEAD
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -64,4 +73,6 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
         return [];
     }
 
+=======
+>>>>>>> 5c62385410c10963254565518959848154714eda
 }
