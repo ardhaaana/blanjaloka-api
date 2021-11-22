@@ -22,12 +22,12 @@ $router->get('/', function () use ($router) {
 // $router->post('/payment', 'PaymentsController@bankTransferCharge');
 
 
+$router->post('/register', 'AuthCustomerController@register');
+$router->post('/login-email', 'AuthCustomerController@loginemail');
+$router->post('/login-nomor', 'AuthCustomerController@loginnomor');
 
-$router->group(['prefix' => 'api/customer'], function () use ($router) {   
+    $router->group(['prefix' => 'api/customer'], function () use ($router) {   
     //Customer
-    $router->post('/register', 'AuthCustomerController@register');
-    $router->post('/login-email', 'AuthCustomerController@loginemail');
-    $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
     $router->delete('/delete-customer/{id_customer}', 'AuthCustomerController@destroy');
 
     $router->put('/profile/{id_customer}', 'AuthCustomerController@update');

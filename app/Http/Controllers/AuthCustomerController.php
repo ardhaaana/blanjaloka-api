@@ -61,7 +61,7 @@ class AuthCustomerController extends Controller
         $customer = $request->only(['email_customer', 'password']);
         
         if (! $token = Auth::attempt($customer)) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'Login Gagal'], 401);
         }
 
         return $this->respondWithToken($token);
@@ -77,7 +77,7 @@ class AuthCustomerController extends Controller
         $credentials = $request->only(['nomor_telepon', 'password']);
 
         if (! $token = Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'Login Gagal'], 401);
         }
 
         return $this->respondWithToken($token);
