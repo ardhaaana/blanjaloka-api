@@ -12,25 +12,35 @@ class Produk extends Model
      * @var string
      */
 
-    protected $primaryKey = 'id_produk';
-    public $table = 'produk';
-
-     protected $fillable = [
-        'nama_produk','satuan','harga_jual','stok_saat_ini','deskripsi','foto_produk','status_produk', 'id_pedagang'
-    ];
-
-    public function review(){
+    public function review()
+    {
         return $this->hasOne(ReviewProduk::class);
     }
-    public function kategori(){
+    public function kategori()
+    {
         return $this->hasOne(KategoriProduk::class);
     }
      public function spesialproduk()
     {
         return $this->hasOne(SpesialProduk::class);
     }
+     public function favoritproduk(){
+        return $this->hasOne(FavoritProduk::class);
+    }
+    
+    public function keranjangproduk(){
+        return $this->hasOne(KeranjangProduk::class);
+    }
+
+    protected $primaryKey = 'id_produk';
+    public $table = 'produk';
+
+     protected $fillable = [
+        'nama_produk','satuan','harga_jual','jumlah_produk','deskripsi','foto_produk','status_produk', 'id_pedagang'
+    ];
+
     protected $hidden = [
-        'id_pedagang'
+        'id_pedagang', 'created_at', 'updated_at'
     ];
 
 }

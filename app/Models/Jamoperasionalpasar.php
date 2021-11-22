@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Jamoperasionalpasar extends Model
+class JamOperasionalPasar extends Model
 {
     /**
      * The primary key associated with the table.

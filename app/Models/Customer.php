@@ -2,10 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Auth\Authenticatable;
+use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
-class Customer extends Model
+//this is new
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
+class Customer extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject 
 {
+    use Authenticatable, Authorizable;
+
     protected $primaryKey = 'id_customer';
     public $table = "customer";
 
@@ -16,7 +25,7 @@ class Customer extends Model
      */
     protected $fillable = [
         'nama_customer','nomor_telepon','alamat_customer','tanggal_lahir',
-        'email_customer', 'username','password', 'token',
+        'email_customer', 'username','password', 'jenis_kelamin', 'token'
     ];
 
     /**
@@ -25,10 +34,34 @@ class Customer extends Model
      * @var array
      */
     protected $hidden = [
-        'password', 'token', 'id_role'
+        'password', 'id_role',  'created_at', 'updated_at'
     ];
 
      public function role(){
         return $this->belongsTo(Role::class);
     }
+    
+    public function favoritproduk(){
+        return $this->hasMany(FavoritProduk::class, 'id');
+    }
+    
+    public function review(){
+        return $this->hasOne(ReviewProduk::class);
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
 }

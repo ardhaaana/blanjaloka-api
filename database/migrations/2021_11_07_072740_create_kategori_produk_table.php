@@ -16,7 +16,6 @@ class CreateKategoriProdukTable extends Migration
         Schema::create('kategori_produk', function (Blueprint $table) {
             $table->id('id_kategori');
             $table->string('jenis_kategori');
-            $table->string('daftar_produk');
             $table->unsignedBigInteger('id_produk')->nullable();
             $table->timestamps();
 

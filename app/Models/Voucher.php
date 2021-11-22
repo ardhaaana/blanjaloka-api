@@ -17,4 +17,8 @@ class Voucher extends Model
      protected $fillable = [
         'nama_voucher', 'id_voucher', 'id_customer'
     ];
+
+    protected $hidden =[
+        'id_customer'
+    ];
 }

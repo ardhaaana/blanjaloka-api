@@ -18,8 +18,8 @@ class AuthPengelolaPasarController extends Controller
             'nama_pengelola' => 'required|min:5',
             'alamat_pengelola' => 'required',
             'nomor_telepon' => 'required|min:10',
-            'email' => 'required|email',
-            'username' => 'required|unique:customer|min:5',
+            'email' => 'required|email|unique:PengelolaPasar',
+            'username' => 'required|min:5',
             'password' => 'required|min:8'
 
         ]);
@@ -55,27 +55,27 @@ class AuthPengelolaPasarController extends Controller
     public function login(Request $request)
     {
         $this->validate($request, [
-            'username' => 'required',
+            'email' => 'required',
             'password' => 'required|min:8'
         ]);
 
-        $username = $request->input('username');
+        $email = $request->input('email');
         $password = $request->input('password');
 
-        $login = PengelolaPasar::where('username', $username)->first();
+        $login = PengelolaPasar::where('email', $email)->first();
 
         if (Hash::check($password, $login->password)) {
-            $token_pp =  Str::random(40);
+            $token =  Str::random(40);
 
             $login->update([
-                'token_pp' => $token_pp
+                'token_pp' => $token
             ]);
 
             return response()->json([
                 'message' => 'Login sukses',
                 'data' => [
                     'data' => $login,
-                    'token' => $token_pp
+                    'token' => $token
                 ]
             ]);
         } else {
@@ -94,7 +94,7 @@ class AuthPengelolaPasarController extends Controller
             'alamat_pengelola' => 'required',
             'nomor_telepon' => 'required|min:10',
             'email' => 'required|email',
-            'username' => 'required|unique:PengelolaPasar|min:5',
+            'username' => 'required|min:5',
             'password' => 'required|min:8'
         ]);
 

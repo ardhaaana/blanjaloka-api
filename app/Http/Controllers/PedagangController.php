@@ -11,10 +11,10 @@ use App\Http\Controllers\Controller;
 class PedagangController extends Controller
 {
 
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function create(Request $request)
     {

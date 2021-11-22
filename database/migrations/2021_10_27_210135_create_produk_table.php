@@ -18,7 +18,7 @@ class CreateProdukTable extends Migration
             $table->string('nama_produk');
             $table->string('satuan');
             $table->integer('harga_jual');
-            $table->integer('stok_saat_ini');
+            $table->bigInteger('jumlah_produk');
             $table->text('deskripsi');
             $table->string('foto_produk', 500);
             $table->string('status_produk');

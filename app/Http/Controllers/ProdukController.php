@@ -3,19 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produk;
+use App\Models\KeranjangProduk;
 use App\Models\ReviewProduk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use App\Models\SpesialProduk;
 
 class ProdukController extends Controller
 {
     
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
-
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+   
+    
     public function create(Request $request)
     {
         $this->validate($request, [
@@ -23,7 +26,7 @@ class ProdukController extends Controller
             'nama_produk' => 'required',
             'satuan' => 'required',
             'harga_jual' => 'required|numeric',
-            'stok_saat_ini' => 'required|numeric',
+            'jumlah_produk' => 'required|numeric',
             'deskripsi' => 'required',
             'status_produk' => 'required'
         ]);
@@ -34,7 +37,7 @@ class ProdukController extends Controller
                     'nama_produk' => $request->input('nama_produk'),
                     'satuan' => $request->input('satuan'),
                     'harga_jual' => $request->input('harga_jual'),
-                    'stok_saat_ini' => $request->input('stok_saat_ini'),
+                    'jumlah_produk' => $request->input('jumlah_produk'),
                     'deskripsi' => $request->input('deskripsi'),
                     'foto_produk' => $request->input('foto_produk'),
                     'status_produk' => $request->input('status_produk')
@@ -46,8 +49,9 @@ class ProdukController extends Controller
                     'nama_produk' => $request->input('nama_produk'),
                     'satuan' => $request->input('satuan'),
                     'harga_jual' => $request->input('harga_jual'),
-                    'stok_saat_ini' => $request->input('stok_saat_ini'),
-                    'deskripsi' => $request->input('deskripsi')
+                    'jumlah_produk' => $request->input('jumlah_produk'),
+                    'deskripsi' => $request->input('deskripsi'),
+                    'status_produk' => $request->input('status_produk')
                 ]
             );
         }
@@ -65,9 +69,10 @@ class ProdukController extends Controller
     }
     public function index()
     {
+       
         $produk = Produk::all();
-
-        return response()->json($produk);
+        return response($produk);
+    	
     }
 
     public function show($id_produk)
@@ -107,21 +112,13 @@ class ProdukController extends Controller
 
     public function update(Request $request, $id_produk)
     {
-        // $produk = Produk::find($kode_produk);
-
-        // if (!$produk) {
-        //     return response()->json([
-        //         'message' => 'Data tidak ditemukan',
-        //         'data' => $produk
-        //     ], 404);
-        // }
 
         $this->validate($request, [
 
             'nama_produk' => 'required',
             'satuan' => 'required',
             'harga_jual' => 'required|numeric',
-            'stok_saat_ini' => 'required|numeric',
+            'jumlah_produk' => 'required|numeric',
             'deskripsi' => 'required',
             'status_produk' => 'required'
         ]);
@@ -132,9 +129,7 @@ class ProdukController extends Controller
                     'nama_produk' => $request->input('nama_produk'),
                     'satuan' => $request->input('satuan'),
                     'harga_jual' => $request->input('harga_jual'),
-                    'stok_saat_ini' => $request->input('stok_saat_ini'),
                     'deskripsi' => $request->input('deskripsi'),
-                    'foto_produk' => $request->input('foto_produk'),
                     'status_produk' => $request->input('status_produk')
                 ]
             );
@@ -144,20 +139,22 @@ class ProdukController extends Controller
                     'nama_produk' => $request->input('nama_produk'),
                     'satuan' => $request->input('satuan'),
                     'harga_jual' => $request->input('harga_jual'),
-                    'stok_saat_ini' => $request->input('stok_saat_ini'),
                     'deskripsi' => $request->input('deskripsi'),
                     'status_produk' => $request->input('status_produk')
                 ]
             );
         }
+            
+            $produk = Produk::find($request->input('id_produk'));
+            
+            $produk->jumlah_produk =$produk->jumlah_produk+$request->jumlah_produk;
+            $produk->save();
+        
 
         if (!$update) {
             return response()->json(['error' => 'unknown error'], 500);
         }
        
-        // $dataproduk = $request->all();
-        // $produk->fill($dataproduk);
-        // $produk->save();
         
         return response()->json([
             'message' => 'Produk update!',
