@@ -21,14 +21,6 @@ class KategoriProduk extends Model
     public function produk(){
         return $this->belongsTo(Produk::class);
     }
-<<<<<<< HEAD
-
-    protected $hidden =[
-        'id_produk', 'created_at', 'updated_at'
-    ];
-=======
->>>>>>> 5c62385410c10963254565518959848154714eda
-    
      protected $hidden =[
         'id_produk', 'created_at', 'updated_at'
     ];

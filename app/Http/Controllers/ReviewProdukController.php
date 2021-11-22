@@ -22,20 +22,11 @@ class ReviewProdukController extends Controller
    
     public function create(Request $request)
     {
-<<<<<<< HEAD
 
         $validator = Validator::make($request->only('id_produk', 'id_customer'), [
             'id_produk' => "required",
             'id_customer' => "required"
         ]);
-=======
-        // $this->validate($request, [
-            
-        //     'id_produk' => 'required',
-        //     'nama_customer' => 'required|unique:review_produk',
-        //     'review' => 'required',
-        //     'star' => 'required'
-        // ]);
 
         $validator = Validator::make($request->only('id_produk', 'id_customer'), [
             'id_produk' => "required",
@@ -64,14 +55,6 @@ class ReviewProdukController extends Controller
         $review->star = $request->input('star');
         $review->save();
 
-        // $review = ReviewProduk::create([
-            
-        //     'id_produk' => $id_produk,
-        //     'nama_customer' => $nama_customer,
-        //     'review' => $review,
-        //     'star' => $star
-        // ]);
->>>>>>> 5c62385410c10963254565518959848154714eda
 
         if ($validator->fails()) {
             return response()->json(['success' => 0, 'message' => 'Required or incorrect fields', 'errors' => $validator->errors()], 500);
@@ -117,14 +100,7 @@ class ReviewProdukController extends Controller
             'message' => 'Menampilkan Review Produk',
             'Review Produk' => $review
         ],200);
-        
-<<<<<<< HEAD
-=======
-        // if (empty($review)) {
-        //     return response()->json(['error' => 'Ulasan Tidak Ditemukan'], 402);
-        // }
-        // return response()->json($review);
->>>>>>> 5c62385410c10963254565518959848154714eda
+       
     }
 
     public function show($id)

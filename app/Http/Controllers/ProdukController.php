@@ -13,17 +13,11 @@ use App\Models\SpesialProduk;
 class ProdukController extends Controller
 {
     
-<<<<<<< HEAD
     public function __construct()
     {
         $this->middleware('auth');
     }
-=======
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
->>>>>>> 5c62385410c10963254565518959848154714eda
+  
    
     
     public function create(Request $request)
