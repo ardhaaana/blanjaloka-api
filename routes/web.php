@@ -151,8 +151,7 @@ $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
     $router->group(['prefix' => 'api/review'], function () use ($router) { 
         $router->post('/', ['uses' => 'ReviewProdukController@create']);
         $router->get('/', ['uses' =>  'ReviewProdukController@index']);
-        $router->get('/{id}','ReviewController@show_produk');
-        $router->get('/{id}', ['uses' =>  'ReviewProdukController@show']);
+        $router->get('/{id_produk}', ['uses' =>  'ReviewProdukController@show']);
         $router->put('/{id}', ['uses' =>  'ReviewProdukController@update']);
         $router->delete('delete-review/{id}', ['uses' =>  'ReviewProdukController@destroy']);
     });
