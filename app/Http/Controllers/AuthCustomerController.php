@@ -22,7 +22,8 @@ class AuthCustomerController extends Controller
             'tanggal_lahir' => 'required',
             'username' => 'required|unique:customer|min:5',
             'password' => 'required|min:8',
-            'jenis_kelamin' => 'required'
+            'jenis_kelamin' => 'required',
+            'id_role' => 'required'
         ]);
 
         try {
@@ -35,6 +36,7 @@ class AuthCustomerController extends Controller
             $customer->username = $request->input('username');
             $customer->email_customer = $request->input('email_customer');
             $customer->jenis_kelamin = $request->input('jenis_kelamin');
+            $customer->id_role = $request->input('id_role');
             $plainPassword = $request->input('password');
             $customer->password = app('hash')->make($plainPassword);
 
