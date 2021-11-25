@@ -50,13 +50,13 @@ class KeranjangProdukController extends Controller{
     # Tampilkan data Keranjang
     public function show($id_customer){
 
-        $isikeranjang = DB::table('keranjang')->select('keranjang.id_keranjang', 'keranjang.id_produk', 'produk.nama_produk', 'keranjang.jumlah_produk', 'produk.harga_jual', DB::raw("keranjang.`jumlah_produk` * produk.`harga_jual` AS total"))
-                        ->join('produk', 'keranjang.id_produk', '=', 'produk.id_produk')
-                        ->where('keranjang.id_customer', $id_customer)
+        $isikeranjang = DB::table('keranjang_produk')->select('keranjang_produk.id_keranjang', 'keranjang_produk.id_produk', 'produk.nama_produk', 'keranjang_produk.jumlah_produk', 'produk.harga_jual', DB::raw("keranjang_produk.`jumlah_produk` * produk.`harga_jual` AS total"))
+                        ->join('produk', 'keranjang_produk.id_produk', '=', 'produk.id_produk')
+                        ->where('keranjang_produk.id_customer', $id_customer)
                         ->get();
                         
-        $subtotal = KeranjangProduk::select(DB::raw("keranjang.`jumlah_produk` * produk.`harga_jual` AS subtotal"))
-                    ->join('produk', 'keranjang.id_produk', '=', 'produk.id_produk')
+        $subtotal = KeranjangProduk::select(DB::raw("keranjang_produk.`jumlah_produk` * produk.`harga_jual` AS subtotal"))
+                    ->join('produk', 'keranjang_produk.id_produk', '=', 'produk.id_produk')
                     ->where('id_customer', $id_customer)
                     ->get();
 
@@ -96,9 +96,9 @@ class KeranjangProdukController extends Controller{
             return response()->json(['error' => 'unknown error'], 500);
         }
 
-        $data = DB::table('keranjang')->select('keranjang.id_keranjang', 'produk.nama_produk', 'keranjang.jumlah_produk', 'produk.harga_jual', DB::raw("keranjang.`jumlah_produk` * produk.`harga_jual` AS total"))
-                ->join('produk', 'keranjang.id_produk', '=', 'produk.id_produk')
-                ->where('keranjang.id_keranjang', $id_keranjang)
+        $data = DB::table('keranjang_produk')->select('keranjang_produk.id_keranjang', 'produk.nama_produk', 'keranjang_produk.jumlah_produk', 'produk.harga_jual', DB::raw("keranjang_produk.`jumlah_produk` * produk.`harga_jual` AS total"))
+                ->join('produk', 'keranjang_produk.id_produk', '=', 'produk.id_produk')
+                ->where('keranjang_produk.id_keranjang', $id_keranjang)
                 ->get();
 
         return response()->json([
