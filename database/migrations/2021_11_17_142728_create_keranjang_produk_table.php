@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateKeranjang extends Migration
+class CreateKeranjangProdukTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateKeranjang extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('keranjang');
+        Schema::dropIfExists('keranjang_produk');
 
-        Schema::create('keranjang', function (Blueprint $table) {
+        Schema::create('keranjang_produk', function (Blueprint $table) {
             $table->id('id_keranjang');
             $table->unsignedBigInteger('id_customer');
             $table->unsignedBigInteger('id_produk');
@@ -34,6 +34,6 @@ class CreateKeranjang extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('keranjang');
+        Schema::dropIfExists('keranjang_produk');
     }
 }
