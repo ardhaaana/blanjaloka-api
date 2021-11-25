@@ -176,9 +176,8 @@ $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
 
     $router->group(['prefix' => 'api/favorit'], function () use ($router) {      
         $router->post('/', ['uses' => 'FavoritProdukController@create']);
-        $router->get('/', ['uses' =>  'FavoritProdukController@index']);
-        $router->get('/{id}', ['uses' =>  'FavoritProdukController@show']);
-        $router->delete('delete-favorit/{id}', ['uses' =>  'FavoritProdukController@destroy']);
+        $router->get('/{id_customer}', ['uses' =>  'FavoritProdukController@show']);
+        $router->delete('/{id}', ['uses' =>  'FavoritProdukController@destroy']);
     });
     
     $router->group(['prefix' => 'api/keranjang'], function () use ($router) {      
