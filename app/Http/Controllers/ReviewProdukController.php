@@ -57,23 +57,6 @@ class ReviewProdukController extends Controller
         }
     }
 
-    public function index()
-    {
-        $review = ReviewProduk::with('customer','produk')->get();
-
-        if (!$review){
-            return response()->json(['success' => 0, 'message' => 'Review tidak ditemukan']
-             );
-        }
-
-        return response()->json([
-            'success' => 1,
-            'message' => 'Menampilkan Review Produk',
-            'Review Produk' => $review
-        ],200);
-       
-    }
-
     // Menampilkan Review produk
     public function show($id_produk)
     {
