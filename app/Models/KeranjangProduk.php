@@ -13,7 +13,7 @@ class KeranjangProduk extends Model
      */
 
     protected $primaryKey = 'id_keranjang';
-    public $table = 'keranjang';
+    public $table = 'keranjang_produk';
 
     protected $fillable = [
         'id_keranjang', 'id_customer', 'id_produk', 'jumlah_produk'
