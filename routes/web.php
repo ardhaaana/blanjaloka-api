@@ -184,11 +184,9 @@ $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
     
     $router->group(['prefix' => 'api/keranjang'], function () use ($router) {      
         $router->post('/', ['uses' => 'KeranjangProdukController@create']);
-        $router->get('/', ['uses' =>  'KeranjangProdukController@index']);
         $router->get('/{id_customer}', ['uses' =>  'KeranjangProdukController@show']);
-        
-        $router->put('update-keranjang/{id}', ['uses' =>  'KeranjangProdukController@update']);
-        $router->delete('/delete-keranjang/{id}', ['uses' =>  'KeranjangProdukController@destroy']);
+        $router->put('/update/{id_keranjang}', ['uses' => 'KeranjangProdukController@update']);
+        $router->delete('/{id_keranjang}', ['uses' =>  'KeranjangProdukController@destroy']);
     });
     
     // $router->post('transaksi', ['uses' => 'TransaksiController@create']);
