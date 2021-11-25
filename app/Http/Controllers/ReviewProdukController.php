@@ -8,6 +8,8 @@ use App\Models\Produk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\Console\Helper\Table;
 
 class ReviewProdukController extends Controller
 {
@@ -17,9 +19,6 @@ class ReviewProdukController extends Controller
         $this->middleware('auth');
     }
 
-    
-            # code...
-   
     public function create(Request $request)
     {
 
@@ -75,15 +74,21 @@ class ReviewProdukController extends Controller
        
     }
 
-    public function show($id)
+    // Menampilkan Review produk
+    public function show($id_produk)
     {
-        $review = ReviewProduk::with('customer', 'produk')->find($id);
+        $isireview = DB::table('review_produk')
+                    ->select('review_produk.id', 'review_produk.id_produk', 'produk.nama_produk','produk.deskripsi','review_produk.id_customer','customer.nama_customer', 'review_produk.review', 'review_produk.star')
+                    ->join('produk','review_produk.id_produk', '=', 'produk.id_produk')
+                    ->join('customer','review_produk.id_customer', '=', 'customer.id_customer')
+                    ->where('review_produk.id_produk', $id_produk)
+                    ->get();
 
-        if (empty($review)) {
+        if (empty($isireview)) {
             return response()->json(['error' => 'Review Produk Tidak Ditemukan'], 402);
         }
 
-        return response()->json($review);
+        return response()->json($isireview,200);
     }
 
     public function show_produk(Produk $review)
