@@ -6,23 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class KeranjangProduk extends Model
 {
-    // protected $primaryKey = 'id';
-    public $table = 'keranjang_produk';
+    /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+
+    protected $primaryKey = 'id_keranjang';
+    public $table = 'keranjang';
 
     protected $fillable = [
-        'id_produk', 'id_customer', 'jumlah_produk', 'subtotal'
+        'id_keranjang', 'id_customer', 'id_produk', 'jumlah_produk'
     ];
-      
-    protected $hidden = ["created_at", "updated_at"];
 
-    public function produk()
-    {
-        return $this->belongsTo(Produk::class, 'id_produk');
-    }
-
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class, 'id_customer');
-    }
+    protected $hidden = [
+        'created_at', 'updated_at'
+    ];
 
 }
+
