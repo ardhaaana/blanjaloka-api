@@ -28,34 +28,6 @@ class ReviewProdukController extends Controller
             'id_customer' => "required"
         ]);
 
-        $validator = Validator::make($request->only('id_produk', 'id_customer'), [
-            'id_produk' => "required",
-            'id_customer' => "required"
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['success' => 0, 'message' => 'Required or incorrect fields', 'errors' => $validator->errors()], 500);
-        }
-
-        $produk = Produk::find($request->input('id_produk'));
-        $customer = Customer::find($request->input('id_customer'));
-
-        if (!$produk) {
-            return response()->json(['success' => 0, 'message' => 'Produk tidak ditemukan'], 404);
-        }
-        if (!$customer) {
-            return response()->json(['success' => 0, 'message' => 'ID Customer tidak ditemukan'], 404);
-        }
-
-        $review = new ReviewProduk();
-
-        $review->id_produk = $request->input('id_produk');
-        $review->id_customer = $request->input('id_customer');
-        $review->review = $request->input('review');
-        $review->star = $request->input('star');
-        $review->save();
-
-
         if ($validator->fails()) {
             return response()->json(['success' => 0, 'message' => 'Required or incorrect fields', 'errors' => $validator->errors()], 500);
         }
