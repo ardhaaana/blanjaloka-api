@@ -1,125 +1,130 @@
 <?php
-
-
 namespace App\Http\Controllers;
 
-use App\Models\Produk;
 use App\Models\KeranjangProduk;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
-class KeranjangProdukController extends Controller
-{
-     public function __construct()
-    {
+class KeranjangProdukController extends Controller{
+
+    public function __construct(){
+
         $this->middleware('auth');
-    }
     
-    public function index()
-    {
-        $produk = KeranjangProduk::with('produk')->get();
-
-        if (!$produk) {
-            return response()->json(['success' => 0, 'message' => 'Keranjang Produk tidak ditemukan'], 404);
-        }
-
-         return response()->json([
-            'success' => 1,
-            'message' => 'Data Keranjang Produk',
-            'Keranjang Produk' => $produk,
-        ], 200);
     }
 
-    public function create(Request $request)
-    {
-        $validator = Validator::make($request->only('id_produk'), [
-            'id_produk' => "required"
+    # Tambah data keranjang
+    public function create(Request $request){
+
+        $this->validate($request, [
+            'id_customer' => 'required|numeric',
+            'id_produk' => 'required|numeric',
+            'jumlah_produk' => 'required|numeric'
         ]);
-        
 
-        if ($validator->fails()) {
-            return response()->json(['success' => 0, 'message' => 'Required or incorrect fields', 'errors' => $validator->errors()], 500);
-        }
+        if(count(KeranjangProduk::where('id_produk', $request->input('id_produk'))->where('id_customer', $request->input('id_customer'))->get()) > 0){
 
-        $produk = Produk::find($request->input('id_produk'));
+            return response([
+                'message' => 'Produk Sudah Ada di Keranjang'
+            ], 200);
 
-        if (!$produk) {
-            return response()->json(['success' => 0, 'message' => 'Produk Tidak Ditemukan'], 404);
-        }
-        
-        $keranjangproduk = new KeranjangProduk();
-        
-        $produk->harga_jual = $produk->harga_jual;
-        $keranjangproduk->id_produk = $request->input('id_produk');
-        $keranjangproduk->id_customer = $request->input('id_customer');
-        $keranjangproduk->jumlah_produk = $request->input('jumlah_produk');
-       
-        //validasi Stok
-    	if($keranjangproduk->jumlah_produk > $produk->jumlah_produk)
-    	{
-            return response()->json([
-            'message' => 'Pembelian Produk Melebihi Stok',
-            'code' => 200
+        }else{
+
+            $keranjang = KeranjangProduk::create([
+                'id_customer' => $request->input('id_customer'),
+                'id_produk' => $request->input('id_produk'),
+                'jumlah_produk' => $request->input('jumlah_produk')
             ]);
-    	}
+    
+            if($keranjang){
+                return response()->json([
+                    'message' => 'Produk ditambahkan ke keranjang',
+                    'data' => $keranjang
+                ], 200);
+            }
+
+        }
+
+    }
+
+    # Tampilkan data Keranjang
+    public function show($id_customer){
+
+        $isikeranjang = DB::table('keranjang')->select('keranjang.id_keranjang', 'keranjang.id_produk', 'produk.nama_produk', 'keranjang.jumlah_produk', 'produk.harga_jual', DB::raw("keranjang.`jumlah_produk` * produk.`harga_jual` AS total"))
+                        ->join('produk', 'keranjang.id_produk', '=', 'produk.id_produk')
+                        ->where('keranjang.id_customer', $id_customer)
+                        ->get();
+                        
+        $subtotal = KeranjangProduk::select(DB::raw("keranjang.`jumlah_produk` * produk.`harga_jual` AS subtotal"))
+                    ->join('produk', 'keranjang.id_produk', '=', 'produk.id_produk')
+                    ->where('id_customer', $id_customer)
+                    ->get();
+
+        $_subtotal = 0;
         
-        $keranjangproduk->jumlah_produk = $keranjangproduk->jumlah_produk;
-        $keranjangproduk->subtotal = $produk->harga_jual*$request->jumlah_produk;
-        $keranjangproduk->save();
+        foreach ($subtotal as $s){
+            $_subtotal = $_subtotal + $s->subtotal;
+        }
+
+        if($isikeranjang && $subtotal){
         
-        $produk->jumlah_produk = $produk->jumlah_produk-$request->jumlah_produk;
-        $produk->save();
+            return response()->json([
+                'keranjang' => $isikeranjang,
+                'sub_total' => $_subtotal
+            ], 200);
         
+        }else{
+
+            return response()->json(['error' => 'unknown error'], 500);
+        
+        }
+
+    }
+
+    # Edit data Keranjang
+    public function update(Request $request, $id_keranjang){
+
+        $this->validate($request, [
+            'jumlah_produk' => 'required|numeric'
+        ]);
+
+        $query = KeranjangProduk::query()->find($id_keranjang)->update([
+            'jumlah_produk' => $request->input('jumlah_produk')
+        ]);
+
+        if(!$query){
+            return response()->json(['error' => 'unknown error'], 500);
+        }
+
+        $data = DB::table('keranjang')->select('keranjang.id_keranjang', 'produk.nama_produk', 'keranjang.jumlah_produk', 'produk.harga_jual', DB::raw("keranjang.`jumlah_produk` * produk.`harga_jual` AS total"))
+                ->join('produk', 'keranjang.id_produk', '=', 'produk.id_produk')
+                ->where('keranjang.id_keranjang', $id_keranjang)
+                ->get();
+
         return response()->json([
-            'success' => true,
-            'message' => 'Data Keranjang Produk',
-            'Harga Produk' => $produk,
-            'Keranjang Produk' => $keranjangproduk,
+            'message' => "Keranjang Berhasil Diperbaruhi",
+            'data' => $data
         ], 200);
         
     }
 
-    public function update(Request $request, $id)
-    {
-        $keranjangproduk = KeranjangProduk::find($id);
-        
-        $produk = Produk::find($request->input('id_produk'));
+    # Delete
+    public function destroy($id_keranjang){
 
-        $keranjangproduk->jumlah_produk = $keranjangproduk->jumlah_produk;
-        
-        $keranjangproduk->subtotal = $produk->harga_jual*$request->jumlah_produk;
+        $query = KeranjangProduk::where('id_keranjang', $id_keranjang)->delete();
 
-        $keranjangproduk->save();
+        if(!$query){
+            return response()->json([
+                'message' => 'unknown error'
+            ], 500);
+        }
 
-        return response()->json([
-            'message' => 'Keranjang Produk update!',
-            'code' => 200
+        return response([
+            'message' => "Keranjang Berhasil Dihapus"
         ]);
 
     }
 
-    public function show($id)
-    {
-        $keranjangproduk = KeranjangProduk::with('produk')->find($id);
 
-        if (!$keranjangproduk) {
-            return response()->json(['success' => 0, 'message' => 'Keranjang Produk Tidak Ditemukan'], 404);
-        }
-
-        return response()->json(['Keranjang Produk' => $keranjangproduk], 200);
-    }
-
-    public function destroy($id)
-    {
-        $keranjangproduk = KeranjangProduk::with('produk')->find($id);
-
-        if (!$keranjangproduk) {
-            return response()->json(['success' => 0, 'message' => 'Keranjang Produk Tidak Ditemukan'], 404);
-        }
-
-        $keranjangproduk->delete();
-
-        return response()->json(['success' => 1, 'message' => 'Keranjang Produk Berhasil Dihapus'], 200);
-    }
 
 }
