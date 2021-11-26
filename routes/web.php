@@ -23,7 +23,7 @@ $router->get('/', function () use ($router) {
 
 
 $router->post('/register', 'AuthCustomerController@register');
-$router->post('/login-email', 'AuthCustomerController@loginemail');
+$router->post('/login', 'AuthCustomerController@loginemail');
 $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
 
     $router->group(['prefix' => 'api/customer'], function () use ($router) {   
@@ -62,8 +62,9 @@ $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
         $router->post('/', ['uses' => 'PedagangController@create']);
         $router->get('/', ['uses' =>  'PedagangController@index']);
         $router->get('/{id_pedagang}', ['uses' =>  'PedagangController@show']);
-        $router->put('/update-data/{id_pedagang}', ['uses' =>  'PedagangController@update']);
-        $router->delete('/delete-pedagang/{id_pedagang}', ['uses' =>  'PedagangController@destroy']);
+        $router->get('/search', ['uses' =>  'PedagangController@search']);
+        $router->put('/{id_pedagang}', ['uses' =>  'PedagangController@update']);
+        $router->delete('/{id_pedagang}', ['uses' =>  'PedagangController@destroy']);
 
     });
 
