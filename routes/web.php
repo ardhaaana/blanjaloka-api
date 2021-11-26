@@ -62,7 +62,6 @@ $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
         $router->post('/', ['uses' => 'PedagangController@create']);
         $router->get('/', ['uses' =>  'PedagangController@index']);
         $router->get('/{id_pedagang}', ['uses' =>  'PedagangController@show']);
-        $router->get('data/toko', ['uses' =>  'PedagangController@tokoshow']);
         $router->put('/update-data/{id_pedagang}', ['uses' =>  'PedagangController@update']);
         $router->delete('/delete-pedagang/{id_pedagang}', ['uses' =>  'PedagangController@destroy']);
 
@@ -73,7 +72,7 @@ $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
         $router->get('/', ['uses' =>  'TokoController@index']);
 
         $router->get('/search', ['uses' => 'TokoController@search']);
-        $router->get('list-toko/{id_toko}', ['uses' =>  'TokoController@show']);
+        $router->get('/{id_toko}', ['uses' =>  'TokoController@show']);
         $router->put('update-data/{id_toko}', ['uses' =>  'TokoController@update']);
         $router->delete('delete-toko/{id_toko}', ['uses' =>  'TokoController@destroy']);
     });
