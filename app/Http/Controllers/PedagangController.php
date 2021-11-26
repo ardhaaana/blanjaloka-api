@@ -24,7 +24,9 @@ class PedagangController extends Controller
             'alamat_pedagang' => 'required',
             'tanggal_lahir' => 'required',
             'nomor_ktp' => 'required|unique:pedagang',
-            'foto_rekening' => 'required'
+            'foto_rekening' => 'required',
+            'nama_toko' => 'required',
+            'alamat_toko' => 'required'
         ]);
 
           if ($request->has('foto_rekening')) {
@@ -35,7 +37,9 @@ class PedagangController extends Controller
                 'alamat_pedagang' => $request->input('alamat_pedagang'),
                 'tanggal_lahir' => $request->input('tanggal_lahir'),
                 'nomor_ktp' => $request->input('nomor_ktp'),
-                'foto_rekening' => $request->input('foto_rekening')
+                'foto_rekening' => $request->input('foto_rekening'),
+                'nama_toko' => $request->input('nama_toko'),
+                'alamat_toko' => $request->input('alamat_toko')
                 ]
             );
         } else {
@@ -45,7 +49,9 @@ class PedagangController extends Controller
                 'nomor_telepon' => $request->input('nomor_telepon'),
                 'alamat_pedagang' => $request->input('alamat_pedagang'),
                 'tanggal_lahir' => $request->input('tanggal_lahir'),
-                'nomor_ktp' => $request->input('nomor_ktp')
+                'nomor_ktp' => $request->input('nomor_ktp'),
+                'nama_toko' => $request->input('nama_toko'),
+                'alamat_toko' => $request->input('alamat_toko')
                 ]
             );
         }
@@ -74,6 +80,38 @@ class PedagangController extends Controller
         return response()->json($pedagang);
     }
 
+    public function search(Request $request)
+    {
+        # code...
+        $query = $request->query('query');
+
+        if (empty($query)) {
+            return response()->json(['error' => 'Query not specified!'], 400);
+        }
+
+        $fulltext = $request->query('fulltext', 'false');
+        $sortBy = $request->query('sort_by', 'nama_toko.asc');
+        $sorts = explode('.', $sortBy);
+
+
+        if ($fulltext == 'true') {
+            $data = Pedagang::query()
+                ->whereRaw("MATCH(nama_toko,alamat_toko) AGAINST(? IN BOOLEAN MODE)", array($query))
+                ->orderBy($sorts[0], $sorts[1])
+                ->get();
+            return response()->json($data);
+        }
+
+        $data = Pedagang::query()
+            ->where('nama_toko', 'like', '%' . $query . '%')
+            ->orWhere('alamat_toko', 'like', '%' . $query . '%')
+            ->orderBy($sorts[0], $sorts[1])
+            ->get();
+
+        return response()->json($data);
+     
+    }
+
     public function show($id_pedagang)
     {
         
@@ -85,52 +123,45 @@ class PedagangController extends Controller
         return response()->json($pedagang);
         
     }
-    
-    public function tokoshow()
-    {
-        $pedagang = Pedagang::all();
-        $toko = Toko::all();
-        
-        return response()->json(['message' => 'Data Pemilik',
-                'Data Pedagang' => $pedagang, 
-                'Data Toko'=> $toko
-        ]);
-        
-    }
 
     public function update(Request $request, $id_pedagang)
     {
        $this->validate($request, [
 
-            'nama_produk' => 'required',
-            'satuan' => 'required',
-            'harga_jual' => 'required|numeric',
-            'stok_saat_ini' => 'required|numeric',
-            'deskripsi' => 'required',
-            'status_produk' => 'required'
+            'nama_pedagang' => 'required',
+            'nomor_telepon' => 'required',
+            'alamat_pedagang' => 'required',
+            'tanggal_lahir' => 'required',
+            'nomor_ktp' => 'required|unique:pedagang',
+            'foto_rekening' => 'required',
+            'nama_toko' => 'required',
+            'alamat_toko' => 'required'
         ]);
 
-        if ($request->has('foto_produk')) {
+        if ($request->has('foto_rekening')) {
             $update = Pedagang::query()->find($id_pedagang)->update(
                 [
-                    'nama_produk' => $request->input('nama_produk'),
-                    'satuan' => $request->input('satuan'),
-                    'harga_jual' => $request->input('harga_jual'),
-                    'stok_saat_ini' => $request->input('stok_saat_ini'),
-                    'deskripsi' => $request->input('deskripsi'),
-                    'foto_produk' => $request->input('foto_produk'),
-                    'status_produk' => $request->input('status_produk')
+                    'nama_pedagang' => 'required',
+                    'nomor_telepon' => 'required',
+                    'alamat_pedagang' => 'required',
+                    'tanggal_lahir' => 'required',
+                    'nomor_ktp' => 'required|unique:pedagang',
+                    'foto_rekening' => 'required',
+                    'nama_toko' => 'required',
+                    'alamat_toko' => 'required'
                 ]
             );
         } else {
             $update = Pedagang::query()->find($id_pedagang)->update(
                 [
-                    'nama_produk' => $request->input('nama_produk'),
-                    'satuan' => $request->input('satuan'),
-                    'harga_jual' => $request->input('harga_jual'),
-                    'stok_saat_ini' => $request->input('stok_saat_ini'),
-                    'deskripsi' => $request->input('deskripsi'),
-                    'status_produk' => $request->input('status_produk')
+                    'nama_pedagang' => $request->input('nama_pedagang'),
+                    'nomor_telepon' => $request->input('nomor_telepon'),
+                    'alamat_pedagang' => $request->input('alamat_pedagang'),
+                    'tanggal_lahir' => $request->input('tanggal_lahir'),
+                    'nomor_ktp' => $request->input('nomor_ktp'),
+                    'foto_rekening' => $request->input('foto_rekening'),
+                    'nama_toko' => $request->input('nama_toko'),
+                    'alamat_toko' => $request->input('alamat_toko')
                 ]
             );
         }
@@ -140,7 +171,7 @@ class PedagangController extends Controller
         }
         
         return response()->json([
-            'message' => 'Produk update!',
+            'message' => 'Pedagang update!',
             'code' => 200
         ]);
 
