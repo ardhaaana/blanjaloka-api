@@ -97,18 +97,18 @@ class AuthCustomerController extends Controller
             $update = Customer::query()->find($id_customer)->update(
                 [
                     'nama_customer' => $request->input('nama_customer'),
-                    'alamat_customer' => $request->input('alamat_customer'),
-                    'tanggal_lahir' => $request->input('tanggal_lahir'),
-                    'jenis_kelamin' => $request->input('jenis_kelamin')
+//                     'alamat_customer' => $request->input('alamat_customer'),
+//                     'tanggal_lahir' => $request->input('tanggal_lahir'),
+//                     'jenis_kelamin' => $request->input('jenis_kelamin')
                 ]
             );
         } else {
             $update = Customer::query()->find($id_customer)->update(
                 [
                     'nama_customer' => $request->input('nama_customer'),
-                    'alamat_customer' => $request->input('alamat_customer'),
-                    'tanggal_lahir' => $request->input('tanggal_lahir'),
-                    'jenis_kelamin' => $request->input('jenis_kelamin')
+//                     'alamat_customer' => $request->input('alamat_customer'),
+//                     'tanggal_lahir' => $request->input('tanggal_lahir'),
+//                     'jenis_kelamin' => $request->input('jenis_kelamin')
                 ]
             );
         }
