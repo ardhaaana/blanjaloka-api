@@ -85,7 +85,7 @@ class FavoritProdukController extends Controller{
     public function show($id_customer){
 
         // id disini yang ditampilin adalah id favorit_produk
-        $listprodukfavorit = Produk::select('id', 'nama_produk', 'satuan', 'harga_jual', 'stok_saat_ini', 'deskripsi', 'foto_produk', 'status_produk', 'id_pedagang')
+        $listprodukfavorit = Produk::select('id', 'nama_produk', 'satuan', 'harga_jual', 'jumlah_produk', 'deskripsi', 'foto_produk', 'status_produk', 'id_pedagang')
                             ->join('favorit_produk', 'favorit_produk.id_produk', '=', 'produk.id_produk')
                             ->where('favorit_produk.id_customer', $id_customer)->get();
 
