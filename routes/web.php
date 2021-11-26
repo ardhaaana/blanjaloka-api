@@ -82,9 +82,8 @@ $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
         $router->post('/', ['uses' => 'SpesialProdukController@create']);
         $router->get('/search', ['uses' => 'SpesialProdukController@search']);
         $router->get('/', ['uses' => 'SpesialProdukController@index']);
-        $router->get('/{id}', ['uses' => 'SpesialProdukController@show']);
         $router->put('/{id}', ['uses' =>  'SpesialProdukController@update']);
-        $router->delete('delete-spesial/{id}', ['uses' => 'SpesialProdukController@destroy']);
+        $router->delete('/{id}', ['uses' => 'SpesialProdukController@destroy']);
     });
     
     $router->group(['prefix' => 'api/jam-operasional'], function () use ($router) {
