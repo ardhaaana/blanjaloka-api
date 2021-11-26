@@ -52,8 +52,8 @@ $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
         $router->get('/search', ['uses' => 'ProdukController@search']);
         $router->get('/semua-produk', ['uses' => 'ProdukController@index']);
         $router->get('/{id_produk}', ['uses' => 'ProdukController@show']);
-        $router->get('data/review', ['uses' => 'ProdukController@produkreview']);
-        $router->get('/{id_produk}/spesial/{id}', ['uses' => 'ProdukController@spesialshow']);
+
+        $router->get('/kategori/{id_kategori}', ['uses' => 'ProdukController@kategoriproduk']);
         $router->put('/{id_produk}', ['uses' =>  'ProdukController@update']);
         $router->delete('/delete-produk/{id_produk}', ['uses' => 'ProdukController@destroy']);
     });
@@ -62,7 +62,7 @@ $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
         $router->post('/', ['uses' => 'PedagangController@create']);
         $router->get('/', ['uses' =>  'PedagangController@index']);
         $router->get('/{id_pedagang}', ['uses' =>  'PedagangController@show']);
-        $router->get('/search', ['uses' =>  'PedagangController@search']);
+        $router->get('data/search', ['uses' =>  'PedagangController@search']);
         $router->put('/{id_pedagang}', ['uses' =>  'PedagangController@update']);
         $router->delete('/{id_pedagang}', ['uses' =>  'PedagangController@destroy']);
 
