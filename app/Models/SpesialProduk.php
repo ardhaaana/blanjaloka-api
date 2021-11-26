@@ -16,14 +16,15 @@ class SpesialProduk extends Model
     public $table = 'spesial_produk';
 
     protected $fillable = [
-        'id_produk', 'diskon',
+        'id_produk', 'diskon', 'id'
     ];
-    public function produk()
-    {
+    
+    public function produk(){
         return $this->belongsTo(Produk::class);
     }
+
     protected $hidden = [
         'created_at',
-        'updated_at', 'id_produk'
+        'updated_at'
     ];
 }
