@@ -22,11 +22,15 @@ class CreateProdukTable extends Migration
             $table->text('deskripsi');
             $table->string('foto_produk', 500);
             $table->string('status_produk');
+            $table->unsignedBigInteger('id_kategori');
             $table->unsignedBigInteger('id_pedagang')->nullable();
 
             $table->timestamps();
 
             $table->foreign('id_pedagang')->references('id_pedagang')->on('pedagang')
+            ->onUpdate('cascade')->onDelete('cascade');
+
+            $table->foreign('id_kategori')->references('id_kategori')->on('kategori_produk')
             ->onUpdate('cascade')->onDelete('cascade');
         });
     }
