@@ -141,13 +141,7 @@ class ProdukController extends Controller
                 ]
             );
         }
-            
-            $produk = Produk::find($request->input('id_produk'));
-            
-            $produk->jumlah_produk =$produk->jumlah_produk+$request->jumlah_produk;
-            $produk->save();
         
-
         if (!$update) {
             return response()->json(['error' => 'unknown error'], 500);
         }
