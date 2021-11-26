@@ -16,13 +16,13 @@ class CreateCustomerTable extends Migration
         Schema::create('customer', function (Blueprint $table) {
             $table->bigIncrements('id_customer');
             $table->string('nama_customer');
-            $table->bigInteger('nomor_telepon');
-            $table->string('alamat_customer')->nullable();
-            $table->date('tanggal_lahir');
+//             $table->bigInteger('nomor_telepon');
+//             $table->string('alamat_customer')->nullable();
+//             $table->date('tanggal_lahir');
             $table->string('email_customer')->unique();
-            $table->string('username')->unique();
+//             $table->string('username')->unique();
             $table->string('password');
-            $table->string('jenis_kelamin');
+//             $table->string('jenis_kelamin');
             $table->bigInteger('id_role')->unsigned()->nullable();
             $table->string('token')->nullable();
             $table->timestamps();
