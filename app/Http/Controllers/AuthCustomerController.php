@@ -14,31 +14,32 @@ class AuthCustomerController extends Controller
 
     public function register(Request $request)
     {
-        $this->validate($request, [
+         $this->validate($request, [
             'nama_customer' => 'required|min:5',
-            'nomor_telepon' => 'required',
+            // 'nomor_telepon' => 'required',
             'email_customer' => 'required|email',
-            'alamat_customer' => 'required',
-            'tanggal_lahir' => 'required',
-            'username' => 'required|unique:customer|min:5',
+            // 'alamat_customer' => 'required',
+            // 'tanggal_lahir' => 'required',
+            // 'username' => 'required|unique:customer|min:5',
             'password' => 'required|min:8',
-            'jenis_kelamin' => 'required',
-            'id_role' => 'required'
+            // 'jenis_kelamin' => 'required',
+           
         ]);
 
         try {
             $customer = new Customer;
             $customer->nama_customer = $request->input('nama_customer');
-            $customer->nomor_telepon = $request->input('nomor_telepon');
+            // $customer->nomor_telepon = $request->input('nomor_telepon');
+            // $customer->email_customer = $request->input('email_customer');
+            // $customer->alamat_customer = $request->input('alamat_customer');
+            // $customer->tanggal_lahir = $request->input('tanggal_lahir');
+            // $customer->username = $request->input('username');
             $customer->email_customer = $request->input('email_customer');
-            $customer->alamat_customer = $request->input('alamat_customer');
-            $customer->tanggal_lahir = $request->input('tanggal_lahir');
-            $customer->username = $request->input('username');
-            $customer->email_customer = $request->input('email_customer');
-            $customer->jenis_kelamin = $request->input('jenis_kelamin');
-            $customer->id_role = $request->input('id_role');
+            // $customer->jenis_kelamin = $request->input('jenis_kelamin');
+            $customer->id_role = 1;
             $plainPassword = $request->input('password');
             $customer->password = app('hash')->make($plainPassword);
+
 
             $customer->save();
             //return successful response
