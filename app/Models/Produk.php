@@ -36,7 +36,8 @@ class Produk extends Model
     public $table = 'produk';
 
      protected $fillable = [
-        'nama_produk','satuan','harga_jual','jumlah_produk','deskripsi','foto_produk','status_produk', 'id_pedagang'
+        'nama_produk','satuan','harga_jual','jumlah_produk','deskripsi','foto_produk','status_produk',
+        'id_pedagang', 'id_kategori'
     ];
 
     protected $hidden = [
