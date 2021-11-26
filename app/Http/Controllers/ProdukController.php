@@ -7,6 +7,7 @@ use App\Models\KeranjangProduk;
 use App\Models\ReviewProduk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use App\Models\Customer;
 use App\Models\SpesialProduk;
 
@@ -28,7 +29,8 @@ class ProdukController extends Controller
             'harga_jual' => 'required|numeric',
             'jumlah_produk' => 'required|numeric',
             'deskripsi' => 'required',
-            'status_produk' => 'required'
+            'status_produk' => 'required',
+            'id_kategori' => 'required'
         ]);
 
         if ($request->has('foto_produk')) {
@@ -40,7 +42,8 @@ class ProdukController extends Controller
                     'jumlah_produk' => $request->input('jumlah_produk'),
                     'deskripsi' => $request->input('deskripsi'),
                     'foto_produk' => $request->input('foto_produk'),
-                    'status_produk' => $request->input('status_produk')
+                    'status_produk' => $request->input('status_produk'),
+                    'id_kategori' => $request->input('id_kategori')
                 ]
             );
         } else {
@@ -51,7 +54,8 @@ class ProdukController extends Controller
                     'harga_jual' => $request->input('harga_jual'),
                     'jumlah_produk' => $request->input('jumlah_produk'),
                     'deskripsi' => $request->input('deskripsi'),
-                    'status_produk' => $request->input('status_produk')
+                    'status_produk' => $request->input('status_produk'),
+                    'id_kategori' => $request->input('id_kategori')
                 ]
             );
         }
@@ -87,27 +91,17 @@ class ProdukController extends Controller
         
     }
 
-    public function produkreview()
+     public function kategoriproduk($id_kategori)
     {
-        $review = ReviewProduk::all();
-        $produk = Produk::all();
-        
-        return response()->json(['message'=>'',
-        'produk'=>$produk,
-        'review'=>$review],200);
-    
-    }
-
-    public function spesialshow($id_produk, $id)
-    {
-        $produk = Produk::find($id_produk);
-        $spesialproduk = SpesialProduk::find($id);
-
+        $datakategori = DB::table('produk')->select('kategori_produk.id_kategori','kategori_produk.jenis_kategori', 'produk.id_produk', 'produk.id_kategori', 'produk.nama_produk', 'produk.satuan', 'produk.harga_jual', 'produk.jumlah_produk',	
+                                                    'produk.deskripsi',	'produk.foto_produk', 'produk.status_produk')
+                                           ->join('kategori_produk','produk.id_kategori', '=', 'kategori_produk.id_kategori')
+                                           ->where('kategori_produk.id_kategori', $id_kategori)
+                                           ->get();
         return response()->json([
-            'messages' => 'Diskon produk',
-            'produk' => $produk,
-            'diskon' => $spesialproduk
-        ], 200);
+            'Message' => 'Success',
+            'Kategori Produk' => $datakategori,
+            200]);
     }
 
     public function update(Request $request, $id_produk)
@@ -120,7 +114,8 @@ class ProdukController extends Controller
             'harga_jual' => 'required|numeric',
             'jumlah_produk' => 'required|numeric',
             'deskripsi' => 'required',
-            'status_produk' => 'required'
+            'status_produk' => 'required',
+            'id_kategori' => 'required'
         ]);
 
         if ($request->has('foto_produk')) {
@@ -130,7 +125,8 @@ class ProdukController extends Controller
                     'satuan' => $request->input('satuan'),
                     'harga_jual' => $request->input('harga_jual'),
                     'deskripsi' => $request->input('deskripsi'),
-                    'status_produk' => $request->input('status_produk')
+                    'status_produk' => $request->input('status_produk'),
+                    'id_kategori' => $request->input('id_kategori')
                 ]
             );
         } else {
@@ -140,7 +136,8 @@ class ProdukController extends Controller
                     'satuan' => $request->input('satuan'),
                     'harga_jual' => $request->input('harga_jual'),
                     'deskripsi' => $request->input('deskripsi'),
-                    'status_produk' => $request->input('status_produk')
+                    'status_produk' => $request->input('status_produk'),
+                    'id_kategori' => $request->input('id_kategori')
                 ]
             );
         }
