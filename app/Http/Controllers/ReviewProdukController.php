@@ -14,10 +14,10 @@ use Symfony\Component\Console\Helper\Table;
 class ReviewProdukController extends Controller
 {
     
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+//     public function __construct()
+//     {
+//         $this->middleware('auth');
+//     }
 
     public function create(Request $request)
     {
