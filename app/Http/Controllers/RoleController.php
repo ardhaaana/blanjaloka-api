@@ -16,11 +16,11 @@ class RoleController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            // 'status_user' => 'required|unique:role'
+            'status_user' => 'required|unique:role'
         ]);
 
         $role = [
-            // 'status_user' => $request->input('status_user')
+            'status_user' => $request->input('status_user')
         ];
 
         $role = Role::create($role);
@@ -42,21 +42,38 @@ class RoleController extends Controller
     }
 
     public function index()
-    { 
-        $role = Role::all();
-        return response()->json($role);
-    }
-
-    public function show()
     {
-        $id_customer = Customer::all();
-        $id_pengelola = PengelolaPasar::all();
-        $id_pedagang = Pedagang::all();
+        $role = Role::all();
         
-         return response()->json(['message'=>'Success',
-        'Data Customer'=>$id_customer,
-        'Data Pengelola'=>$id_pengelola,
-        'Data Pedagang'=>$id_pedagang],200);
+          if (!$role){
+            return response()->json([
+                'message' => 'Data tidak ditemukan',
+                'data' => $role
+            ], 404);
+        }
+
+        return response()->json([
+            'Message' => 'Success',
+            'Role' => $role,
+        200]);
+
+    }
+    public function show($id_role)
+    {
+        $role = Role::find($id_role);
+        
+          if (!$role){
+            return response()->json([
+                'message' => 'Data tidak ditemukan',
+                'data' => $role
+            ], 404);
+        }
+
+        return response()->json([
+            'Message' => 'Success',
+            'Role' => $role,
+        200]);
+
     }
 
     public function update(Request $request, $id_role)
