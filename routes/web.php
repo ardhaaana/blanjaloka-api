@@ -107,7 +107,7 @@ $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
         $router->post('/', ['uses' => 'RoleController@create']);
         $router->get('/', ['uses' =>  'RoleController@index']);
 
-        $router->get('/customer/pengelola/pedagang', ['uses' =>  'RoleController@show']);
+        $router->get('{id_role}', ['uses' =>  'RoleController@show']);
         $router->put('/{id_role}', ['uses' =>  'RoleController@update']);
         $router->delete('delete-role/{id_role}', ['uses' =>  'RoleController@destroy']);
     });
