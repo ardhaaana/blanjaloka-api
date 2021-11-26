@@ -14,10 +14,10 @@ use App\Models\SpesialProduk;
 class ProdukController extends Controller
 {
     
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+//     public function __construct()
+//     {
+//         $this->middleware('auth');
+//     }
 
     
     public function create(Request $request)
