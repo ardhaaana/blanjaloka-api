@@ -61,8 +61,7 @@ class KategoriProdukController extends Controller
         }
 
         $this->validate($request, [
-            'jenis_kategori' => 'required',
-            'daftar_produk' => 'required'
+            'jenis_kategori' => 'required'
         ]);
 
         $datakategori = $request->all();
