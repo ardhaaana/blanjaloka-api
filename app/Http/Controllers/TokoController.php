@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Toko;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 
 class TokoController extends Controller
@@ -55,15 +56,20 @@ class TokoController extends Controller
         return response()->json($toko);
     }
 
+    // Menampilkan isi data toko beserta pemilik
     public function show($id_toko)
     {
-        $toko = Toko::find($id_toko);
-        
-        if (empty($toko)) {
-            return response()->json(['error' => 'Toko Tidak Ditemukan'], 402);
-        }
+        $datatoko = DB::table('toko')
+        ->select('toko.id_toko', 'toko.nama_toko', 'toko.alamat_toko', 'toko.id_pedagang', 'pedagang.id_pedagang', 'pedagang.nama_pedagang', 'pedagang.nomor_telepon', 'pedagang.alamat_pedagang')
+        ->join('pedagang', 'toko.id_pedagang', '=', 'pedagang.id_pedagang')
+        ->where('toko.id_toko', $id_toko)
+        ->get();
 
-        return response()->json($toko);
+        return response()->json([
+            'Message' => 'Success',
+            'Informasi Toko' => $datatoko,
+            200
+        ]);
     }
 
     public function update(Request $request, $id_toko)
