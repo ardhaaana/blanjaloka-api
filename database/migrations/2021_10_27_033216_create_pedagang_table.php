@@ -19,8 +19,10 @@ class CreatePedagangTable extends Migration
             $table->bigInteger('nomor_telepon');
             $table->string('alamat_pedagang');
             $table->date('tanggal_lahir');
-            $table->bigInteger('nomor_ktp');
             $table->string('foto_rekening');
+            $table->bigInteger('nomor_ktp');
+            $table->string('nama_toko');
+            $table->string('alamat_toko');
             $table->unsignedBigInteger('id_pendaftaran')->nullable();
             $table->timestamps();
 
