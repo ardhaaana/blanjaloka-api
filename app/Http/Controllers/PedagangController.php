@@ -6,16 +6,13 @@ use App\Models\Pedagang;
 use App\Models\Toko;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 
 class PedagangController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
+  
     public function create(Request $request)
     {
         $this->validate($request, [
@@ -80,6 +77,11 @@ class PedagangController extends Controller
         return response()->json($pedagang);
     }
 
+      public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function search(Request $request)
     {
         # code...
@@ -96,7 +98,7 @@ class PedagangController extends Controller
 
         if ($fulltext == 'true') {
             $data = Pedagang::query()
-                ->whereRaw("MATCH(nama_toko,alamat_toko) AGAINST(? IN BOOLEAN MODE)", array($query))
+                ->whereRaw("MATCH(nama_toko, alamat_toko) AGAINST(? IN BOOLEAN MODE)", array($query))
                 ->orderBy($sorts[0], $sorts[1])
                 ->get();
             return response()->json($data);
@@ -107,6 +109,9 @@ class PedagangController extends Controller
             ->orWhere('alamat_toko', 'like', '%' . $query . '%')
             ->orderBy($sorts[0], $sorts[1])
             ->get();
+        
+        $data = DB::table('pedagang')->select('nama_toko', 'alamat_toko')
+                        ->get();
 
         return response()->json($data);
      
