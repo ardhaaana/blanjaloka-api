@@ -10,10 +10,10 @@ use Illuminate\Support\Str;
 
 class ResepController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+//     public function __construct()
+//     {
+//         $this->middleware('auth');
+//     }
 
     public function create(Request $request)
     {
