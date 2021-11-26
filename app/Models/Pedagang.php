@@ -15,7 +15,8 @@ class Pedagang extends Model
     public $table = 'pedagang';
 
     protected $fillable = [
-        'nama_pedagang', 'nomor_telepon', 'alamat_pedagang', 'tanggal_lahir', 'nomor_ktp', 'foto_rekening', 
+        'nama_pedagang', 'nomor_telepon', 'alamat_pedagang', 'tanggal_lahir', 'nomor_ktp', 'foto_rekening',
+        'nama_toko', 'alamat_toko' 
     ];
 
     public function role(){
