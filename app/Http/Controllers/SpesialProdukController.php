@@ -169,6 +169,7 @@ class SpesialProdukController extends Controller{
 
         if (!$spesialproduk) {
             return response()->json([
+                'success' => false, 
                 'message' => 'Data Produk Spesial Tidak ditemukan',
                 'data' => $spesialproduk
             ], 404);
@@ -182,7 +183,7 @@ class SpesialProdukController extends Controller{
 
         if($query){
             return response()->json([
-                'success' => 1,
+                'success' => true,
                 'message' => 'Diskon Spesial Produk Berhasil diupdate'
             ]);
         }
@@ -195,6 +196,7 @@ class SpesialProdukController extends Controller{
 
         if (!$spesialproduk) {
             return response()->json([
+                'success' => false, 
                 'message' => 'Data tidak ditemukan',
                 'data' => $spesialproduk
             ], 404);
@@ -203,6 +205,7 @@ class SpesialProdukController extends Controller{
         $spesialproduk->delete();
 
         return response()->json([
+            'success' => true, 
             'message' => 'Diskon berhasil dihapus',
             'data' => $spesialproduk
         ], 200);
