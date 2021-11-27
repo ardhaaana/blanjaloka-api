@@ -25,6 +25,7 @@ class KeranjangProdukController extends Controller{
         if(count(KeranjangProduk::where('id_produk', $request->input('id_produk'))->where('id_customer', $request->input('id_customer'))->get()) > 0){
 
             return response([
+                'success' => false,
                 'message' => 'Produk Sudah Ada di Keranjang'
             ], 200);
 
@@ -38,6 +39,7 @@ class KeranjangProdukController extends Controller{
     
             if($keranjang){
                 return response()->json([
+                    'success' => true,
                     'message' => 'Produk ditambahkan ke keranjang',
                     'data' => $keranjang
                 ], 200);
@@ -69,13 +71,15 @@ class KeranjangProdukController extends Controller{
         if($isikeranjang && $subtotal){
         
             return response()->json([
+                'success' => true,
+                'message' => 'Menampilkan Isi Keranjang',
                 'keranjang' => $isikeranjang,
                 'sub_total' => $_subtotal
             ], 200);
         
         }else{
 
-            return response()->json(['error' => 'unknown error'], 500);
+            return response()->json(['success' => false, 'error' => 'unknown error'], 500);
         
         }
 
@@ -93,7 +97,7 @@ class KeranjangProdukController extends Controller{
         ]);
 
         if(!$query){
-            return response()->json(['error' => 'unknown error'], 500);
+            return response()->json(['success' => false, 'error' => 'unknown error'], 500);
         }
 
         $data = DB::table('keranjang_produk')->select('keranjang_produk.id_keranjang', 'produk.nama_produk', 'keranjang_produk.jumlah_produk', 'produk.harga_jual', DB::raw("keranjang_produk.`jumlah_produk` * produk.`harga_jual` AS total"))
@@ -102,6 +106,7 @@ class KeranjangProdukController extends Controller{
                 ->get();
 
         return response()->json([
+            'success' => true, 
             'message' => "Keranjang Berhasil Diperbaruhi",
             'data' => $data
         ], 200);
@@ -115,11 +120,13 @@ class KeranjangProdukController extends Controller{
 
         if(!$query){
             return response()->json([
+                'success' => false, 
                 'message' => 'unknown error'
             ], 500);
         }
 
         return response([
+            'success' => true, 
             'message' => "Keranjang Berhasil Dihapus"
         ]);
 
