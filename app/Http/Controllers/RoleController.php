@@ -27,11 +27,13 @@ class RoleController extends Controller
 
         if ($role){
             $result = [
+                'success' => true, 
                 'message' => 'Data berhasil ditambahkan',
                 'data' => $role
             ];
         } else {
             $result = [
+                'success' => false, 
                 'message' => 'Data tidak berhasil ditambahkan',
                 'data' => ''
             ];
@@ -47,13 +49,15 @@ class RoleController extends Controller
         
           if (!$role){
             return response()->json([
+                'success' => false, 
                 'message' => 'Data tidak ditemukan',
                 'data' => $role
             ], 404);
         }
 
         return response()->json([
-            'Message' => 'Success',
+            'success' => true, 
+            'Message' => 'Data ditemukan',
             'Role' => $role,
         200]);
 
@@ -64,13 +68,15 @@ class RoleController extends Controller
         
           if (!$role){
             return response()->json([
+                'success' => false, 
                 'message' => 'Data tidak ditemukan',
                 'data' => $role
             ], 404);
         }
 
         return response()->json([
-            'Message' => 'Success',
+            'success' => true, 
+            'Message' => 'Data ditemukan',
             'Role' => $role,
         200]);
 
@@ -82,6 +88,7 @@ class RoleController extends Controller
 
        if (!$role){
             return response()->json([
+                'success' => false, 
                 'message' => 'Data tidak ditemukan',
                 'data' => $role
             ], 404);
@@ -95,7 +102,7 @@ class RoleController extends Controller
         $role->fill($datarole);
         $role->save();
         
-        return response()->json($datarole);
+        return response()->json(['success' => true, 'message' => 'Menampilkan Role', 'Data' => $datarole],200);
     }
 
     public function destroy($id_role)
@@ -104,6 +111,7 @@ class RoleController extends Controller
 
         if (!$role){
             return response()->json([
+                'success' => false, 
                 'message' => 'Data tidak ditemukan',
                 'data' => $role
             ], 404);
@@ -112,6 +120,7 @@ class RoleController extends Controller
         $role->delete();
 
         return response()->json([
+                'success' => true, 
                 'message' => 'Data berhasil dihapus',
                 'data' => $role
             ], 200);
