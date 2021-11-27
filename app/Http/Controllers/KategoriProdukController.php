@@ -10,10 +10,10 @@ use App\Http\Controllers\Controller;
 
 class KategoriProdukController extends Controller
 {
-//     public function __construct()
-//     {
-//         $this->middleware('auth');
-//     }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    // }
 
     public function create(Request $request)
     {
@@ -29,6 +29,7 @@ class KategoriProdukController extends Controller
 
         if ($kategori) {
             return response()->json([
+                'success' => true,
                 'message' => 'Kategori Produk create success!',
                 'data' => $kategori
             ], 201);
@@ -40,9 +41,10 @@ class KategoriProdukController extends Controller
         $kategori = KategoriProduk::all();
 
         if (empty($kategori)) {
-            return response()->json(['error' => 'Kategori Produk Tidak Ditemukan'], 402);
+            return response()->json(['success' => false,'error' => 'Kategori Produk Tidak Ditemukan'], 402);
         }
-        return response()->json($kategori);
+        return response()->json(['success' => true, 'message' => 'Menampilkan Kategori Produk', 
+                                'Data' => $kategori]);
     }
 
     public function update(Request $request, $id_kategori)
@@ -51,6 +53,7 @@ class KategoriProdukController extends Controller
 
         if (!$kategori) {
             return response()->json([
+                'success' => false,
                 'message' => 'Data tidak ditemukan',
                 'data' => $kategori
             ], 404);
@@ -69,11 +72,10 @@ class KategoriProdukController extends Controller
         $kategori->save();
         
          return response()->json([
+            'success' => true,
             'message' => 'Kategori Produk update!',
-            'code' => 200
-        ]);
-
-        return response()->json($kategori);
+            'Data' => $kategori
+        ],200);
     }
 
     public function destroy($id_kategori)
@@ -82,6 +84,7 @@ class KategoriProdukController extends Controller
 
         if (!$kategori) {
             return response()->json([
+                'success' => false,
                 'message' => 'Data tidak ditemukan',
                 'data' => $kategori
             ], 404);
@@ -90,6 +93,7 @@ class KategoriProdukController extends Controller
         $kategori->delete();
 
         return response()->json([
+            'success' => true,
             'message' => 'Data berhasil dihapus',
             'data' => $kategori
         ], 200);
