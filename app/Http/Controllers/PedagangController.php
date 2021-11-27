@@ -11,7 +11,11 @@ use Illuminate\Support\Facades\DB;
 
 class PedagangController extends Controller
 {
-
+    
+      public function __construct()
+    {
+        $this->middleware('auth');
+    }
   
     public function create(Request $request)
     {
@@ -54,13 +58,13 @@ class PedagangController extends Controller
         }
              
             if (empty($pedagang)) {
-            return response()->json(['error' => 'unknown error'], 501);
+            return response()->json(['success' => false, 'error' => 'unknown error'], 501);
             }
 
             return response()->json([
+                'success' => true, 
                 'message' => 'Pedagang create success!',
-                'code' => 200,
-                'data' => $pedagang
+                'data' => $pedagang,200
             ]);
 
     }
@@ -71,15 +75,11 @@ class PedagangController extends Controller
         $pedagang = Pedagang::all();
         
         if (empty($pedagang)) {
-            return response()->json(['error' => 'Pedagang Tidak Ditemukan'], 402);
+            return response()->json(['success' => false, 'error' => 'Pedagang Tidak Ditemukan'], 402);
         }
 
-        return response()->json($pedagang);
-    }
-
-      public function __construct()
-    {
-        $this->middleware('auth');
+        return response()->json(['success' => true, 'message' => 'Menampilkan Data Pedagang',
+                                'Data' =>$pedagang],200);
     }
 
     public function search(Request $request)
@@ -88,7 +88,7 @@ class PedagangController extends Controller
         $query = $request->query('query');
 
         if (empty($query)) {
-            return response()->json(['error' => 'Query not specified!'], 400);
+            return response()->json(['success' => false,'error' => 'Query not specified!'], 400);
         }
 
         $fulltext = $request->query('fulltext', 'false');
@@ -113,7 +113,7 @@ class PedagangController extends Controller
         $data = DB::table('pedagang')->select('nama_toko', 'alamat_toko')
                         ->get();
 
-        return response()->json($data);
+        return response()->json(['success' => true,'message' => 'Menampilkan Pencarian', 'Data' => $data],200);
      
     }
 
@@ -123,9 +123,9 @@ class PedagangController extends Controller
         $pedagang = Pedagang::find($id_pedagang);
         
         if (empty($pedagang)) {
-            return response()->json(['error' => 'Pedagang Tidak Ditemukan'], 402);
+            return response()->json(['success' => false,'error' => 'Pedagang Tidak Ditemukan'], 402);
         }
-        return response()->json($pedagang);
+        return response()->json(['success' => true, 'message' => 'Menampilkan Data Pedagang', 'Data' => $pedagang],200);
         
     }
 
@@ -172,10 +172,11 @@ class PedagangController extends Controller
         }
 
         if (!$update) {
-            return response()->json(['error' => 'unknown error'], 500);
+            return response()->json(['success' => false,'error' => 'unknown error'], 500);
         }
         
         return response()->json([
+            'success' => true,
             'message' => 'Pedagang update!',
             'code' => 200
         ]);
@@ -188,6 +189,7 @@ class PedagangController extends Controller
 
         if (!$pedagang) {
             return response()->json([
+                'success' => false,
                 'message' => 'Data tidak ditemukan',
                 'data' => $pedagang
             ], 404);
@@ -196,6 +198,7 @@ class PedagangController extends Controller
         $pedagang->delete();
 
         return response()->json([
+            'success' => true,
             'message' => 'Data berhasil dihapus',
             'data' => $pedagang
         ], 200);
