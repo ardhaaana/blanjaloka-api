@@ -67,16 +67,6 @@ $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
         $router->delete('/{id_pedagang}', ['uses' =>  'PedagangController@destroy']);
 
     });
-
-    $router->group(['prefix' => 'api/toko'], function () use ($router) {  
-        $router->post('/', ['uses' => 'TokoController@create']);
-        $router->get('/', ['uses' =>  'TokoController@index']);
-
-        $router->get('/search', ['uses' => 'TokoController@search']);
-        $router->get('/{id_toko}', ['uses' =>  'TokoController@show']);
-        $router->put('update-data/{id_toko}', ['uses' =>  'TokoController@update']);
-        $router->delete('delete-toko/{id_toko}', ['uses' =>  'TokoController@destroy']);
-    });
     
     $router->group(['prefix' => 'api/spesial-produk'], function () use ($router) {
         $router->post('/', ['uses' => 'SpesialProdukController@create']);
