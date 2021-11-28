@@ -28,17 +28,17 @@ class ReviewProdukController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => 0, 'message' => 'Required or incorrect fields', 'errors' => $validator->errors()], 500);
+            return response()->json(['code' => 500,'success' => false, 'message' => 'Required or incorrect fields', 'errors' => $validator->errors()]);
         }
 
         $produk = Produk::find($request->input('id_produk'));
         $customer = Customer::find($request->input('id_customer'));
 
         if (!$produk) {
-            return response()->json(['success' => 0, 'message' => 'Produk tidak ditemukan'], 404);
+            return response()->json(['code' => 404,'success' => false, 'message' => 'Produk tidak ditemukan']);
         }
         if (!$customer) {
-            return response()->json(['success' => 0, 'message' => 'ID Customer tidak ditemukan'], 404);
+            return response()->json(['code' => 404,'success' => false, 'message' => 'ID Customer tidak ditemukan']);
         }
 
         $review = new ReviewProduk();
@@ -51,10 +51,11 @@ class ReviewProdukController extends Controller
 
         if ($review) {
             return response()->json([
+                'code' => 200,
                 'success' => true,
                 'message' => 'Pemberian Ulasan berhasil',
                 'data' => $review
-            ], 201);
+            ]);
         }
     }
 
@@ -70,10 +71,10 @@ class ReviewProdukController extends Controller
                     ->get();
 
         if (empty($isireview)) {
-            return response()->json(['success' => false,'error' => 'Review Produk Tidak Ditemukan'], 402);
+            return response()->json(['code' => 402,'success' => false,'error' => 'Review Produk Tidak Ditemukan']);
         }
 
-        return response()->json(['success' => true, 'message' => 'Menampilkan Review', 'Data' => $isireview],200);
+        return response()->json(['code' => 200,'success' => true, 'message' => 'Menampilkan Review', 'Data' => $isireview]);
     }
 
     public function update(Request $request, $id)
@@ -89,20 +90,22 @@ class ReviewProdukController extends Controller
 
         if (!$review) {
             return response()->json([
+                'code' => 404,
                 'success' => false, 
                 'message' => 'Data tidak ditemukan',
                 'data' => $review
-            ], 404);
+            ]);
         }
         
         if (!$review) {
-            return response()->json(['success' => false, 'error' => 'unknown error'], 500);
+            return response()->json(['code' => 500,'success' => false, 'error' => 'unknown error']);
         }
 
          return response()->json([
+             'code' => 200,
              'success' => true, 
             'message' => 'Review Produk update!'
-        ],200);
+        ]);
     }
 
 
@@ -112,19 +115,21 @@ class ReviewProdukController extends Controller
 
         if (!$review) {
             return response()->json([
+                'code' => 404,
                 'success' => false, 
                 'message' => 'Review tidak ditemukan',
                 'data' => $review
-            ], 404);
+            ]);
         }
 
         $review->delete();
 
         return response()->json([
+            'code' => 200,
             'success' => true, 
             'message' => 'Review berhasil dihapus',
             'data' => $review
-        ], 200);
+        ]);
     }
 
 }
