@@ -29,10 +29,11 @@ class KategoriProdukController extends Controller
 
         if ($kategori) {
             return response()->json([
+                'code' => 200,
                 'success' => true,
                 'message' => 'Kategori Produk create success!',
                 'data' => $kategori
-            ], 201);
+            ]);
         }
     }
 
@@ -41,9 +42,10 @@ class KategoriProdukController extends Controller
         $kategori = KategoriProduk::all();
 
         if (empty($kategori)) {
-            return response()->json(['success' => false,'error' => 'Kategori Produk Tidak Ditemukan'], 402);
+            return response()->json(['code' => 402,'success' => false,'error' => 'Kategori Produk Tidak Ditemukan']);
         }
-        return response()->json(['success' => true, 'message' => 'Menampilkan Kategori Produk', 
+        return response()->json(['code' => 200,'success' => true, 
+                                'message' => 'Menampilkan Kategori Produk', 
                                 'Data' => $kategori]);
     }
 
@@ -53,10 +55,11 @@ class KategoriProdukController extends Controller
 
         if (!$kategori) {
             return response()->json([
+                'code' => 404,
                 'success' => false,
                 'message' => 'Data tidak ditemukan',
                 'data' => $kategori
-            ], 404);
+            ]);
         }
 
         if (!$kategori) {
@@ -72,10 +75,11 @@ class KategoriProdukController extends Controller
         $kategori->save();
         
          return response()->json([
+            'code' => 200,
             'success' => true,
             'message' => 'Kategori Produk update!',
             'Data' => $kategori
-        ],200);
+        ]);
     }
 
     public function destroy($id_kategori)
@@ -84,18 +88,20 @@ class KategoriProdukController extends Controller
 
         if (!$kategori) {
             return response()->json([
+                'code' => 404,
                 'success' => false,
                 'message' => 'Data tidak ditemukan',
                 'data' => $kategori
-            ], 404);
+            ]);
         }
 
         $kategori->delete();
 
         return response()->json([
+            'code' => 200,
             'success' => true,
             'message' => 'Data berhasil dihapus',
             'data' => $kategori
-        ], 200);
+        ]);
     }
 }
