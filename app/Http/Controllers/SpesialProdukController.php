@@ -34,10 +34,11 @@ class SpesialProdukController extends Controller{
         if(count($query) > 0){
 
             return response()->json([
+                'code' => 500,
                 'success' => 0,
                 'message' => 'Produk yang anda masukkan telah terdaftar di special produk',
                 'data' => $query
-            ], 500);
+            ]);
 
         }
 
@@ -45,9 +46,10 @@ class SpesialProdukController extends Controller{
         if(count(DB::table('produk')->where('id_produk', $request->input('id_produk'))->get()) == 0){
 
             return response()->json([
+                'code' => 500,
                 'success' => 0,
                 'message' => 'Id Produk Tidak Ditemukan'
-            ], 500);
+            ]);
 
         }
 
@@ -63,10 +65,11 @@ class SpesialProdukController extends Controller{
 
         if ($spesialproduk) {
             return response()->json([
+                'code' => 200,
                 'success' => 1,
                 'message' => 'Pembuatan spesial produk berhasil',
                 'data' => $query
-            ], 202);
+            ]);
         }
 
     }
@@ -105,6 +108,7 @@ class SpesialProdukController extends Controller{
         }
 
         return response()->json([
+            'code' => 200,
             'success' => 1,
             'message' => 'Produk Special',
             'total' => count($spesialproduk),
@@ -118,7 +122,7 @@ class SpesialProdukController extends Controller{
         $query = $request->query('query');
 
         if (empty($query)) {
-            return response()->json(['error' => 'Query not specified!'], 400);
+            return response()->json(['code' => 400,'error' => 'Query not specified!']);
         }
 
         $spesialproduk = DB::table('spesial_produk')
@@ -152,6 +156,7 @@ class SpesialProdukController extends Controller{
         }
 
         return response()->json([
+            'code' => 200,
             'success' => 1,
             'message' => 'Produk Special Filter',
             'keyword' => $query,
@@ -169,10 +174,11 @@ class SpesialProdukController extends Controller{
 
         if (!$spesialproduk) {
             return response()->json([
+                'code' => 404,
                 'success' => false, 
                 'message' => 'Data Produk Spesial Tidak ditemukan',
                 'data' => $spesialproduk
-            ], 404);
+            ]);
         }
 
         $this->validate($request, [
@@ -183,6 +189,7 @@ class SpesialProdukController extends Controller{
 
         if($query){
             return response()->json([
+                'code' => 200,
                 'success' => true,
                 'message' => 'Diskon Spesial Produk Berhasil diupdate'
             ]);
@@ -196,19 +203,21 @@ class SpesialProdukController extends Controller{
 
         if (!$spesialproduk) {
             return response()->json([
+                'code' => 404,
                 'success' => false, 
                 'message' => 'Data tidak ditemukan',
                 'data' => $spesialproduk
-            ], 404);
+            ]);
         }
 
         $spesialproduk->delete();
 
         return response()->json([
+            'code' => 200,
             'success' => true, 
             'message' => 'Diskon berhasil dihapus',
             'data' => $spesialproduk
-        ], 200);
+        ]);
 
     }
 }
