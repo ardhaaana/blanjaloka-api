@@ -61,22 +61,23 @@ class ProdukController extends Controller
         }
 
         if (empty($produk)) {
-            return response()->json(['success' => false,'error' => 'unknown error'], 501);
+            return response()->json(['code' => 500,'success' => false,'error' => 'unknown error']);
         }
 
         return response()->json([
+            'code' => 200,
             'success' => true,
             'message' => 'Product create success!',
             'data' => $produk
-        ],200);
+        ]);
 
     }
     public function index()
     {
        
         $produk = Produk::all();
-        return response(['success' => true, 'message' => 'Menampilkan Data Produk',
-        'Data' => $produk],200);
+        return response(['code' => 200,'success' => true, 'message' => 'Menampilkan Data Produk',
+        'Data' => $produk]);
     	
     }
 
@@ -85,10 +86,10 @@ class ProdukController extends Controller
         $produk = Produk::find($id_produk);
         
         if (empty($produk)) {
-            return response()->json(['success' => false,'error' => 'Produk Tidak Ditemukan'], 402);
+            return response()->json(['code' => 402,'success' => false,'error' => 'Produk Tidak Ditemukan']);
         }
 
-        return response()->json(['success' => true,'message' => 'Menampilkan Data Produk', 'Data' => $produk]);
+        return response()->json(['code' => 200,'success' => true,'message' => 'Menampilkan Data Produk', 'Data' => $produk]);
         
     }
 
@@ -100,10 +101,11 @@ class ProdukController extends Controller
                                            ->where('kategori_produk.id_kategori', $id_kategori)
                                            ->get();
         return response()->json([
+            'code' => 200,
             'success' => true,
             'Message' => 'Menampilkan Kategori Produk',
             'Kategori Produk' => $datakategori
-            ],200);
+            ]);
     }
 
     public function update(Request $request, $id_produk)
@@ -145,47 +147,51 @@ class ProdukController extends Controller
         }
 
         if (!$update) {
-            return response()->json(['success' => false,'error' => 'unknown error'], 500);
+            return response()->json(['code' => 500,'success' => false,'error' => 'unknown error']);
         }
        
         
         return response()->json([
+            'code' => 200,
             'success' => true,
             'message' => 'Produk update!'
-        ],200);
+        ]);
 
     }
 
     public function search(Request $request)
     {
         # code...
+        
         $query = $request->query('query');
-
+        
         if (empty($query)) {
-            return response()->json(['success' => false,'error' => 'Query not specified!'], 400);
+            return response()->json(['code' => 400,'success' => false,'error' => 'Query not specified!']);
         }
-
+        
         $fulltext = $request->query('fulltext', 'false');
         $sortBy = $request->query('sort_by', 'nama_produk.asc');
         $sorts = explode('.', $sortBy);
-
-
+        
+        
         if ($fulltext == 'true') {
             $data = Produk::query()
-                ->whereRaw("MATCH(nama_produk,deskripsi) AGAINST(? IN BOOLEAN MODE)", array($query))
-                ->orderBy($sorts[0], $sorts[1])
-                ->get();
-            return response()->json($data);
-        }
-
-        $data = Produk::query()
-            ->where('nama_produk', 'like', '%' . $query . '%')
-            ->orWhere('deskripsi', 'like', '%' . $query . '%')
+            ->whereRaw("MATCH(nama_produk,deskripsi) AGAINST(? IN BOOLEAN MODE)", array($query))
             ->orderBy($sorts[0], $sorts[1])
             ->get();
+            return response()->json($data);
+        }
+        
 
-        return response()->json(['success' => true, 'message' => 'Menampilkan Pencarian Produk',
-        'Data' => $data],200);
+        $data = Produk::query()
+        ->where('nama_produk', 'like', '%' . $query . '%')
+        ->orWhere('deskripsi', 'like', '%' . $query . '%')
+        ->orderBy($sorts[0], $sorts[1])
+        ->get();
+        
+        return response()->json(['code' => 200,'success' => true, 
+                                'message' => 'Menampilkan Pencarian Produk',
+                                'Data' => $data]);
      
     }
 
@@ -195,19 +201,21 @@ class ProdukController extends Controller
 
         if (!$produk) {
             return response()->json([
+                'code' => 404,
                 'success' => false,
                 'message' => 'Data tidak ditemukan',
                 'data' => $produk
-            ], 404);
+            ]);
         }
 
         $produk->delete();
 
         return response()->json([
+            'code' => 200,
             'success' => true,
             'message' => 'Data berhasil dihapus',
             'data' => $produk
-        ], 200);
+        ]);
     }
 
 }
