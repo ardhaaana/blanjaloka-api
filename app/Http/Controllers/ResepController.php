@@ -38,10 +38,11 @@ class ResepController extends Controller
 
         if ($resep) {
             return response()->json([
+                'code' => 200,
                 'success' => true,
                 'message' => 'Resep Makanan create success!',
                 'data' => $resep
-            ], 200);
+            ]);
         }
     }
 
@@ -50,9 +51,9 @@ class ResepController extends Controller
         $resep = Resep::all();
 
         if (empty($resep)) {
-            return response()->json(['success' => false,'error' => 'Resep Tidak Ditemukan'], 402);
+            return response()->json(['code' => 402,'success' => false,'error' => 'Resep Tidak Ditemukan']);
         }
-        return response()->json(['success' => true, 'message' => 'Menampilkan Resep', 'Data' => $resep],200);
+        return response()->json(['code' => 200,'success' => true, 'message' => 'Menampilkan Resep', 'Data' => $resep]);
     }
 
     public function show($kode_resep)
@@ -60,9 +61,9 @@ class ResepController extends Controller
         $resep = Resep::find($kode_resep);
 
         if (empty($resep)) {
-            return response()->json(['success' => false,'error' => 'Resep Tidak Ditemukan'], 402);
+            return response()->json(['code' => 402,'success' => false,'error' => 'Resep Tidak Ditemukan']);
         }
-        return response()->json(['success' => true, 'message' => 'Menampilkan Resep', 'Data' => $resep],200);
+        return response()->json(['code' => 200,'success' => true, 'message' => 'Menampilkan Resep', 'Data' => $resep]);
     }
 
     public function update(Request $request, $kode_resep)
@@ -71,10 +72,11 @@ class ResepController extends Controller
 
         if (!$resep) {
             return response()->json([
+                'code' => 404,
                 'success' => false,
                 'message' => 'Data tidak ditemukan',
                 'data' => $resep
-            ], 404);
+            ]);
         }
 
         $this->validate($request, [
@@ -89,13 +91,14 @@ class ResepController extends Controller
         $resep->save();
         
         if (!$resep) {
-            return response()->json(['success' => false,'error' => 'unknown error'], 500);
+            return response()->json(['code' => 500,'success' => false,'error' => 'unknown error']);
         }
 
          return response()->json([
-            'success' => false,
+            'code' => 200,
+            'success' => true,
             'message' => 'Resep Makanan update!'
-        ],200);
+        ]);
     }
 
     public function search(Request $request)
@@ -104,7 +107,7 @@ class ResepController extends Controller
         $query = $request->query('query');
 
         if (empty($query)) {
-            return response()->json(['success' => false,'error' => 'Query not specified!'], 400);
+            return response()->json(['code' => 400,'success' => false,'error' => 'Query not specified!']);
         }
 
         $fulltext = $request->query('fulltext', 'false');
@@ -125,7 +128,9 @@ class ResepController extends Controller
             ->orderBy($sorts[0], $sorts[1])
             ->get();
 
-        return response()->json(['success' => true,'message' => 'Menampilkan Pencarian', 'Data' => $data],200);
+        return response()->json(['code' => 200,'success' => true,
+                                'message' => 'Menampilkan Pencarian', 
+                                'Data' => $data]);
     }
 
     public function destroy($kode_resep)
@@ -134,18 +139,20 @@ class ResepController extends Controller
 
         if (!$resep) {
             return response()->json([
+                'code' => 404,
                 'success' => false,
                 'message' => 'Data tidak ditemukan',
                 'data' => $resep
-            ], 404);
+            ]);
         }
 
         $resep->delete();
 
         return response()->json([
+            'code' => 200,
             'success' => true,
             'message' => 'Data berhasil dihapus',
             'data' => $resep
-        ], 200);
+        ]);
     }
 }
