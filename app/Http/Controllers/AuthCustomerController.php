@@ -45,9 +45,8 @@ class AuthCustomerController extends Controller
 
             $customer->save();
             //return successful response
-            return response()->json(['Success' => true,'message' => 'Registrasi Sukses',
-            'Data' => $customer,
-            ], 200);
+            return response()->json(['code' => 200,'Success' => true,'message' => 'Registrasi Sukses',
+            'Data' => $customer]);
 
         } catch (\Exception $e) {
             //return error message
@@ -65,15 +64,16 @@ class AuthCustomerController extends Controller
         $login = $request->only(['email_customer','password']);
         
         if (! $token = Auth::attempt($login)) {
-            return response()->json(['Success' => false,'message' => 'Login Gagal'], 401);
+            return response()->json(['code' => 401,'Success' => false,'message' => 'Login Gagal']);
         }
-
+        
         $customer = $request->all('email_customer');
 
         return response()->json([
+              'code' => 200,
               'Success' => true,
               'message' => 'Login sukses',
-              'data' => $customer,
+              'data' => [$customer],
                   'token' => $token,
                   'token_type' => 'bearer'
           ]);
@@ -89,12 +89,13 @@ class AuthCustomerController extends Controller
         $login = $request->only(['nomor_telepon', 'password']);
 
         if (! $token = Auth::attempt($login)) {
-            return response()->json(['success' => false,'message' => 'Login Gagal'], 401);
+            return response()->json(['code' => 401,'success' => false,'message' => 'Login Gagal']);
         }
 
         $customer = $request->all('nomor_telepon');
 
         return response()->json([
+              'code' => 200,
               'Success' => true,
               'message' => 'Login sukses',
               'data' => $customer,
@@ -131,13 +132,13 @@ class AuthCustomerController extends Controller
         }
 
         if (!$update) {
-            return response()->json(['Success' => false,'error' => 'unknown error'], 500);
+            return response()->json(['code' => 500,'Success' => false,'error' => 'unknown error']);
         }
 
         return response()->json([
+            'code' => 200,
             'Success' => true,
-            'message' => 'Edit Profile update!',
-            'code' => 200
+            'message' => 'Edit Profile update!'
         ]);
     }
     public function emailupdate(Request $request, $id_customer)
@@ -163,13 +164,13 @@ class AuthCustomerController extends Controller
 
 
         if (!$update) {
-            return response()->json(['success' => false,'error' => 'unknown error'], 500);
+            return response()->json(['code' => 500,'success' => false,'error' => 'unknown error']);
         }
 
         return response()->json([
+            'code' => 200,
             'Success' => true,
-            'message' => 'Edit Email update!',
-            'code' => 200
+            'message' => 'Edit Email update!'
         ]);
     }
     public function passwordupdate(Request $request, $id_customer)
@@ -198,13 +199,14 @@ class AuthCustomerController extends Controller
 
 
         if (!$update) {
-            return response()->json(['success' => false,'error' => 'unknown error'], 500);
+            return response()->json([ 'code' => 500,'success' => false,'error' => 'unknown error']);
         }
 
         return response()->json([
+            'code' => 200,
             'Success' => true,
-            'message' => 'Edit Password update!',
-            'code' => 200
+            'message' => 'Edit Password update!'
+            
         ]);
     }
     public function teleponupdate(Request $request, $id_customer)
@@ -230,13 +232,13 @@ class AuthCustomerController extends Controller
 
 
         if (!$update) {
-            return response()->json(['success' => false,'error' => 'unknown error'], 500);
+            return response()->json(['code' => 500,'success' => false,'error' => 'unknown error']);
         }
 
         return response()->json([
+            'code' => 200,
             'Success' => true,
-            'message' => 'Edit Nomor telepon update!',
-            'code' => 200
+            'message' => 'Edit Nomor telepon update!'
         ]);
     }
     public function index()
@@ -244,29 +246,32 @@ class AuthCustomerController extends Controller
         $customer = Customer::all();
 
         if (empty($customer)) {
-            return response()->json(['error' => 'Data Akun Tidak Ditemukan'], 402);
+            return response()->json(['code' => 402,'error' => 'Data Akun Tidak Ditemukan']);
         }
-        return response()->json(['Success' => true, 'Message' => 'Berhasil Menampilkan Data Customer', 'Data Customer' => $customer]);
+        return response()->json(['code' => 200,'Success' => true, 'Message' => 'Berhasil Menampilkan Data Customer', 'Data Customer' => $customer]);
     }
+
     public function destroy($id_customer)
     {
         $customer = Customer::find($id_customer);
 
         if (!$customer) {
             return response()->json([
+                'code' => 404,
                 'Success' => false,
                 'message' => 'Data tidak ditemukan',
                 'data' => $customer
-            ], 404);
+            ]);
         }
 
         $customer->delete();
 
         return response()->json([
+            'code' => 200,
             'Success' => true,
             'message' => 'Data berhasil dihapus',
             'data' => $customer
-        ], 200);
+        ]);
     }
 
     // public function logout(Request $request)
