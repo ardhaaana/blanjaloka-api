@@ -58,13 +58,14 @@ class PedagangController extends Controller
         }
              
             if (empty($pedagang)) {
-            return response()->json(['success' => false, 'error' => 'unknown error'], 501);
+            return response()->json(['code' => 500,'success' => false, 'error' => 'unknown error']);
             }
 
             return response()->json([
+                'code' => 200,
                 'success' => true, 
                 'message' => 'Pedagang create success!',
-                'data' => $pedagang,200
+                'data' => $pedagang
             ]);
 
     }
@@ -75,11 +76,14 @@ class PedagangController extends Controller
         $pedagang = Pedagang::all();
         
         if (empty($pedagang)) {
-            return response()->json(['success' => false, 'error' => 'Pedagang Tidak Ditemukan'], 402);
+            return response()->json(['code' => 402,'success' => false, 'error' => 'Pedagang Tidak Ditemukan']);
         }
 
-        return response()->json(['success' => true, 'message' => 'Menampilkan Data Pedagang',
-                                'Data' =>$pedagang],200);
+        return response()->json(['code' => 200,
+                                'success' => true, 
+                                'message' => 'Menampilkan Data Pedagang',
+                                'Data' =>$pedagang
+                            ]);
     }
 
     public function search(Request $request)
@@ -88,7 +92,7 @@ class PedagangController extends Controller
         $query = $request->query('query');
 
         if (empty($query)) {
-            return response()->json(['success' => false,'error' => 'Query not specified!'], 400);
+            return response()->json(['code' => 400,'success' => false,'error' => 'Query not specified!']);
         }
 
         $fulltext = $request->query('fulltext', 'false');
@@ -113,7 +117,9 @@ class PedagangController extends Controller
         $data = DB::table('pedagang')->select('nama_toko', 'alamat_toko')
                         ->get();
 
-        return response()->json(['success' => true,'message' => 'Menampilkan Pencarian', 'Data' => $data],200);
+        return response()->json(['code' => 200,'success' => true,
+                                'message' => 'Menampilkan Pencarian', 
+                                'Data' => $data]);
      
     }
 
@@ -123,9 +129,9 @@ class PedagangController extends Controller
         $pedagang = Pedagang::find($id_pedagang);
         
         if (empty($pedagang)) {
-            return response()->json(['success' => false,'error' => 'Pedagang Tidak Ditemukan'], 402);
+            return response()->json(['code' => 402,'success' => false,'error' => 'Pedagang Tidak Ditemukan']);
         }
-        return response()->json(['success' => true, 'message' => 'Menampilkan Data Pedagang', 'Data' => $pedagang],200);
+        return response()->json(['code' => 200,'success' => true, 'message' => 'Menampilkan Data Pedagang', 'Data' => $pedagang]);
         
     }
 
@@ -172,13 +178,13 @@ class PedagangController extends Controller
         }
 
         if (!$update) {
-            return response()->json(['success' => false,'error' => 'unknown error'], 500);
+            return response()->json(['code' => 500,'success' => false,'error' => 'unknown error']);
         }
         
         return response()->json([
+            'code' => 200,
             'success' => true,
             'message' => 'Pedagang update!',
-            'code' => 200
         ]);
 
     }
@@ -189,18 +195,20 @@ class PedagangController extends Controller
 
         if (!$pedagang) {
             return response()->json([
+                'code' => 404,
                 'success' => false,
                 'message' => 'Data tidak ditemukan',
                 'data' => $pedagang
-            ], 404);
+            ]);
         }
 
         $pedagang->delete();
 
         return response()->json([
+            'code' => 200,
             'success' => true,
             'message' => 'Data berhasil dihapus',
             'data' => $pedagang
-        ], 200);
+        ]);
     }
 }
