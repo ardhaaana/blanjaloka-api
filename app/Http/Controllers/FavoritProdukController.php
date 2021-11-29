@@ -30,7 +30,7 @@ class FavoritProdukController extends Controller{
 
             $data = FavoritProduk::select('id', 'nama_produk')
                     ->join('produk', 'produk.id_produk', '=', 'favorit_produk.id_produk')
-                    ->where('favorit_produk.id_customer', $request->session()->get('id_customer'))
+                    ->where('favorit_produk.id_customer',  $request->session()->get('id_customer'))
                     ->where('favorit_produk.id_produk', $request->input('id_produk'))->get();
 
             return response()->json([
@@ -51,7 +51,7 @@ class FavoritProdukController extends Controller{
         }
 
         # Handler Jika id customer Tidak Ditemukan
-        if(count(Customer::where('id_customer',  $request->session()->get('id_customer'))->get()) == 0){
+        if(count(Customer::where('id_customer', $request->session()->get('id_customer'))->get()) == 0){
 
             return response()->json([
                 'success' => 0,
@@ -62,7 +62,7 @@ class FavoritProdukController extends Controller{
 
         # Input Favorit
         $data = [
-            'id_customer' =>  $request->session()->get('id_customer'),
+            'id_customer' =>   $request->session()->get('id_customer'),
             'id_produk' => $request->input('id_produk')
         ];
 
@@ -70,26 +70,26 @@ class FavoritProdukController extends Controller{
 
         $favoritproduk = FavoritProduk::select('favorit_produk.id', 'nama_produk')
                         ->join('produk', 'produk.id_produk', '=', 'favorit_produk.id_produk')
-                        ->where('favorit_produk.id_customer',  $request->session()->get('id_customer'))
+                        ->where('favorit_produk.id_customer', $request->session()->get('id_customer'))
                         ->where('favorit_produk.id_produk', $request->input('id_produk'))->get();
 
         return response()->json([
             'success' => 1,
             'message' => 'Produk ditambah di favorit',
-            'data' => $favoritproduk
+            'data' =>  $favoritproduk
         ], 200);
 
     }
 
     # Nampilin data favorit by customer
-    public function show($id_customer){
+    public function show(Request $request){
 
         // id disini yang ditampilin adalah id favorit_produk
         $listprodukfavorit = Produk::select('id', 'nama_produk', 'satuan', 'harga_jual', 'jumlah_produk', 'deskripsi', 'foto_produk', 'status_produk', 'id_pedagang')
                             ->join('favorit_produk', 'favorit_produk.id_produk', '=', 'produk.id_produk')
-                            ->where('favorit_produk.id_customer', $id_customer)->get();
+                            ->where('favorit_produk.id_customer', $request->session()->get('id_customer'))->get();
 
-        $customers = Customer::select('id_customer', 'nama_customer')->where('id_customer', $id_customer)->get();
+        $customers = Customer::select('id_customer', 'nama_customer')->where('id_customer',$request->session()->get('id_customer'))->get();
 
         return response()->json([
             'customer' => $customers,
@@ -116,4 +116,3 @@ class FavoritProdukController extends Controller{
         ], 200);
     }
 }
-
