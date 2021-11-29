@@ -23,5 +23,18 @@ class Pesanan extends Model
      *
      * @var array
      */
+    
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class, 'id_produk');
+    }
+    public function pedagang()
+    {
+        return $this->belongsTo(Pedagang::class, 'id_pedagang');
+    }
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class, 'id_driver');
+    }
    
 }
