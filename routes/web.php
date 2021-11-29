@@ -25,6 +25,7 @@ $router->get('/', function () use ($router) {
 $router->post('/register', 'AuthCustomerController@register');
 $router->post('/login', 'AuthCustomerController@loginemail');
 $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
+$router->post('/logout', 'AuthCustomerController@logout');
 
     $router->group(['prefix' => 'api/customer'], function () use ($router) {   
     //Customer
@@ -165,13 +166,13 @@ $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
 
     $router->group(['prefix' => 'api/favorit'], function () use ($router) {      
         $router->post('/', ['uses' => 'FavoritProdukController@create']);
-        $router->get('/{id_customer}', ['uses' =>  'FavoritProdukController@show']);
+        $router->get('/', ['uses' =>  'FavoritProdukController@show']);
         $router->delete('/{id}', ['uses' =>  'FavoritProdukController@destroy']);
     });
     
     $router->group(['prefix' => 'api/keranjang'], function () use ($router) {      
         $router->post('/', ['uses' => 'KeranjangProdukController@create']);
-        $router->get('/{id_customer}', ['uses' =>  'KeranjangProdukController@show']);
+        $router->get('/', ['uses' =>  'KeranjangProdukController@show']);
         $router->put('/update/{id_keranjang}', ['uses' => 'KeranjangProdukController@update']);
         $router->delete('/{id_keranjang}', ['uses' =>  'KeranjangProdukController@destroy']);
     });
