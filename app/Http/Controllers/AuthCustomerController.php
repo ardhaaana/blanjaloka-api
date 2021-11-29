@@ -7,19 +7,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Tymon\JWTAuth\Claims\Custom;
 
 class AuthCustomerController extends Controller
 {
 
     public function register(Request $request)
     {
-        $this->validate($request, [
+         $this->validate($request, [
             'nama_customer' => 'required|min:5',
             // 'nomor_telepon' => 'required',
-            'email_customer' => 'required|email|unique:customer',
+            'email_customer' => 'required|email',
             // 'alamat_customer' => 'required',
             // 'tanggal_lahir' => 'required',
             // 'username' => 'required|unique:customer|min:5',
@@ -45,12 +43,13 @@ class AuthCustomerController extends Controller
 
             $customer->save();
             //return successful response
-            return response()->json(['code' => 200,'Success' => true,'message' => 'Registrasi Sukses',
-            'Data' => $customer]);
+            return response()->json(['message' => 'Registrasi Sukses',
+            'customer' => $customer,
+            ], 200);
 
         } catch (\Exception $e) {
             //return error message
-            return response()->json(['message' => $e->getMessage()], 409);
+            return response()->json(['message' => 'User Registration Failed!'], 409);
         }
     }
 
@@ -61,24 +60,38 @@ class AuthCustomerController extends Controller
             'password' => 'required|min:8'
         ]);
         
-        $login = $request->only(['email_customer','password']);
+        $customer = $request->only(['email_customer', 'password']);
         
-        if (! $token = Auth::attempt($login)) {
-            return response()->json(['code' => 401,'Success' => false,'message' => 'Login Gagal']);
+        if (! $token = Auth::attempt($customer)) {
+            return response()->json(['message' => 'Login Gagal'], 401);
         }
         
-        $email_customer = $request->input('email_customer');
+        $request->session()->flush();
 
-        $customer = DB::table('customer')->select('customer.email_customer', 'customer.id_customer')
-                                        ->where('customer.email_customer', $email_customer)->get();
+        $customer_data = Customer::select('id_customer', 'email_customer', 'nama_customer')->where('email_customer', $request->input('email_customer'))->get();
+
+        foreach ($customer_data as $c){
+            $request->session()->put('id_customer', $c->id_customer);
+            $request->session()->put('email_customer', $c->email_customer);
+
+            $email_customer = $c->email_customer;
+            $nama_customer = $c->nama_customer;
+        }
+
         return response()->json([
-              'code' => 200,
-              'Success' => true,
-              'message' => 'Login sukses',
-              'data' => [$customer],
-                  'token' => $token,
-                  'token_type' => 'bearer'
-          ]);
+            'code' => 200,
+            'success' => true,
+            'message' => 'Login Sukses',
+            'data' => array(
+                'email_customer'=>$email_customer,
+                'nama_customer'=>$nama_customer
+            ),
+            'token' => $token,
+            'token_type' => 'bearer',
+            'session' => $request->session()->get('id_customer')
+        ]);
+
+        // return $this->respondWithToken($token);
     }
 
     public function loginnomor(Request $request)
@@ -88,22 +101,13 @@ class AuthCustomerController extends Controller
             'password' => 'required|min:8'
         ]);
 
-        $login = $request->only(['nomor_telepon', 'password']);
+        $credentials = $request->only(['nomor_telepon', 'password']);
 
-        if (! $token = Auth::attempt($login)) {
-            return response()->json(['code' => 401,'success' => false,'message' => 'Login Gagal']);
+        if (! $token = Auth::attempt($credentials)) {
+            return response()->json(['message' => 'Login Gagal'], 401);
         }
 
-        $customer = $request->all('nomor_telepon');
-
-        return response()->json([
-              'code' => 200,
-              'Success' => true,
-              'message' => 'Login sukses',
-              'data' => $customer,
-                  'token' => $token,
-                  'token_type' => 'bearer'
-          ]);
+        return $this->respondWithToken($token);
     }
 
     public function update(Request $request, $id_customer)
@@ -117,30 +121,29 @@ class AuthCustomerController extends Controller
             $update = Customer::query()->find($id_customer)->update(
                 [
                     'nama_customer' => $request->input('nama_customer'),
-                    // 'alamat_customer' => $request->input('alamat_customer'),
-                    // 'tanggal_lahir' => $request->input('tanggal_lahir'),
-                    // 'jenis_kelamin' => $request->input('jenis_kelamin')
+                    'alamat_customer' => $request->input('alamat_customer'),
+                    'tanggal_lahir' => $request->input('tanggal_lahir'),
+                    'jenis_kelamin' => $request->input('jenis_kelamin')
                 ]
             );
         } else {
             $update = Customer::query()->find($id_customer)->update(
                 [
                     'nama_customer' => $request->input('nama_customer'),
-                    // 'alamat_customer' => $request->input('alamat_customer'),
-                    // 'tanggal_lahir' => $request->input('tanggal_lahir'),
-                    // 'jenis_kelamin' => $request->input('jenis_kelamin')
+                    'alamat_customer' => $request->input('alamat_customer'),
+                    'tanggal_lahir' => $request->input('tanggal_lahir'),
+                    'jenis_kelamin' => $request->input('jenis_kelamin')
                 ]
             );
         }
 
         if (!$update) {
-            return response()->json(['code' => 500,'Success' => false,'error' => 'unknown error']);
+            return response()->json(['error' => 'unknown error'], 500);
         }
 
         return response()->json([
-            'code' => 200,
-            'Success' => true,
-            'message' => 'Edit Profile update!'
+            'message' => 'Edit Profile update!',
+            'code' => 200
         ]);
     }
     public function emailupdate(Request $request, $id_customer)
@@ -166,13 +169,12 @@ class AuthCustomerController extends Controller
 
 
         if (!$update) {
-            return response()->json(['code' => 500,'success' => false,'error' => 'unknown error']);
+            return response()->json(['error' => 'unknown error'], 500);
         }
 
         return response()->json([
-            'code' => 200,
-            'Success' => true,
-            'message' => 'Edit Email update!'
+            'message' => 'Edit Email update!',
+            'code' => 200
         ]);
     }
     public function passwordupdate(Request $request, $id_customer)
@@ -201,14 +203,12 @@ class AuthCustomerController extends Controller
 
 
         if (!$update) {
-            return response()->json([ 'code' => 500,'success' => false,'error' => 'unknown error']);
+            return response()->json(['error' => 'unknown error'], 500);
         }
 
         return response()->json([
-            'code' => 200,
-            'Success' => true,
-            'message' => 'Edit Password update!'
-            
+            'message' => 'Edit Password update!',
+            'code' => 200
         ]);
     }
     public function teleponupdate(Request $request, $id_customer)
@@ -234,13 +234,12 @@ class AuthCustomerController extends Controller
 
 
         if (!$update) {
-            return response()->json(['code' => 500,'success' => false,'error' => 'unknown error']);
+            return response()->json(['error' => 'unknown error'], 500);
         }
 
         return response()->json([
-            'code' => 200,
-            'Success' => true,
-            'message' => 'Edit Nomor telepon update!'
+            'message' => 'Edit Nomor telepon update!',
+            'code' => 200
         ]);
     }
     public function index()
@@ -248,42 +247,37 @@ class AuthCustomerController extends Controller
         $customer = Customer::all();
 
         if (empty($customer)) {
-            return response()->json(['code' => 402,'error' => 'Data Akun Tidak Ditemukan']);
+            return response()->json(['error' => 'Data Akun Tidak Ditemukan'], 402);
         }
-        return response()->json(['code' => 200,'Success' => true, 'Message' => 'Berhasil Menampilkan Data Customer', 'Data Customer' => $customer]);
+        return response()->json($customer);
     }
-
     public function destroy($id_customer)
     {
         $customer = Customer::find($id_customer);
 
         if (!$customer) {
             return response()->json([
-                'code' => 404,
-                'Success' => false,
                 'message' => 'Data tidak ditemukan',
                 'data' => $customer
-            ]);
+            ], 404);
         }
 
         $customer->delete();
 
         return response()->json([
-            'code' => 200,
-            'Success' => true,
             'message' => 'Data berhasil dihapus',
             'data' => $customer
-        ]);
+        ], 200);
     }
 
-    // public function logout(Request $request)
-    // {
-    //     $login = $request->login();
-    //     $login->token()->delete();
-
-    //     return response()->json([
-    //         'message' => 'Logout sukses'
-    //     ], 200);
-    // }
+    public function logout(Request $request)
+    {
+        // $login = $request->login();
+        // $login->token()->delete();
+        $request->session()->flush();
+        return response()->json([
+            'message' => 'Logout sukses'
+        ], 200);
+    }
 
 }
