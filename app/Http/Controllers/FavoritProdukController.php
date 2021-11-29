@@ -22,50 +22,47 @@ class FavoritProdukController extends Controller{
 
         $this->validate($request,[
             'id_produk' => 'required|numeric',
-            'id_customer' => 'required|numeric'
+            // 'id_customer' => 'required|numeric'
         ]);
 
         # Error jika user menambahkan produk yang sama ke favorit 
-        if(count(FavoritProduk::where('id_customer', $request->input('id_customer'))->where('id_produk', $request->input('id_produk'))->get()) > 0){
+        if(count(FavoritProduk::where('id_customer',  $request->session()->get('id_customer'))->where('id_produk', $request->input('id_produk'))->get()) > 0){
 
             $data = FavoritProduk::select('id', 'nama_produk')
                     ->join('produk', 'produk.id_produk', '=', 'favorit_produk.id_produk')
-                    ->where('favorit_produk.id_customer', $request->input('id_customer'))
+                    ->where('favorit_produk.id_customer', $request->session()->get('id_customer'))
                     ->where('favorit_produk.id_produk', $request->input('id_produk'))->get();
 
             return response()->json([
-                'code' => 200,
-                'success' => false,
+                'success' => 0,
                 'message' => 'Produk Ini Telah Ada di List Produk Favorit',
                 'data' => $data
-            ]);
+            ], 200);
         }
 
         # Handler Jika id Produk Tidak Ditemukan
-        if(count(Produk::where('id_produk', $request->input('id_produk'))->get()) == false){
+        if(count(Produk::where('id_produk', $request->input('id_produk'))->get()) == 0){
 
             return response()->json([
-                'code' => 500,
-                'success' => false,
+                'success' => 0,
                 'message' => 'id produk tidak ditemukan'
-            ]);
+            ], 500);
 
         }
 
         # Handler Jika id customer Tidak Ditemukan
-        if(count(Customer::where('id_customer', $request->input('id_customer'))->get()) == false){
+        if(count(Customer::where('id_customer',  $request->session()->get('id_customer'))->get()) == 0){
 
             return response()->json([
-                'code' => 500,
-                'success' => false,
+                'success' => 0,
                 'message' => 'id customer tidak ditemukan'
-            ]);
+            ], 500);
 
         }
 
         # Input Favorit
         $data = [
-            'id_customer' => $request->input('id_customer'),
+            'id_customer' =>  $request->session()->get('id_customer'),
             'id_produk' => $request->input('id_produk')
         ];
 
@@ -73,15 +70,14 @@ class FavoritProdukController extends Controller{
 
         $favoritproduk = FavoritProduk::select('favorit_produk.id', 'nama_produk')
                         ->join('produk', 'produk.id_produk', '=', 'favorit_produk.id_produk')
-                        ->where('favorit_produk.id_customer', $request->input('id_customer'))
+                        ->where('favorit_produk.id_customer',  $request->session()->get('id_customer'))
                         ->where('favorit_produk.id_produk', $request->input('id_produk'))->get();
 
         return response()->json([
-            'code' => 200,
-            'success' => true,
+            'success' => 1,
             'message' => 'Produk ditambah di favorit',
             'data' => $favoritproduk
-        ]);
+        ], 200);
 
     }
 
@@ -96,11 +92,9 @@ class FavoritProdukController extends Controller{
         $customers = Customer::select('id_customer', 'nama_customer')->where('id_customer', $id_customer)->get();
 
         return response()->json([
-            'code' => 200,
-            'success' => true,
             'customer' => $customers,
             'listfavoritproduk' => $listprodukfavorit
-        ]);
+        ], 200);
         
     }
 
@@ -111,17 +105,15 @@ class FavoritProdukController extends Controller{
 
         if (!$favoritproduk) {
             return response()->json([
-                'code' => 404,
-                'success' => false, 
-                'message' => 'Favorit tidak ditemukan'
-            ]);
+                'success' => 0, 'message' => 'Favorit tidak ditemukan'
+            ], 404);
         }
 
         $favoritproduk->delete();
         return response()->json([
-            'code' => 200,
-            'success' => true, 
+            'success' => 1, 
             'message' => 'Produk Berhasil Dihapus Di Favorit'
-        ]);
+        ], 200);
     }
 }
+
