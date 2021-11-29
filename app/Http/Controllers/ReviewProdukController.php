@@ -14,51 +14,48 @@ use Symfony\Component\Console\Helper\Table;
 class ReviewProdukController extends Controller
 {
     
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
+//     public function __construct()
+//     {
+//         $this->middleware('auth');
+//     }
 
     public function create(Request $request)
     {
 
         $validator = Validator::make($request->only('id_produk', 'id_customer'), [
             'id_produk' => "required",
-            'id_customer' => "required"
+            // 'id_customer' => "required"
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['code' => 500,'success' => false, 'message' => 'Required or incorrect fields', 'errors' => $validator->errors()]);
+            return response()->json(['success' => 0, 'message' => 'Required or incorrect fields', 'errors' => $validator->errors()], 500);
         }
 
         $produk = Produk::find($request->input('id_produk'));
-        $customer = Customer::find($request->input('id_customer'));
+        $customer = Customer::find($request->session()->get('id_customer'));
 
         if (!$produk) {
-            return response()->json(['code' => 404,'success' => false, 'message' => 'Produk tidak ditemukan']);
+            return response()->json(['success' => 0, 'message' => 'Produk tidak ditemukan'], 404);
         }
         if (!$customer) {
-            return response()->json(['code' => 404,'success' => false, 'message' => 'ID Customer tidak ditemukan']);
+            return response()->json(['success' => 0, 'message' => 'ID Customer tidak ditemukan'], 404);
         }
 
         $review = new ReviewProduk();
 
         $review->id_produk = $request->input('id_produk');
-        $review->id_customer = $request->input('id_customer');
+        $review->id_customer = $request->session()->get('id_customer');
         $review->review = $request->input('review');
         $review->star = $request->input('star');
         $review->save();
 
         if ($review) {
             return response()->json([
-                'code' => 200,
-                'success' => true,
                 'message' => 'Pemberian Ulasan berhasil',
                 'data' => $review
-            ]);
+            ], 201);
         }
     }
-
 
     // Menampilkan Review produk
     public function show($id_produk)
@@ -71,10 +68,15 @@ class ReviewProdukController extends Controller
                     ->get();
 
         if (empty($isireview)) {
-            return response()->json(['code' => 402,'success' => false,'error' => 'Review Produk Tidak Ditemukan']);
+            return response()->json(['error' => 'Review Produk Tidak Ditemukan'], 402);
         }
 
-        return response()->json(['code' => 200,'success' => true, 'message' => 'Menampilkan Review', 'Data' => $isireview]);
+        return response()->json($isireview,200);
+    }
+
+    public function show_produk(Produk $review)
+    {
+        return response()->json(['message'=>'','data'=>$review->produk],200);
     }
 
     public function update(Request $request, $id)
@@ -82,7 +84,7 @@ class ReviewProdukController extends Controller
         $review = ReviewProduk::find($id);
 
         $review = ReviewProduk::find($request->input('id_produk'));
-        $review = ReviewProduk::find($request->input('id_customer'));
+        $review = ReviewProduk::find($request->session()->get('id_customer'));
         $review->review = $request->input('review');
         $review->star = $request->input('star');
 
@@ -90,21 +92,18 @@ class ReviewProdukController extends Controller
 
         if (!$review) {
             return response()->json([
-                'code' => 404,
-                'success' => false, 
                 'message' => 'Data tidak ditemukan',
                 'data' => $review
-            ]);
+            ], 404);
         }
         
         if (!$review) {
-            return response()->json(['code' => 500,'success' => false, 'error' => 'unknown error']);
+            return response()->json(['error' => 'unknown error'], 500);
         }
 
          return response()->json([
-             'code' => 200,
-             'success' => true, 
-            'message' => 'Review Produk update!'
+            'message' => 'Review Produk update!',
+            'code' => 200
         ]);
     }
 
@@ -115,21 +114,17 @@ class ReviewProdukController extends Controller
 
         if (!$review) {
             return response()->json([
-                'code' => 404,
-                'success' => false, 
                 'message' => 'Review tidak ditemukan',
                 'data' => $review
-            ]);
+            ], 404);
         }
 
         $review->delete();
 
         return response()->json([
-            'code' => 200,
-            'success' => true, 
             'message' => 'Review berhasil dihapus',
             'data' => $review
-        ]);
+        ], 200);
     }
 
 }
