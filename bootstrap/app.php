@@ -72,9 +72,10 @@ $app->configure('app');
 |
 */
 
-// $app->middleware([
-//     App\Http\Middleware\ExampleMiddleware::class
-// ]);
+$app->middleware([
+    \Illuminate\Session\Middleware\StartSession::class,
+    // \Illuminate\Session\SessionManager::class
+]);
 
 $app->routeMiddleware([
     'auth'     => App\Http\Middleware\Authenticate::class,
@@ -97,7 +98,12 @@ $app->routeMiddleware([
 $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
+
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+
+$app->register(Illuminate\Session\SessionServiceProvider::class);
+$app->configure('session');
+$app->alias('session', 'Illuminate\Session\SessionManager');
 
 /*
 |--------------------------------------------------------------------------
