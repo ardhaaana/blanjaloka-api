@@ -67,8 +67,10 @@ class AuthCustomerController extends Controller
             return response()->json(['code' => 401,'Success' => false,'message' => 'Login Gagal']);
         }
         
-        $customer = $request->all('email_customer');
+        $email_customer = $request->input('email_customer');
 
+        $customer = DB::table('customer')->select('customer.email_customer', 'customer.id_customer')
+                                        ->where('customer.email_customer', $email_customer)->get();
         return response()->json([
               'code' => 200,
               'Success' => true,
