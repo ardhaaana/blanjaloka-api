@@ -159,7 +159,7 @@ class ProdukController extends Controller
 
     }
 
-    public function search(Request $request)
+      public function search(Request $request)
     {
         # code...
         
@@ -176,7 +176,7 @@ class ProdukController extends Controller
         
         if ($fulltext == 'true') {
             $data = Produk::query()
-            ->whereRaw("MATCH(nama_produk,deskripsi) AGAINST(? IN BOOLEAN MODE)", array($query))
+            ->whereRaw("MATCH(nama_produk) AGAINST(? IN BOOLEAN MODE)", array($query))
             ->orderBy($sorts[0], $sorts[1])
             ->get();
             return response()->json($data);
@@ -185,7 +185,6 @@ class ProdukController extends Controller
 
         $data = Produk::query()
         ->where('nama_produk', 'like', '%' . $query . '%')
-        ->orWhere('deskripsi', 'like', '%' . $query . '%')
         ->orderBy($sorts[0], $sorts[1])
         ->get();
         
@@ -194,6 +193,7 @@ class ProdukController extends Controller
                                 'Data' => $data]);
      
     }
+
 
     public function destroy($id_produk)
     {
