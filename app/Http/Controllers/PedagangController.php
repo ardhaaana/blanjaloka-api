@@ -109,14 +109,12 @@ class PedagangController extends Controller
         }
 
         $data = Pedagang::query()
+            ->select('nama_toko', 'alamat_toko')
             ->where('nama_toko', 'like', '%' . $query . '%')
             ->orWhere('alamat_toko', 'like', '%' . $query . '%')
             ->orderBy($sorts[0], $sorts[1])
             ->get();
         
-        $data = DB::table('pedagang')->select('nama_toko', 'alamat_toko')
-                        ->get();
-
         return response()->json(['code' => 200,'success' => true,
                                 'message' => 'Menampilkan Pencarian', 
                                 'Data' => $data]);
