@@ -63,7 +63,7 @@ $router->post('/logout', 'AuthCustomerController@logout');
         $router->post('/', ['uses' => 'PedagangController@create']);
         $router->get('/', ['uses' =>  'PedagangController@index']);
         $router->get('/{id_pedagang}', ['uses' =>  'PedagangController@show']);
-        $router->get('data/search', ['uses' =>  'PedagangController@search']);
+        $router->get('/caritoko', ['uses' =>  'PedagangController@caritoko']);
         $router->put('/{id_pedagang}', ['uses' =>  'PedagangController@update']);
         $router->delete('/{id_pedagang}', ['uses' =>  'PedagangController@destroy']);
 
