@@ -8,6 +8,7 @@ use App\Models\PengelolaPasar;
 use App\Models\Pedagang;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 
 class RoleController extends Controller
@@ -15,9 +16,26 @@ class RoleController extends Controller
     
     public function create(Request $request)
     {
-        $this->validate($request, [
+       
+        $validate = [
             'status_user' => 'required|unique:role'
-        ]);
+        ];
+
+        $pesan = [
+            'status_user.required' => 'Status User Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         $role = [
             'status_user' => $request->input('status_user')
@@ -101,9 +119,25 @@ class RoleController extends Controller
             ]);
         }
         
-        $this->validate($request, [
-            'status_user' => 'required'
-        ]);
+       $validate = [
+            'status_user' => 'required|unique:role'
+        ];
+
+        $pesan = [
+            'status_user.required' => 'Status User Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         $datarole = $request->all();
         $role->fill($datarole);
