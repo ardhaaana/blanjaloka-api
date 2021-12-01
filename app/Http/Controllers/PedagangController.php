@@ -112,7 +112,7 @@ class PedagangController extends Controller
                             ]);
     }
 
-    public function search(Request $request)
+    public function caritoko(Request $request)
     {
         # code...
         $query = $request->query('query');
