@@ -21,10 +21,10 @@ class AuthCustomerController extends Controller
         ];
 
         $pesan = [
-            'nama_customer' => 'Nama Tidak Boleh Kosong',
-            'nomor_telepon' => 'Nomor Telepon Tidak Boleh Kosong',
-            'email_customer' => 'Eamil Tidak Boleh Kosongr',
-            'password' => 'Password Tidak Boleh Kosong'
+            'nama_customer.required' => 'Nama Tidak Boleh Kosong',
+            'nomor_telepon.required' => 'Nomor Telepon Tidak Boleh Kosong',
+            'email_customer.required' => 'Eamil Tidak Boleh Kosongr',
+            'password.required' => 'Password Tidak Boleh Kosong'
         ];
 
         $validator = Validator::make($request->all(), $validate, $pesan);
@@ -206,7 +206,7 @@ class AuthCustomerController extends Controller
         ];
 
         $pesan = [
-            'nama_customer' => 'Nama Tidak Boleh Kosong',
+            'nama_customer.required' => 'Nama Tidak Boleh Kosong',
         ];
 
         $validator = Validator::make($request->all(), $validate, $pesan);
@@ -259,7 +259,7 @@ class AuthCustomerController extends Controller
         ];
 
         $pesan = [
-            'email_customer' => 'Eamil Tidak Boleh Kosongr',
+            'email_customer.required' => 'Eamil Tidak Boleh Kosongr',
         ];
 
         $validator = Validator::make($request->all(), $validate, $pesan);
@@ -300,7 +300,7 @@ class AuthCustomerController extends Controller
         ];
 
         $pesan = [
-            'password' => 'Password Tidak Boleh Kosong'
+            'password.required' => 'Password Tidak Boleh Kosong'
         ];
 
         $validator = Validator::make($request->all(), $validate, $pesan);
@@ -348,7 +348,7 @@ class AuthCustomerController extends Controller
         ];
 
         $pesan = [
-            'nomor_telepon' => 'Nomor Telepon Tidak Boleh Kosong'
+            'nomor_telepon.required' => 'Nomor Telepon Tidak Boleh Kosong'
         ];
 
         $validator = Validator::make($request->all(), $validate, $pesan);
