@@ -122,9 +122,6 @@ $router->post('/logout', 'AuthCustomerController@logout');
     $router->group(['prefix' => 'api/kategori-produk'], function () use ($router) {  
         $router->post('/', ['uses' => 'KategoriProdukController@create']);
         $router->get('/', ['uses' =>  'KategoriProdukController@index']);
-        $router->get('/search', ['uses' => 'KategoriProdukController@search']);
-        $router->get('/{id_kategori}/produk/search', ['uses' => 'KategoriProdukController@produkshow']);
-        $router->get('/{id_kategori}', ['uses' =>  'KategoriProdukController@show']);
         $router->put('/{id_kategori}', ['uses' =>  'KategoriProdukController@update']);
         $router->delete('delete-kategori/{id_kategori}', ['uses' =>  'KategoriProdukController@destroy']);
     });
