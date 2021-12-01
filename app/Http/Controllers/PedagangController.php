@@ -7,6 +7,7 @@ use App\Models\Toko;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 
 class PedagangController extends Controller
@@ -19,7 +20,8 @@ class PedagangController extends Controller
   
     public function create(Request $request)
     {
-        $this->validate($request, [
+
+         $validate = [
             'nama_pedagang' => 'required',
             'nomor_telepon' => 'required',
             'alamat_pedagang' => 'required',
@@ -28,7 +30,31 @@ class PedagangController extends Controller
             'foto_rekening' => 'required',
             'nama_toko' => 'required',
             'alamat_toko' => 'required'
-        ]);
+        ];
+
+        $pesan = [
+            'nama_pedagang.required' => 'Nama Tidak Boleh Kosong',
+            'nomor_telepon.required' => 'Nomor Telepon Tidak Boleh Kosong',
+            'alamat_pedagang.required' => 'Alamat Pedagang Tidak Boleh Kosongr',
+            'tanggal_lahir.required' => 'Tanggal lahir Tidak Boleh Kosong',
+            'tanggal_lahir.required' => 'Nomor KTP Tidak Boleh Kosong',
+            'tanggal_lahir.required' => 'Foto Rekening Tidak Boleh Kosong',
+            'tanggal_lahir.required' => 'Nama Toko Tidak Boleh Kosong',
+            'tanggal_lahir.required' => 'Alamat Toko Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
+
 
           if ($request->has('foto_rekening')) {
             $pedagang = Pedagang::query()->create(
@@ -114,7 +140,7 @@ class PedagangController extends Controller
             ->orWhere('alamat_toko', 'like', '%' . $query . '%')
             ->orderBy($sorts[0], $sorts[1])
             ->get();
-        
+
         return response()->json(['code' => 200,'success' => true,
                                 'message' => 'Menampilkan Pencarian', 
                                 'Data' => $data]);
@@ -135,8 +161,7 @@ class PedagangController extends Controller
 
     public function update(Request $request, $id_pedagang)
     {
-       $this->validate($request, [
-
+       $validate = [
             'nama_pedagang' => 'required',
             'nomor_telepon' => 'required',
             'alamat_pedagang' => 'required',
@@ -145,7 +170,30 @@ class PedagangController extends Controller
             'foto_rekening' => 'required',
             'nama_toko' => 'required',
             'alamat_toko' => 'required'
-        ]);
+        ];
+
+        $pesan = [
+            'nama_pedagang.required' => 'Nama Tidak Boleh Kosong',
+            'nomor_telepon.required' => 'Nomor Telepon Tidak Boleh Kosong',
+            'alamat_pedagang.required' => 'Alamat Pedagang Tidak Boleh Kosongr',
+            'tanggal_lahir.required' => 'Tanggal lahir Tidak Boleh Kosong',
+            'tanggal_lahir.required' => 'Nomor KTP Tidak Boleh Kosong',
+            'tanggal_lahir.required' => 'Foto Rekening Tidak Boleh Kosong',
+            'tanggal_lahir.required' => 'Nama Toko Tidak Boleh Kosong',
+            'tanggal_lahir.required' => 'Alamat Toko Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         if ($request->has('foto_rekening')) {
             $update = Pedagang::query()->find($id_pedagang)->update(
