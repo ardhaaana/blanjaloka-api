@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\FavoritProduk;
 use App\Models\Produk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class FavoritProdukController extends Controller{
 
@@ -20,10 +21,25 @@ class FavoritProdukController extends Controller{
     # Tambah Favorite
     public function create(Request $request){
 
-        $this->validate($request,[
-            'id_produk' => 'required|numeric',
-            // 'id_customer' => 'required|numeric'
-        ]);
+        $validate = [
+           'id_produk' => 'required|numeric',
+        ];
+
+        $pesan = [
+            'id_produk.required' => 'ID Produk Tidak Boleh Kosong',
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         # Error jika user menambahkan produk yang sama ke favorit 
         if(count(FavoritProduk::where('id_customer',  $request->session()->get('id_customer'))->where('id_produk', $request->input('id_produk'))->get()) > 0){
