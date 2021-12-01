@@ -6,19 +6,38 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class AuthCustomerController extends Controller
 {
 
     public function register(Request $request)
     {
-         $this->validate($request, [
+        $validate = [
             'nama_customer' => 'required|min:5',
             'nomor_telepon' => 'required|min:11',
             'email_customer' => 'required|email|unique:customer',
             'password' => 'required|min:8'
-           
-        ]);
+        ];
+
+        $pesan = [
+            'nama_customer' => 'Nama Tidak Boleh Kosong',
+            'nomor_telepon' => 'Nomor Telepon Tidak Boleh Kosong',
+            'email_customer' => 'Eamil Tidak Boleh Kosongr',
+            'password' => 'Password Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         try {
             $customer = new Customer;
@@ -39,18 +58,35 @@ class AuthCustomerController extends Controller
 
         } catch (\Exception $e) {
             //return error message
-            return response()->json(['code' => 409 ,'success' => false,'message' => 'User Registration Failed!']);
+            return response()->json(['code' => 404 ,'success' => false,'message' => 'User Registration Failed!']);
         }
     }
 
     public function loginemail(Request $request)
     {
-        $this->validate($request, [
-            'email_customer' => 'required|email',
-            'password' => 'required|min:8'
-        ]);
+        $validate = [
+            'email_customer' => 'required',
+            'password' => 'required'
+        ];
+
+        $pesan = [
+            'email_customer.required' => 'Email Tidak Boleh Kosong',
+            'password.required' => 'Password Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
         
-         $customer = $request->only(['email_customer', 'password']);
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
+        
+        $customer = $request->only(['email_customer', 'password']);
 
         if(count(Customer::where('email_customer', $request->input('email_customer'))->get()) == false){
 
@@ -66,7 +102,6 @@ class AuthCustomerController extends Controller
         $request->session()->flush();
         
         $customer_data = Customer::select('id_customer', 'email_customer', 'nama_customer')->where('email_customer', $request->input('email_customer'))->get();
-        
         
         foreach ($customer_data as $c){
             $request->session()->put('id_customer', $c->id_customer);
@@ -97,10 +132,27 @@ class AuthCustomerController extends Controller
 
     public function loginnomor(Request $request)
     {
-         $this->validate($request, [
+        $validate = [
             'nomor_telepon' => 'required',
-            'password' => 'required|min:8'
-        ]);
+            'password' => 'required'
+        ];
+
+        $pesan = [
+            'nomor_telepon.required' => 'Nomor Telepon Tidak Boleh Kosong',
+            'password.required' => 'Password Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
         
         $customer = $request->only(['nomor_telepon', 'password']);
         
@@ -109,7 +161,7 @@ class AuthCustomerController extends Controller
             return response()->json([
                 'code' => 404,
                 'success' => false,
-                'message' => 'Nomor tidak ditemukan',
+                'message' => 'Nomor Telepon tidak ditemukan',
                 'data' => null
             ]);
 
@@ -149,9 +201,25 @@ class AuthCustomerController extends Controller
     public function update(Request $request, $id_customer)
     {
 
-        $this->validate($request, [
-            'nama_customer' => 'required|min:5'
-        ]);
+         $validate = [
+            'nama_customer' => 'required|min:5',
+        ];
+
+        $pesan = [
+            'nama_customer' => 'Nama Tidak Boleh Kosong',
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         if ($request->has('email_customer')) {
             $update = Customer::query()->find($id_customer)->update(
@@ -186,9 +254,25 @@ class AuthCustomerController extends Controller
     public function emailupdate(Request $request, $id_customer)
     {
 
-        $this->validate($request, [
-            'email_customer' => 'required|email',
-        ]);
+        $validate = [
+            'email_customer' => 'required|email|unique:customer',
+        ];
+
+        $pesan = [
+            'email_customer' => 'Eamil Tidak Boleh Kosongr',
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         if ($request->has('email_customer')) {
             $update = Customer::query()->find($id_customer)->update(
@@ -196,14 +280,7 @@ class AuthCustomerController extends Controller
                     'email_customer' => $request->input('email_customer'),
                 ]
             );
-        } else {
-            $update = Customer::query()->find($id_customer)->update(
-                [
-                    'alamat_customer' => $request->input('alamat_customer')
-                ]
-            );
         }
-
 
         if (!$update) {
             return response()->json(['code' => 500, 'success' => false,'error' => 'unknown error']);
@@ -218,22 +295,35 @@ class AuthCustomerController extends Controller
     public function passwordupdate(Request $request, $id_customer)
     {
 
-        $this->validate($request, [
-            'username' => 'required|min:5',
+       $validate = [
             'password' => 'required|min:8'
-        ]);
+        ];
+
+        $pesan = [
+            'password' => 'Password Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         if ($request->has('email_customer')) {
             $update = Customer::query()->find($id_customer)->update(
                 [
-                    'username' => $request->input('username'),
                     'password' => Hash::make($request->input('password')),
                 ]
             );
         } else {
             $update = Customer::query()->find($id_customer)->update(
                 [
-                    'username' => $request->input('username'),
                     'password' => Hash::make($request->input('password'))
                 ]
             );
@@ -253,9 +343,25 @@ class AuthCustomerController extends Controller
     public function teleponupdate(Request $request, $id_customer)
     {
 
-        $this->validate($request, [
-            'nomor_telepon' => 'required'
-        ]);
+        $validate = [
+            'nomor_telepon' => 'required|min:11',
+        ];
+
+        $pesan = [
+            'nomor_telepon' => 'Nomor Telepon Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         if ($request->has('email_customer')) {
             $update = Customer::query()->find($id_customer)->update(
