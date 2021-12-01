@@ -6,6 +6,7 @@ use App\Models\SpesialProduk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class SpesialProdukController extends Controller{
 
@@ -18,10 +19,27 @@ class SpesialProdukController extends Controller{
     # Buat Spesial Produk
     public function create(Request $request){
 
-        $this->validate($request, [
+        $validate = [
             'id_produk' => 'required',
             'diskon' => 'required'
-        ]);
+        ];
+
+        $pesan = [
+            'id_produk.required' => 'ID Produk Tidak Boleh Kosong',
+            'diskon.required' => 'Diskon Tidak Boleh Kosong',
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         $id_produk = $request->input('id_produk');
         $diskon = $request->input('diskon');
@@ -181,9 +199,25 @@ class SpesialProdukController extends Controller{
             ]);
         }
 
-        $this->validate($request, [
+        $validate = [
             'diskon' => 'required'
-        ]);
+        ];
+
+        $pesan = [
+            'diskon.required' => 'Diskon Tidak Boleh Kosong',
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         $query = SpesialProduk::where('id', $id)->update(['diskon'=>$request->input('diskon')]);
 
