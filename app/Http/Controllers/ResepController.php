@@ -6,23 +6,40 @@ use App\Models\Resep;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 
 class ResepController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
 
     public function create(Request $request)
     {
-        $this->validate($request, [
+    
+        $validate = [
             'judul_resep' => 'required',
             'waktu' => 'required',
             'resep' => 'required',
             'langkah' => 'required'
-        ]);
+        ];
+
+        $pesan = [
+            'judul_resep.required' => 'Judul Resep Tidak Boleh Kosong',
+            'waktu.required' => 'Waktu Tidak Boleh Kosong',
+            'resep.required' => 'Resep Tidak Boleh Kosong',
+            'langkah.required' => 'Langkah Pembuatan Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         $judul_resep = $request->input('judul_resep');
         $waktu = $request->input('waktu');
@@ -79,12 +96,31 @@ class ResepController extends Controller
             ]);
         }
 
-        $this->validate($request, [
+         $validate = [
             'judul_resep' => 'required',
             'waktu' => 'required',
             'resep' => 'required',
             'langkah' => 'required'
-        ]);
+        ];
+
+        $pesan = [
+            'judul_resep.required' => 'Judul Resep Tidak Boleh Kosong',
+            'waktu.required' => 'Waktu Tidak Boleh Kosong',
+            'resep.required' => 'Resep Tidak Boleh Kosong',
+            'langkah.required' => 'Langkah Pembuatan Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         $dataresep = $request->all();
         $resep->fill($dataresep);
