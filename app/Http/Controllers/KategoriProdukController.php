@@ -6,6 +6,7 @@ use App\Models\KategoriProduk;
 use App\Models\Produk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 
 class KategoriProdukController extends Controller
@@ -17,9 +18,26 @@ class KategoriProdukController extends Controller
 
     public function create(Request $request)
     {
-        $this->validate($request, [
+        $validate = [
             'jenis_kategori' => 'required'
-        ]);
+        ];
+
+        $pesan = [
+            'jenis_kategori.required' => 'Jenis Kategori Tidak Boleh Kosong',
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
+
 
         $jenis_kategori = $request->input('jenis_kategori');
 
@@ -66,9 +84,25 @@ class KategoriProdukController extends Controller
             return response()->json(['error' => 'unknown error'], 500);
         }
 
-        $this->validate($request, [
+        $validate = [
             'jenis_kategori' => 'required'
-        ]);
+        ];
+
+        $pesan = [
+            'jenis_kategori.required' => 'Jenis Kategori Tidak Boleh Kosong',
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         $datakategori = $request->all();
         $kategori->fill($datakategori);
