@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\KeranjangProduk;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class KeranjangProdukController extends Controller{
 
@@ -16,11 +17,27 @@ class KeranjangProdukController extends Controller{
     # Tambah data keranjang
     public function create(Request $request){
 
-        $this->validate($request, [
-            // 'id_customer' => 'required|numeric',
+        $validate = [
             'id_produk' => 'required|numeric',
             'jumlah_produk' => 'required|numeric'
-        ]);
+        ];
+
+        $pesan = [
+            'id_produk.required' => 'ID Produk Tidak Boleh Kosong',
+            'jumlah_produk.required' => 'Jumlah Produk Telepon Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         if(count(KeranjangProduk::where('id_produk', $request->input('id_produk'))->where('id_customer', $request->session()->get('id_customer'))->get()) > 0){
 
@@ -84,9 +101,25 @@ class KeranjangProdukController extends Controller{
     # Edit data Keranjang
     public function update(Request $request, $id_keranjang){
 
-        $this->validate($request, [
+        $validate = [
             'jumlah_produk' => 'required|numeric'
-        ]);
+        ];
+
+        $pesan = [
+            'jumlah_produk.required' => 'Jumlah Produk Telepon Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         $query = KeranjangProduk::query()->find($id_keranjang)->update([
             'jumlah_produk' => $request->input('jumlah_produk')
