@@ -23,7 +23,7 @@ class AuthCustomerController extends Controller
         $pesan = [
             'nama_customer.required' => 'Nama Tidak Boleh Kosong',
             'nomor_telepon.required' => 'Nomor Telepon Tidak Boleh Kosong',
-            'email_customer.required' => 'Email Tidak Boleh Kosongr',
+            'email_customer.required' => 'Email Tidak Boleh Kosong',
             'password.required' => 'Password Tidak Boleh Kosong'
         ];
 
@@ -259,7 +259,7 @@ class AuthCustomerController extends Controller
         ];
 
         $pesan = [
-            'email_customer.required' => 'Email Tidak Boleh Kosongr',
+            'email_customer.required' => 'Email Tidak Boleh Kosong',
         ];
 
         $validator = Validator::make($request->all(), $validate, $pesan);
