@@ -8,6 +8,7 @@ use App\Models\ReviewProduk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Customer;
 use App\Models\SpesialProduk;
 
@@ -22,8 +23,8 @@ class ProdukController extends Controller
     
     public function create(Request $request)
     {
-        $this->validate($request, [
-
+    
+        $validate = [
             'nama_produk' => 'required',
             'satuan' => 'required',
             'harga_jual' => 'required|numeric',
@@ -31,7 +32,30 @@ class ProdukController extends Controller
             'deskripsi' => 'required',
             'status_produk' => 'required',
             'id_kategori' => 'required'
-        ]);
+        ];
+
+        $pesan = [
+            'nama_produk.required' => 'Nama Produk Tidak Boleh Kosong',
+            'satuan.required' => 'Satuan Tidak Boleh Kosong',
+            'harga_jual.required' => 'Harga Jual Tidak Boleh Kosong',
+            'jumlah_produk.required' => 'Jumlah Produk Tidak Boleh Kosong',
+            'deskripsi.required' => 'Deskripsi Tidak Boleh Kosong',
+            'status_produk.required' => 'Status Produk Tidak Boleh Kosong',
+            'id_kategori.required' => 'Kategori Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
+
 
         if ($request->has('foto_produk')) {
             $produk = Produk::query()->create(
@@ -111,8 +135,7 @@ class ProdukController extends Controller
     public function update(Request $request, $id_produk)
     {
 
-        $this->validate($request, [
-
+        $validate = [
             'nama_produk' => 'required',
             'satuan' => 'required',
             'harga_jual' => 'required|numeric',
@@ -120,7 +143,29 @@ class ProdukController extends Controller
             'deskripsi' => 'required',
             'status_produk' => 'required',
             'id_kategori' => 'required'
-        ]);
+        ];
+
+        $pesan = [
+            'nama_produk.required' => 'Nama Produk Tidak Boleh Kosong',
+            'satuan.required' => 'Satuan Tidak Boleh Kosong',
+            'harga_jual.required' => 'Harga Jual Tidak Boleh Kosong',
+            'jumlah_produk.required' => 'Jumlah Produk Tidak Boleh Kosong',
+            'deskripsi.required' => 'Deskripsi Tidak Boleh Kosong',
+            'status_produk.required' => 'Status Produk Tidak Boleh Kosong',
+            'id_kategori.required' => 'Kategori Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
 
         if ($request->has('foto_produk')) {
             $update = Produk::query()->find($id_produk)->update(
@@ -159,7 +204,7 @@ class ProdukController extends Controller
 
     }
 
-      public function search(Request $request)
+    public function search(Request $request)
     {
         # code...
         
@@ -193,7 +238,6 @@ class ProdukController extends Controller
                                 'Data' => $data]);
      
     }
-
 
     public function destroy($id_produk)
     {
