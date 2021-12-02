@@ -119,16 +119,21 @@ class ProdukController extends Controller
 
      public function kategoriproduk($id_kategori)
     {
-        $datakategori = DB::table('produk')->select('kategori_produk.id_kategori','kategori_produk.jenis_kategori', 'produk.id_produk', 'produk.id_kategori', 'produk.nama_produk', 'produk.satuan', 'produk.harga_jual', 'produk.jumlah_produk',	
-                                                    'produk.deskripsi',	'produk.foto_produk', 'produk.status_produk')
-                                           ->join('kategori_produk','produk.id_kategori', '=', 'kategori_produk.id_kategori')
+        $datakategori = DB::table('kategori_produk')->select('kategori_produk.id_kategori','kategori_produk.jenis_kategori')
                                            ->where('kategori_produk.id_kategori', $id_kategori)
                                            ->get();
+        
+        $dataproduk = DB::table('produk')->select('produk.id_produk', 'produk.id_kategori', 'produk.nama_produk', 'produk.satuan', 'produk.harga_jual', 'produk.jumlah_produk',	
+                                                  'produk.deskripsi',	'produk.foto_produk', 'produk.status_produk')
+                                         ->where('produk.id_kategori', $id_kategori)
+                                         ->get();         
+
         return response()->json([
             'code' => 200,
             'success' => true,
             'Message' => 'Menampilkan Kategori Produk',
-            'Kategori Produk' => $datakategori
+            'Kategori Produk' => $datakategori,
+            'Produk' => $dataproduk
             ]);
     }
 
