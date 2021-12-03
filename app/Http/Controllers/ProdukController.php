@@ -8,23 +8,17 @@ use App\Models\ReviewProduk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use App\Models\Customer;
+use App\Models\KategoriProduk;
 use App\Models\SpesialProduk;
 
-class ProdukController extends Controller
-{
-    
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
+class ProdukController extends Controller{
 
-    
-    public function create(Request $request)
-    {
-    
-        $validate = [
+   # Membuat Produk Baru
+    public function create(Request $request){
+
+        $this->validate($request, [
+
             'nama_produk' => 'required',
             'satuan' => 'required',
             'harga_jual' => 'required|numeric',
@@ -32,30 +26,7 @@ class ProdukController extends Controller
             'deskripsi' => 'required',
             'status_produk' => 'required',
             'id_kategori' => 'required'
-        ];
-
-        $pesan = [
-            'nama_produk.required' => 'Nama Produk Tidak Boleh Kosong',
-            'satuan.required' => 'Satuan Tidak Boleh Kosong',
-            'harga_jual.required' => 'Harga Jual Tidak Boleh Kosong',
-            'jumlah_produk.required' => 'Jumlah Produk Tidak Boleh Kosong',
-            'deskripsi.required' => 'Deskripsi Tidak Boleh Kosong',
-            'status_produk.required' => 'Status Produk Tidak Boleh Kosong',
-            'id_kategori.required' => 'Kategori Tidak Boleh Kosong'
-        ];
-
-        $validator = Validator::make($request->all(), $validate, $pesan);
-        
-        if($validator->fails())
-        {
-            return response()->json([
-                'code' => 404,
-                'success' => false,
-                'message' => $validator->errors()->first(),
-                'data' => null,
-            ]);
-        }
-
+        ]);
 
         if ($request->has('foto_produk')) {
             $produk = Produk::query()->create(
@@ -85,62 +56,196 @@ class ProdukController extends Controller
         }
 
         if (empty($produk)) {
-            return response()->json(['code' => 500,'success' => false,'error' => 'unknown error']);
+            return response()->json(['error' => 'unknown error'], 501);
         }
 
         return response()->json([
-            'code' => 200,
-            'success' => true,
             'message' => 'Product create success!',
+            'code' => 201,
             'data' => $produk
         ]);
 
     }
-    public function index()
-    {
+
+    # Menampilkan Seluruh Data Produk
+    public function index(){
        
-        $produk = Produk::all();
-        return response(['code' => 200,'success' => true, 'message' => 'Menampilkan Data Produk',
-        'Data' => $produk]);
+        $produk_biasa = DB::table('spesial_produk')->select('produk.id_produk', 'produk.nama_produk', 'kategori_produk.jenis_kategori', 'produk.satuan', 'produk.satuan', 'produk.harga_jual', 'produk.jumlah_produk', 'produk.deskripsi', 'produk.foto_produk', 'produk.status_produk')
+                ->rightJoin('produk', 'produk.id_produk', '=', 'spesial_produk.id_produk')
+                ->join('kategori_produk', 'kategori_produk.id_kategori', '=', 'produk.id_kategori')
+                ->whereNull('spesial_produk.diskon')
+                ->get();
+
+        $spesialproduk = DB::table('spesial_produk')
+                ->select('produk.id_produk', 'produk.nama_produk', 'kategori_produk.jenis_kategori', 'produk.satuan', 'produk.satuan', 'produk.harga_jual', 'produk.jumlah_produk', 'produk.deskripsi', 'produk.foto_produk', 'produk.status_produk', 'spesial_produk.diskon')
+                ->join('produk', 'produk.id_produk', '=', 'spesial_produk.id_produk')
+                ->join('kategori_produk', 'kategori_produk.id_kategori', '=', 'produk.id_kategori')
+                ->get();
+        $produkspesial = array();
+
+        foreach ($spesialproduk as $s){
+
+            $persen_diskon = preg_replace("/[^0-9]/", "", $s->diskon);
+            $potongan = ($persen_diskon/100) * $s->harga_jual;
+
+            $produkspesial [] = [
+
+                'id_produk' => $s->id_produk,
+                'nama_produk' => $s->nama_produk,
+                'jenis_kategori' => $s->jenis_kategori,
+                'satuan' => $s->satuan,
+                'total_produk' => $s->jumlah_produk,
+                'deskripsi' => $s->deskripsi,
+                'foto_produk' => $s->foto_produk,
+                'status_produk' => $s->status_produk,
+                'harga' => [
+                    'harga_jual' => $s->harga_jual,
+                    'diskon' => $s->diskon,
+                    'potongan' => $potongan,
+                    'harga_akhir' => $s->harga_jual - $potongan
+                ]
+            ];
+            
+        }
+
+        return response()->json([
+            'success' => 1,
+            'message' => 'Seluruh Produk',
+            'produk_spesial' => $produkspesial,
+            'produk_biasa' => $produk_biasa
+        ], 200);
+        
     	
     }
 
-    public function show($id_produk)
-    {
-        $produk = Produk::find($id_produk);
+    # Menampilkan Detail Produk Berdasarkan id produk
+    public function show($id_produk){
+
+        # cek id produk ada harga diskon tidak
+        if(count(SpesialProduk::where('id_produk', $id_produk)->get()) == 0){
+
+            # Produk gak diskon
+            $produk = Produk::select('produk.id_produk', 'produk.nama_produk', 'kategori_produk.jenis_kategori', 'produk.satuan', 'produk.harga_jual', 'produk.jumlah_produk', 'produk.deskripsi', 'produk.foto_produk', 'produk.status_produk')
+                    ->join('kategori_produk', 'produk.id_kategori', '=', 'kategori_produk.id_kategori')
+                    ->where('produk.id_produk', $id_produk)
+                    ->get();
+        }else{
+
+            # Produk diskon
+            $_produk = DB::table('spesial_produk')
+                    ->select('produk.id_produk', 'produk.nama_produk', 'kategori_produk.jenis_kategori', 'produk.satuan', 'produk.harga_jual', 'produk.jumlah_produk', 'produk.deskripsi', 'produk.foto_produk', 'produk.status_produk', 'spesial_produk.diskon')
+                    ->join('produk', 'produk.id_produk', '=', 'spesial_produk.id_produk')
+                    ->join('kategori_produk', 'kategori_produk.id_kategori', '=', 'produk.id_kategori')
+                    ->where('produk.id_produk', $id_produk)
+                    ->get();
+
+            $produk = array();
+
+            foreach ($_produk as $s){
+
+                $persen_diskon = preg_replace("/[^0-9]/", "", $s->diskon);
+                $potongan = ($persen_diskon/100) * $s->harga_jual;
+
+                $produk [] = [
+
+                    'id_produk' => $s->id_produk,
+                    'nama_produk' => $s->nama_produk,
+                    'jenis_kategori' => $s->jenis_kategori,
+                    'satuan' => $s->satuan,
+                    'total_produk' => $s->jumlah_produk,
+                    'deskripsi' => $s->deskripsi,
+                    'foto_produk' => $s->foto_produk,
+                    'status_produk' => $s->status_produk,
+                    'harga' => [
+                        'harga_jual' => $s->harga_jual,
+                        'diskon' => $s->diskon,
+                        'potongan' => $potongan,
+                        'harga_akhir' => $s->harga_jual - $potongan
+                    ]
+                ];
+                
+            }
+
+        }
         
-        if (empty($produk)) {
-            return response()->json(['code' => 402,'success' => false,'error' => 'Produk Tidak Ditemukan']);
+        if (count(Produk::where('id_produk', $id_produk)->get()) == 0){ 
+            return response()->json([
+                'error' => 'Produk Tidak Ditemukan'
+            ],404);
         }
 
-        return response()->json(['code' => 200,'success' => true,'message' => 'Menampilkan Data Produk', 'Data' => $produk]);
+        return response()->json($produk);
         
     }
 
-     public function kategoriproduk($id_kategori)
-    {
-        $datakategori = DB::table('kategori_produk')->select('kategori_produk.id_kategori','kategori_produk.jenis_kategori')
-                                           ->where('kategori_produk.id_kategori', $id_kategori)
-                                           ->get();
-        
-        $dataproduk = DB::table('produk')->select('produk.id_produk', 'produk.id_kategori', 'produk.nama_produk', 'produk.satuan', 'produk.harga_jual', 'produk.jumlah_produk',	
-                                                  'produk.deskripsi',	'produk.foto_produk', 'produk.status_produk')
-                                         ->where('produk.id_kategori', $id_kategori)
-                                         ->get();         
+    # Menampilkan List Produk Berdasarkan Kategori Produk
+    public function kategoriproduk($id_kategori){
+
+        $produk_biasa = DB::table('spesial_produk')->select('produk.id_produk', 'produk.nama_produk', 'kategori_produk.jenis_kategori', 'produk.satuan', 'produk.harga_jual', 'produk.jumlah_produk', 'produk.deskripsi', 'produk.foto_produk', 'produk.status_produk')
+                ->rightJoin('produk', 'produk.id_produk', '=', 'spesial_produk.id_produk')
+                ->join('kategori_produk', 'kategori_produk.id_kategori', '=', 'produk.id_kategori')
+                ->where('produk.id_kategori', $id_kategori)
+                ->whereNull('spesial_produk.diskon')
+                ->get();
+
+        $spesialproduk = DB::table('spesial_produk')
+                ->select('produk.id_produk', 'produk.nama_produk', 'kategori_produk.jenis_kategori', 'produk.satuan', 'produk.harga_jual', 'produk.jumlah_produk', 'produk.deskripsi', 'produk.foto_produk', 'produk.status_produk', 'spesial_produk.diskon')
+                ->join('produk', 'produk.id_produk', '=', 'spesial_produk.id_produk')
+                ->join('kategori_produk', 'kategori_produk.id_kategori', '=', 'produk.id_kategori')
+                ->where('produk.id_kategori', $id_kategori)
+                ->get();
+        $produkspesial = array();
+
+        foreach ($spesialproduk as $s){
+
+            $persen_diskon = preg_replace("/[^0-9]/", "", $s->diskon);
+            $potongan = ($persen_diskon/100) * $s->harga_jual;
+
+            $produkspesial [] = [
+
+                'id_produk' => $s->id_produk,
+                'nama_produk' => $s->nama_produk,
+                'jenis_kategori' => $s->jenis_kategori,
+                'satuan' => $s->satuan,
+                'total_produk' => $s->jumlah_produk,
+                'deskripsi' => $s->deskripsi,
+                'foto_produk' => $s->foto_produk,
+                'status_produk' => $s->status_produk,
+                'harga' => [
+                    'harga_jual' => $s->harga_jual,
+                    'diskon' => $s->diskon,
+                    'potongan' => $potongan,
+                    'harga_akhir' => $s->harga_jual - $potongan
+                ]
+            ];
+            
+        }
+
+        # nama kategori
+        $jeniskategori = KategoriProduk::select('jenis_kategori')->where('id_kategori', $id_kategori)->get();
+        foreach ($jeniskategori as $j){
+            $_jeniskategori = $j->jenis_kategori;
+        }
+
+        if(count(KategoriProduk::where('id_kategori', $id_kategori)->get()) == 0){
+            return response()->json(['error' => 'id kategori produk tidak ditemukan'], 400);
+        }
 
         return response()->json([
-            'code' => 200,
-            'success' => true,
-            'Message' => 'Menampilkan Kategori Produk',
-            'Kategori Produk' => $datakategori,
-            'Produk' => $dataproduk
-            ]);
+            'success' => 1,
+            'Message' => 'Produk Berdasarkan Jenis Kategori',
+            'jenis_kategori' => $_jeniskategori,
+            'data' => [
+                'produk_spesial' => $produkspesial,
+                'produk_biasa' => $produk_biasa
+            ],
+        ], 200);
     }
 
-    public function update(Request $request, $id_produk)
-    {
+    public function update(Request $request, $id_produk){
 
-        $validate = [
+        $this->validate($request, [
+
             'nama_produk' => 'required',
             'satuan' => 'required',
             'harga_jual' => 'required|numeric',
@@ -148,32 +253,10 @@ class ProdukController extends Controller
             'deskripsi' => 'required',
             'status_produk' => 'required',
             'id_kategori' => 'required'
-        ];
-
-        $pesan = [
-            'nama_produk.required' => 'Nama Produk Tidak Boleh Kosong',
-            'satuan.required' => 'Satuan Tidak Boleh Kosong',
-            'harga_jual.required' => 'Harga Jual Tidak Boleh Kosong',
-            'jumlah_produk.required' => 'Jumlah Produk Tidak Boleh Kosong',
-            'deskripsi.required' => 'Deskripsi Tidak Boleh Kosong',
-            'status_produk.required' => 'Status Produk Tidak Boleh Kosong',
-            'id_kategori.required' => 'Kategori Tidak Boleh Kosong'
-        ];
-
-        $validator = Validator::make($request->all(), $validate, $pesan);
-        
-        if($validator->fails())
-        {
-            return response()->json([
-                'code' => 404,
-                'success' => false,
-                'message' => $validator->errors()->first(),
-                'data' => null,
-            ]);
-        }
+        ]);
 
         if ($request->has('foto_produk')) {
-            $update = Produk::query()->find($id_produk)->update(
+            $update = Produk::where('id_produk', $id_produk)->update(
                 [
                     'nama_produk' => $request->input('nama_produk'),
                     'satuan' => $request->input('satuan'),
@@ -184,7 +267,7 @@ class ProdukController extends Controller
                 ]
             );
         } else {
-            $update = Produk::query()->find($id_produk)->update(
+            $update = Produk::where('id_produk', $id_produk)->update(
                 [
                     'nama_produk' => $request->input('nama_produk'),
                     'satuan' => $request->input('satuan'),
@@ -195,76 +278,96 @@ class ProdukController extends Controller
                 ]
             );
         }
-
+        
         if (!$update) {
-            return response()->json(['code' => 500,'success' => false,'error' => 'unknown error']);
+            return response()->json(['error' => 'id produk tidak ditemukan'], 400);
         }
        
-        
         return response()->json([
-            'code' => 200,
-            'success' => true,
-            'message' => 'Produk update!'
+            'message' => 'Produk update!',
+            'code' => 200
         ]);
 
     }
 
-    public function search(Request $request)
-    {
-        # code...
-        
-        $query = $request->query('query');
-        
-        if (empty($query)) {
-            return response()->json(['code' => 400,'success' => false,'error' => 'Query not specified!']);
-        }
-        
-        $fulltext = $request->query('fulltext', 'false');
-        $sortBy = $request->query('sort_by', 'nama_produk.asc');
-        $sorts = explode('.', $sortBy);
-        
-        
-        if ($fulltext == 'true') {
-            $data = Produk::query()
-            ->whereRaw("MATCH(nama_produk) AGAINST(? IN BOOLEAN MODE)", array($query))
-            ->orderBy($sorts[0], $sorts[1])
-            ->get();
-            return response()->json($data);
-        }
-        
+    # Pencarian Produk Berdasarkan Keyword
+    public function search(Request $request){
 
-        $data = Produk::query()
-        ->where('nama_produk', 'like', '%' . $query . '%')
-        ->orderBy($sorts[0], $sorts[1])
-        ->get();
-        
-        return response()->json(['code' => 200,'success' => true, 
-                                'message' => 'Menampilkan Pencarian Produk',
-                                'Data' => $data]);
-     
+        $query = $request->query('query');
+
+        if (empty($query)) {
+            return response()->json(['error' => 'Query not specified!'], 400);
+        }
+
+        $produk_biasa = DB::table('spesial_produk')->select('produk.id_produk', 'produk.nama_produk', 'kategori_produk.jenis_kategori', 'produk.satuan', 'produk.harga_jual', 'produk.jumlah_produk', 'produk.deskripsi', 'produk.foto_produk', 'produk.status_produk')
+                ->rightJoin('produk', 'produk.id_produk', '=', 'spesial_produk.id_produk')
+                ->join('kategori_produk', 'kategori_produk.id_kategori', '=', 'produk.id_kategori')
+                ->whereNull('spesial_produk.diskon')
+                ->where('produk.nama_produk', 'like', '%'.$query.'%')
+                ->get();
+
+        $spesialproduk = DB::table('spesial_produk')
+                ->select('produk.id_produk', 'produk.nama_produk', 'kategori_produk.jenis_kategori', 'produk.satuan', 'produk.harga_jual', 'produk.jumlah_produk', 'produk.deskripsi', 'produk.foto_produk', 'produk.status_produk', 'spesial_produk.diskon')
+                ->join('produk', 'produk.id_produk', '=', 'spesial_produk.id_produk')
+                ->join('kategori_produk', 'kategori_produk.id_kategori', '=', 'produk.id_kategori')
+                ->where('produk.nama_produk', 'like', '%'.$query.'%')
+                ->get();
+        $produkspesial = array();
+
+        foreach ($spesialproduk as $s){
+
+            $persen_diskon = preg_replace("/[^0-9]/", "", $s->diskon);
+            $potongan = ($persen_diskon/100) * $s->harga_jual;
+
+            $produkspesial [] = [
+
+                'id_produk' => $s->id_produk,
+                'nama_produk' => $s->nama_produk,
+                'jenis_kategori' => $s->jenis_kategori,
+                'satuan' => $s->satuan,
+                'total_produk' => $s->jumlah_produk,
+                'deskripsi' => $s->deskripsi,
+                'foto_produk' => $s->foto_produk,
+                'status_produk' => $s->status_produk,
+                'harga' => [
+                    'harga_jual' => $s->harga_jual,
+                    'diskon' => $s->diskon,
+                    'potongan' => $potongan,
+                    'harga_akhir' => $s->harga_jual - $potongan
+                ]
+            ];
+            
+        }
+
+        return response()->json([
+            'success' => 1,
+            'message' => 'Pencarian Produk Berdasarkan Kata Kunci',
+            'keyword' => $query,
+            'data' => [
+                'produk_spesial' => $produkspesial,
+                'produk_biasa' => $produk_biasa
+            ]
+        ]);
+
     }
 
-    public function destroy($id_produk)
-    {
+    public function destroy($id_produk){
+
         $produk = Produk::find($id_produk);
 
         if (!$produk) {
             return response()->json([
-                'code' => 404,
-                'success' => false,
                 'message' => 'Data tidak ditemukan',
                 'data' => $produk
-            ]);
+            ], 404);
         }
 
         $produk->delete();
 
         return response()->json([
-            'code' => 200,
-            'success' => true,
             'message' => 'Data berhasil dihapus',
             'data' => $produk
-        ]);
+        ], 200);
     }
 
 }
