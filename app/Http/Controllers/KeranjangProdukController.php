@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 use App\Models\KeranjangProduk;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class KeranjangProdukController extends Controller{
 
@@ -17,27 +16,11 @@ class KeranjangProdukController extends Controller{
     # Tambah data keranjang
     public function create(Request $request){
 
-        $validate = [
+        $this->validate($request, [
+            // 'id_customer' => 'required|numeric',
             'id_produk' => 'required|numeric',
             'jumlah_produk' => 'required|numeric'
-        ];
-
-        $pesan = [
-            'id_produk.required' => 'ID Produk Tidak Boleh Kosong',
-            'jumlah_produk.required' => 'Jumlah Produk Telepon Tidak Boleh Kosong'
-        ];
-
-        $validator = Validator::make($request->all(), $validate, $pesan);
-        
-        if($validator->fails())
-        {
-            return response()->json([
-                'code' => 404,
-                'success' => false,
-                'message' => $validator->errors()->first(),
-                'data' => null,
-            ]);
-        }
+        ]);
 
         if(count(KeranjangProduk::where('id_produk', $request->input('id_produk'))->where('id_customer', $request->session()->get('id_customer'))->get()) > 0){
 
@@ -66,28 +49,41 @@ class KeranjangProdukController extends Controller{
 
     # Tampilkan data Keranjang
     public function show(Request $request){
-
-        $isikeranjang = DB::table('keranjang_produk')->select('keranjang_produk.id_keranjang', 'keranjang_produk.id_produk', 'produk.nama_produk', 'keranjang_produk.jumlah_produk', 'produk.harga_jual', DB::raw("keranjang_produk.`jumlah_produk` * produk.`harga_jual` AS total"))
-                        ->join('produk', 'keranjang_produk.id_produk', '=', 'produk.id_produk')
-                        ->where('keranjang_produk.id_customer', $request->session()->get('id_customer'))
-                        ->get();
-                        
-        $subtotal = KeranjangProduk::select(DB::raw("keranjang_produk.`jumlah_produk` * produk.`harga_jual` AS subtotal"))
-                    ->join('produk', 'keranjang_produk.id_produk', '=', 'produk.id_produk')
-                    ->where('id_customer', $request->session()->get('id_customer'))
+        
+        $keranjang = DB::table('spesial_produk')
+                    ->select('keranjang_produk.id_keranjang', 'keranjang_produk.id_produk', 'produk.nama_produk', 'keranjang_produk.jumlah_produk', 'produk.harga_jual', 'spesial_produk.diskon')
+                    ->rightJoin('produk', 'produk.id_produk', '=', 'spesial_produk.id_produk')
+                    ->join('keranjang_produk', 'produk.id_produk', '=', 'keranjang_produk.id_produk')
+                    ->where('keranjang_produk.id_customer', $request->session()->get('id_customer'))
                     ->get();
 
-        $_subtotal = 0;
-        
-        foreach ($subtotal as $s){
-            $_subtotal = $_subtotal + $s->subtotal;
+        $isikeranjang = array();
+        foreach ($keranjang as $k){
+            ($k->diskon == null) ? $diskon = 0 : $diskon = $k->diskon; 
+
+            $persen_diskon = preg_replace("/[^0-9]/", "", $diskon);
+            $potongan = ($persen_diskon/100) * $k->harga_jual;
+            $harga_awal = $k->jumlah_produk * $k->harga_jual;
+
+            $isikeranjang [] = [
+                'id_keranjang' => $k->id_keranjang,
+                'id_produk' => $k->id_produk,
+                'nama_produk' => $k->nama_produk,
+                'jumlah_produk' => $k->jumlah_produk,
+                'harga' => [
+                    'diskon' => ($k->diskon == null) ? 0 : $k->diskon,
+                    'potongan' => $potongan,
+                    'harga_awal' => $harga_awal,
+                    'harga_akhir' => $harga_awal - $potongan
+                ]
+            ];
+
         }
 
-        if($isikeranjang && $subtotal){
+        if($keranjang){
         
             return response()->json([
                 'keranjang' => $isikeranjang,
-                'sub_total' => $_subtotal
             ], 200);
         
         }else{
@@ -101,25 +97,9 @@ class KeranjangProdukController extends Controller{
     # Edit data Keranjang
     public function update(Request $request, $id_keranjang){
 
-        $validate = [
+        $this->validate($request, [
             'jumlah_produk' => 'required|numeric'
-        ];
-
-        $pesan = [
-            'jumlah_produk.required' => 'Jumlah Produk Telepon Tidak Boleh Kosong'
-        ];
-
-        $validator = Validator::make($request->all(), $validate, $pesan);
-        
-        if($validator->fails())
-        {
-            return response()->json([
-                'code' => 404,
-                'success' => false,
-                'message' => $validator->errors()->first(),
-                'data' => null,
-            ]);
-        }
+        ]);
 
         $query = KeranjangProduk::query()->find($id_keranjang)->update([
             'jumlah_produk' => $request->input('jumlah_produk')
