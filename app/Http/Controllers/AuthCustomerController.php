@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use App\Mail\EmailVerification;
+
 
 class AuthCustomerController extends Controller
 {
@@ -49,6 +53,14 @@ class AuthCustomerController extends Controller
             $customer->id_role = 1;
             $plainPassword = $request->input('password');
             $customer->password = app('hash')->make($plainPassword);
+
+            # Buat Token Aktifasi Email
+            // $token = Str::random(180);
+            $token = mt_rand(100000,999999);
+            $request->session()->put(['token' => $token]);
+
+            # Kirim Link Aktifasi Akun, Lewat Email
+            Mail::to($request->post('email_customer'))->send(new EmailVerification(['email_customer'=>$request->post('email_customer'), 'nama_customer'=>$request->post('nama_customer'), 'nomor_telepon'=>$request->post('nomor_telepon'), 'token'=>$token]));
 
             $customer->save();
             //return successful response
@@ -288,7 +300,7 @@ class AuthCustomerController extends Controller
 
         return response()->json([
             'code' => 200,
-            'success' => false,
+            'success' => true,
             'message' => 'Edit Email update!',
         ]);
     }

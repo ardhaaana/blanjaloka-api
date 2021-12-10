@@ -62,8 +62,8 @@ $router->post('/logout', 'AuthCustomerController@logout');
     $router->group(['prefix' => 'api/pedagang'], function () use ($router) {
         $router->post('/', ['uses' => 'PedagangController@create']);
         $router->get('/', ['uses' =>  'PedagangController@index']);
+        $router->get('/caritoko', ['uses' =>  'PedagangController@caritoko']);//belum fiks
         $router->get('/{id_pedagang}', ['uses' =>  'PedagangController@show']);
-        $router->get('/caritoko', ['uses' =>  'PedagangController@caritoko']);
         $router->put('/{id_pedagang}', ['uses' =>  'PedagangController@update']);
         $router->delete('/{id_pedagang}', ['uses' =>  'PedagangController@destroy']);
 
@@ -170,7 +170,7 @@ $router->post('/logout', 'AuthCustomerController@logout');
     $router->group(['prefix' => 'api/keranjang'], function () use ($router) {      
         $router->post('/', ['uses' => 'KeranjangProdukController@create']);
         $router->get('/', ['uses' =>  'KeranjangProdukController@show']);
-        $router->put('/update/{id_keranjang}', ['uses' => 'KeranjangProdukController@update']);
+        $router->put('/update/{id_keranjang}', ['uses' => 'KeranjangProdukController@update']);//belum fiks
         $router->delete('/{id_keranjang}', ['uses' =>  'KeranjangProdukController@destroy']);
     });
     
