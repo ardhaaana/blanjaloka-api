@@ -179,7 +179,8 @@ $router->post('/aktivasi-otp', 'AuthCustomerController@aktivasi_OTP');
     // $router->post('transaksi', ['uses' => 'TransaksiController@create']);
     // $router->get('transaksi', ['uses' =>  'TransaksiController@index']);
 
-    // $router->get('transaksi/search', ['uses' => 'TransaksiController@search']);
-    // $router->get('transaksi/{id}', ['uses' =>  'TransaksiController@show']);
-    // $router->put('transaksi/{id}', ['uses' =>  'TransaksiController@update']);
-    // $router->delete('transaksi/{id}', ['uses' =>  'TransaksiController@destroy']);
+    $router->group(['prefix' => 'api/transaksi'], function() use ($router){
+        $router->post('getsnaptoken', ['uses' => 'TransaksiController@getsnaptoken']);
+        $router->post('status/{order_id}', ['uses' => 'TransaksiController@getStatusTransaksi']);
+        $router->post('cancel/{order_id}', ['uses' => 'TransaksiController@batalkanTransaksi']);
+    });
