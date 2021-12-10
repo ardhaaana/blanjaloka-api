@@ -25,6 +25,7 @@ class CreateCustomerTable extends Migration
 //             $table->string('jenis_kelamin');
             $table->bigInteger('id_role')->unsigned()->nullable();
             $table->string('token')->nullable();
+            $table->enum('status', ['yes', 'no'])->nullable();
             $table->timestamps();
 
             $table->foreign('id_role')->references('id_role')->on('role')->onDelete('cascade');
