@@ -5,135 +5,123 @@ namespace App\Http\Controllers;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use App\Models\Customer;
+use App\Models\Produk;
+use Illuminate\Support\Str;
+use Exception;
+use Veritrans_Config;
+use Veritrans_Snap;
+use Veritrans_Transaction;
 
 class TransaksiController extends Controller
 {
-    public function __construct()
-    {
+
+    public function __construct(){
+
         $this->middleware('auth');
+
+        Veritrans_Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+        Veritrans_Config::$isProduction = env('MIDTRANS_IS_PRODUCTION');
+        Veritrans_Config::$isSanitized = env('MIDTRANS_IS_SANITIZED');
+        Veritrans_Config::$is3ds = env('MIDTRANS_IS3DS');
+    
     }
 
-    public function create(Request $request)
-    {
+    public function getsnaptoken(Request $request){
+
         $this->validate($request, [
-            // 'id_transaksi' => 'required',
-            'jenis_pembayaran' => 'required',
-            'pajak' => 'required',
-            'id_customer' => 'required|numeric',
-            'id_pedagang' => 'required|numeric',
+            'produk*' => 'required',
+            'pajak' => 'required|numeric',
             'total_pembayaran' => 'required|numeric'
         ]);
 
-        // $id_transaksi = $request->input('id_transaksi');
-        $jenis_pembayaran = $request->input('jenis_pembayaran');
-        $pajak = $request->input('pajak');
-        $id_customer = $request->input('id_customer');
-        $id_pedagang = $request->input('id_pedagang');
-        $total_pembayaran = $request->input('total_pembayaran');
+        $list_produk = $request->input('produk');
 
-        $transaksi = Transaksi::create([
-            // 'id_transaksi' => $id_transaksi,
-            'jenis_pembayaran' => $jenis_pembayaran,
-            'pajak' => $pajak,
-            'id_customer' => $id_customer,
-            'id_pedagang' => $id_pedagang,
-            'total_pembayaran' => $total_pembayaran
-        ]);
+        for($i=0; $i<count($list_produk); $i++){
 
-        if ($transaksi) {
-            return response()->json([
-                'message' => 'Pembayaran pesanan berhasil',
-                'data' => $transaksi
-            ], 201);
-        }
-    }
+            if(count(Produk::where('id_produk', $list_produk[$i]['id'])->get()) == 0){
 
-    public function index()
-    {
-        $transaksi = Transaksi::all();
-        return response()->json($transaksi);
-    }
+                return response()->json([
+                    'success' => 0,
+                    'message' => 'id produk tidak ditemukan',
+                    'id_produk' => $list_produk[$i]['id']
+                ]);
+    
+            }
 
-    public function show($id)
-    {
-        $transaksi = Transaksi::find($id);
-        return response()->json($transaksi);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $transaksi = Transaksi::find($id);
-
-        if (!$transaksi) {
-            return response()->json([
-                'message' => 'Data tidak ditemukan',
-                'data' => $transaksi
-            ], 404);
         }
 
-        $this->validate($request, [
-            'id_transaksi' => 'required',
-            'jenis_pembayaran' => 'required',
-            'pajak' => 'required',
-            'id_customer' => 'required|numeric',
-            'id_pedagang' => 'required|numeric',
-            'total_pembayaran' => 'required|numeric'
-        ]);
+        # PUSH ARRAY PAJAK
+        $pajak = [
+            "id"=>rand(0, 50),
+            "quantity"=>1,
+            "price"=> $request->input('pajak'),
+            "name"=> "Pajak Negara"
+        ];
 
-        $datatransaksi = $request->all();
-        $transaksi->fill($datatransaksi);
-        $transaksi->save();
+        array_push($list_produk, $pajak);
 
-        return response()->json($transaksi);
-    }
+        $order_id = Str::random(30);
 
-    // public function search(Request $request)
-    // {
-    //     # code...
-    //     $query = $request->query('query');
-
-    //     if (empty($query)) {
-    //         return response()->json(['error' => 'Query not specified!'], 400);
-    //     }
-
-    //     $fulltext = $request->query('fulltext', 'false');
-    //     $sortBy = $request->query('sort_by', 'id_transaksi.asc');
-    //     $sorts = explode('.', $sortBy);
+//         # ALAMAT KANTOR CITIASIA
+//         $billing_address = array(
+//             'first_name'    => "Blanjaloka",
+//             'last_name'     => "Citiasia",
+//             'address'       => "Jln Mangga Gang Senggol Jakarta",
+//             'city'          => "Jakarta",
+//             'postal_code'   => "16602",
+//             'phone'         => "081122334455",
+//             'country_code'  => 'IDN'
+//         );
 
 
-    //     if ($fulltext == 'true') {
-    //         $data = Transaksi::query()
-    //             ->whereRaw("MATCH(nama_customer) AGAINST(? IN BOOLEAN MODE)", array($query))
-    //             ->orderBy($sorts[0], $sorts[1])
-    //             ->get();
-    //         return response()->json($data);
-    //     }
+        foreach (Customer::where('id_customer', $request->session()->get('id_customer'))->get() as $c){
 
-    //     $data = Pesanan::query()
-    //         ->where('nama_customer', 'like', '%' . $query . '%')
-    //         ->orderBy($sorts[0], $sorts[1])
-    //         ->get();
-
-    //     return response()->json($data);
-    // }
-
-    public function destroy($id)
-    {
-        $transaksi = Transaksi::find($id);
-
-        if (!$transaksi) {
-            return response()->json([
-                'message' => 'Data tidak ditemukan',
-                'data' => $transaksi
-            ], 404);
+            $customer_details = array(
+                'first_name'    => $c->nama_customer,
+                'email'         => $c->email_customer
+            );
+            
         }
 
-        $transaksi->delete();
+        $params = [
+            'transaction_details' => [
+                'order_id' => $order_id,
+                'gross_amount' => $request->input('total_pembayaran')
+            ],
+            'item_details'=>$list_produk,
+            'customer_details' => $customer_details
+//             'billing_address' => $billing_address
+        ];
 
-        return response()->json([
-            'message' => 'Data berhasil dihapus',
-            'data' => $transaksi
-        ], 200);
+        try{
+
+            $snap_token = Veritrans_Snap::getSnapToken($params);
+
+            return response()->json([
+                'snap_token' => $snap_token,
+                'redirect_url' => 'https://app.sandbox.veritrans.co.id/snap/v2/vtweb/'.$snap_token
+            ]);
+
+        }catch(Exception $e){
+
+            return [
+                'error_message' => $e->getMessage()
+            ];
+
+        }
+ 
     }
+
+
+    public function getStatusTransaksi($order_id){
+        $status = Veritrans_Transaction::status($order_id);
+        return response()->json($status);
+    }
+   
+    public function batalkanTransaksi($order_id){
+        $status = Veritrans_Transaction::cancel($order_id);
+        return response()->json($status);
+    }
+
 }
