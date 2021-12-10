@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Mail\EmailVerification;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 
 
 class AuthCustomerController extends Controller
@@ -53,14 +54,7 @@ class AuthCustomerController extends Controller
             $customer->id_role = 1;
             $plainPassword = $request->input('password');
             $customer->password = app('hash')->make($plainPassword);
-
-            # Buat Token Aktifasi Email
-            // $token = Str::random(180);
-            $token = mt_rand(100000,999999);
-            $request->session()->put(['token' => $token]);
-
-            # Kirim Link Aktifasi Akun, Lewat Email
-            Mail::to($request->post('email_customer'))->send(new EmailVerification(['email_customer'=>$request->post('email_customer'), 'nama_customer'=>$request->post('nama_customer'), 'nomor_telepon'=>$request->post('nomor_telepon'), 'token'=>$token]));
+            $customer->status = "no";
 
             $customer->save();
             //return successful response
@@ -113,7 +107,7 @@ class AuthCustomerController extends Controller
         
         $request->session()->flush();
         
-        $customer_data = Customer::select('id_customer', 'email_customer', 'nama_customer')->where('email_customer', $request->input('email_customer'))->get();
+        $customer_data = Customer::select('id_customer', 'email_customer', 'nama_customer','status')->where('email_customer', $request->input('email_customer'))->get();
         
         foreach ($customer_data as $c){
             $request->session()->put('id_customer', $c->id_customer);
@@ -121,11 +115,22 @@ class AuthCustomerController extends Controller
             
             $email_customer = $c->email_customer;
             $nama_customer = $c->nama_customer;
+            $status = $c->status;
+        }
+        
+        if($status == "no"){
+            return response()->json([
+                'code' => 402,
+                'success' => false, 
+                'message' => 'Email belum aktif'
+            ]);
         }
         
         if (! $token = Auth::attempt($customer)) {
             return response()->json(['code' => 404,'success' => false, 'message' => 'Login Gagal']);
         } 
+
+
         
         return response()->json([
             'code' => 200,
@@ -138,8 +143,84 @@ class AuthCustomerController extends Controller
             ),
             'token' => $token,
             'token_type' => 'bearer',
+            'status' => $status
         ]);
 
+    }
+
+    public function OTP_Email(Request $request)
+    {
+        if(count(Customer::where('email_customer',$request->input('email_customer'))->get())>0){
+            # Buat Token Aktifasi Email
+            $token = mt_rand(100000,999999);
+            $request->session()->flush();
+            $request->session()->push('token',$token);
+            $request->session()->push('email_customer',$request->input('email_customer'));
+
+            # Kirim Link Aktifasi Akun, Lewat Email
+            Mail::to($request->post('email_customer'))->send(new EmailVerification(['email_customer'=>$request->post('email_customer'), 'token'=>$token]));
+
+            return response()->json([
+                'code' => 200,
+                'success' => true,
+                'message' => 'OTP telah dikirim ke Email anda'
+            ]);
+       
+        }else{
+            return response()->json([
+                'code' => 402,
+                'success' => false,
+                'message' => 'Email belum terdaftar di Blanjaloka'
+            ]);
+        }
+        
+    }
+
+    public function aktivasi_OTP(Request $request){
+        $validate = [
+            'email_customer' => 'required|email'
+        ];
+
+        $pesan = [
+            'email_customer.required' => 'Email Tidak Boleh Kosong'
+        ];
+
+        $validator = Validator::make($request->all(), $validate, $pesan);
+        if($validator->fails())
+        {
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'data' => null,
+            ]);
+        }
+
+        if($request->session()->get('token')[0] == $request->input('token') && $request->session()->get('email_customer')[0]== $request->input('email_customer')){
+            Customer::where('email_customer',$request->input('email_customer'))->update(['status' => 'yes']);
+            $request->session()->flush();
+
+            return response()->json([
+                'code' => 200,
+                'success' => true,
+                'message' => 'Aktivasi email berhasil'
+            ]);
+        
+        }elseif($request->session()->get('email_customer')[0] != $request->input('email_customer')){
+
+            return response()->json([
+                'code' => 402,
+                'success' => false,
+                'message' => 'Kode OTP dan Email tidak sesuai'
+            ]);
+
+        }else{
+            return response()->json([
+                'code' => 402,
+                'success' => false,
+                'message' => 'Kode OTP salah'
+            ]);
+        }
     }
 
     public function loginnomor(Request $request)

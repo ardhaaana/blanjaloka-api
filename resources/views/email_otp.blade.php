@@ -47,7 +47,7 @@
     <div class="card">
         <div class="container">
             <h1>Aktifasi Akun Blanjaloka</h1>
-            <p>Hai, {{ $details['nama_customer'] }}. Terimakasih telah memilih Blanjaloka Sebagai Platform Jual Beli
+            <p>Hai,Terimakasih telah memilih Blanjaloka Sebagai Platform Jual Beli
                 anda. JANGAN BERIKAN KODE ini ke siapapun, Waspada penipuan. Masukkan kode OTP
                 <b>{{ $details['token'] }}</b>
             </p>
