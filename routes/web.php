@@ -26,8 +26,10 @@ $router->post('/register', 'AuthCustomerController@register');
 $router->post('/login', 'AuthCustomerController@loginemail');
 $router->post('/login-nomor', 'AuthCustomerController@loginnomor');
 $router->post('/logout', 'AuthCustomerController@logout');
-$router->post('/otp-email', 'AuthCustomerController@OTP_Email');
-$router->post('/aktivasi-otp', 'AuthCustomerController@aktivasi_OTP');
+
+# OTP EMAIL ROUTES
+$router->post('/reload-otp', 'AuthCustomerController@reloadKodeOTP');
+$router->post('/verifikasi-otp', 'AuthCustomerController@VerifikasiOTP');
 
     $router->group(['prefix' => 'api/customer'], function () use ($router) {   
     //Customer
