@@ -21,7 +21,13 @@ class KeranjangProdukController extends Controller{
             'id_produk' => 'required|numeric',
             'jumlah_produk' => 'required|numeric'
         ]);
-
+        
+        if(count(Produk::where('id_produk', $request->input('id_produk'))) == 0){
+            return response()->json([
+                'error' => "id produk tidak ditemukan"
+            ], 501);
+        }
+        
         if(count(KeranjangProduk::where('id_produk', $request->input('id_produk'))->where('id_customer', $request->session()->get('id_customer'))->get()) > 0){
 
             return response([
