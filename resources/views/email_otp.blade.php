@@ -49,7 +49,7 @@
             <h1>Aktifasi Akun Blanjaloka</h1>
             <p>Hai,Terimakasih telah memilih Blanjaloka Sebagai Platform Jual Beli
                 anda. JANGAN BERIKAN KODE ini ke siapapun, Waspada penipuan. Masukkan kode OTP
-                <b>{{ $details['token'] }}</b>
+                <b>{{ $details['kode_otp'] }}</b>
             </p>
             <p>Thank You</p>
         </div>
