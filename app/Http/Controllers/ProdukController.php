@@ -28,6 +28,12 @@ class ProdukController extends Controller{
             'id_kategori' => 'required'
         ]);
 
+        if(count(KategoriProduk::where('id_kategori', $request->input('id_kategori'))->get()) == 0){
+            return response()->json([
+                'error'=>"id kategori produk tidak ditemukan"
+            ], 501);
+        }
+        
         if ($request->has('foto_produk')) {
             $produk = Produk::query()->create(
                 [
