@@ -54,7 +54,6 @@ class AuthCustomerController extends Controller
             $customer->id_role = 1;
             $plainPassword = $request->input('password');
             $customer->password = app('hash')->make($plainPassword);
-            $customer->status = "no";
 
             $customer->save();
             //return successful response
@@ -68,145 +67,175 @@ class AuthCustomerController extends Controller
         }
     }
 
-    public function loginemail(Request $request)
-    {
-        $validate = [
-            'email_customer' => 'required',
-            'password' => 'required'
-        ];
+    public function loginemail(Request $request){
 
-        $pesan = [
-            'email_customer.required' => 'Email Tidak Boleh Kosong',
-            'password.required' => 'Password Tidak Boleh Kosong'
-        ];
-
+        # Validasi
+        $validate = [ 'email_customer' => 'required', 'password' => 'required' ];
+        $pesan = [ 'email_customer.required' => 'Email Tidak Boleh Kosong', 'password.required' => 'Password Tidak Boleh Kosong'];
         $validator = Validator::make($request->all(), $validate, $pesan);
         
-        if($validator->fails())
-        {
+        if($validator->fails()){
             return response()->json([
                 'code' => 404,
                 'success' => false,
                 'message' => $validator->errors()->first(),
-                'data' => null,
-            ]);
+            ], 404);
         }
         
+        # Query get 1 customer
         $customer = $request->only(['email_customer', 'password']);
-
-        if(count(Customer::where('email_customer', $request->input('email_customer'))->get()) == false){
-
-            return response()->json([
-                'code' => 404,
-                'success' => false,
-                'message' => 'Email tidak ditemukan',
-                'data' => null
-            ]);
-
-        }
-        
-        $request->session()->flush();
-        
-        $customer_data = Customer::select('id_customer', 'email_customer', 'nama_customer','status')->where('email_customer', $request->input('email_customer'))->get();
+        $customer_data = Customer::select('id_customer', 'email_customer', 'nama_customer')->where('email_customer', $request->input('email_customer'))->get();
         
         foreach ($customer_data as $c){
-            $request->session()->put('id_customer', $c->id_customer);
-            $request->session()->put('email_customer', $c->email_customer);
-            
             $email_customer = $c->email_customer;
             $nama_customer = $c->nama_customer;
-            $status = $c->status;
         }
         
-        if($status == "no"){
-            return response()->json([
-                'code' => 402,
-                'success' => false, 
-                'message' => 'Email belum aktif'
-            ]);
-        }
-        
+        # Check data Customer, ada atau tidak di database
         if (! $token = Auth::attempt($customer)) {
-            return response()->json(['code' => 404,'success' => false, 'message' => 'Login Gagal']);
+            return response()->json(['code' => 404,'success' => false, 'message' => 'Login Gagal, Email atau Password Salah']);
         } 
 
+        # DELETE SEMUA SESSION
+        $request->session()->flush();
 
+        # Jika ada & login sukses, kirimkan kode OTP ke email
+        $this->SendingKodeOTP($request);
         
+        # PUT BARRER TOKEN IN SESSION
+        $request->session()->put('token', $token);
+
+        # Return response sukses
         return response()->json([
             'code' => 200,
             'success' => true,
-            'message' => 'Login Sukses',
-            'data' => array(
-                'email_customer'=>$email_customer,
-                'nama_customer'=>$nama_customer,
-                'id_customer' => $request->session()->get('id_customer')
-            ),
-            'token' => $token,
-            'token_type' => 'bearer',
-            'status' => $status
+            'message' => 'Hai, '.$nama_customer.' Sebelum masuk ke akun anda silahkan masukkan kode OTP yang telah kami kirimkan ke email '.$email_customer
+        ], 200);
+
+    }
+
+    public function reloadKodeOTP(Request $request){
+
+        # Validasi
+        $validator = Validator::make($request->all(), [
+            'email_customer' => 'required|email'
         ]);
 
-    }
-
-    public function OTP_Email(Request $request)
-    {
-        if(count(Customer::where('email_customer',$request->input('email_customer'))->get())>0){
-            # Buat Token Aktifasi Email
-            $token = mt_rand(100000,999999);
-            $request->session()->flush();
-            $request->session()->push('token',$token);
-            $request->session()->push('email_customer',$request->input('email_customer'));
-
-            # Kirim Link Aktifasi Akun, Lewat Email
-            Mail::to($request->post('email_customer'))->send(new EmailVerification(['email_customer'=>$request->post('email_customer'), 'token'=>$token]));
-
-            return response()->json([
-                'code' => 200,
-                'success' => true,
-                'message' => 'OTP telah dikirim ke Email anda'
-            ]);
-       
-        }else{
-            return response()->json([
-                'code' => 402,
-                'success' => false,
-                'message' => 'Email belum terdaftar di Blanjaloka'
-            ]);
-        }
-        
-    }
-
-    public function aktivasi_OTP(Request $request){
-        $validate = [
-            'email_customer' => 'required|email'
-        ];
-
-        $pesan = [
-            'email_customer.required' => 'Email Tidak Boleh Kosong'
-        ];
-
-        $validator = Validator::make($request->all(), $validate, $pesan);
-        if($validator->fails())
-        {
+        if($validator->fails()){
             return response()->json([
                 'code' => 404,
                 'success' => false,
                 'message' => $validator->errors()->first(),
-                'data' => null,
-            ]);
+            ],404);
         }
 
-        if($request->session()->get('token')[0] == $request->input('token') && $request->session()->get('email_customer')[0]== $request->input('email_customer')){
-            Customer::where('email_customer',$request->input('email_customer'))->update(['status' => 'yes']);
-            $request->session()->flush();
+        # Cek email yang masuk (ada tidak didatabase)
+        if(count(Customer::where('email_customer', $request->input('email_customer'))->get()) == 0){
+
+            return response()->json([
+                'code' => 402,
+                'message' => "Email yang anda masukkan tidak terdaftar di Blanjaloka",
+                'success' => false
+            ],402);
+
+        }elseif($request->session()->get('email_customer') != $request->input('email_customer') || $request->session()->get('token') == null){
+
+            return response()->json([
+                'code' => 402,
+                'message' => "Sesi anda untuk melakukan reload kode OTP berakhir, silahkan login ulang untuk mendapatkan kode OTP lagi",
+                'success' => false
+            ],402);
+
+        }else{
+
+            # DROP SESSION KODE OTP LAMA
+            $request->session()->remove('kode_otp');
+
+            # SENDING NEW KODE OTP
+            $this->SendingKodeOTP($request);
+
+            foreach(Customer::where('email_customer', $request->input('email_customer'))->get() as $c){
+                $nama_customer = $c->nama_customer;
+                $email_customer = $c->email_customer;
+            }
 
             return response()->json([
                 'code' => 200,
                 'success' => true,
-                'message' => 'Aktivasi email berhasil'
+                'message' => 'Hai, '.$nama_customer.' kami telah mengirimkan kode OTP terbaru ke email '.$email_customer
+            ], 200);
+
+        }
+
+    }
+
+    public function SendingKodeOTP(Request $request){
+
+        # Remove ALL SESSION KECUALI SESSION TOKEN BARRER
+        $request->session()->remove('email_customer');
+        $request->session()->remove('kode_otp');
+
+        # Buat Kode OTP
+        $kode_otp = mt_rand(100000,999999);
+        $request->session()->put('kode_otp', $kode_otp);
+        $request->session()->put('email_customer', $request->input('email_customer'));
+
+        # Kirim Link Aktifasi Akun, Lewat Email
+        Mail::to($request->post('email_customer'))->send(new EmailVerification(['email_customer'=>$request->post('email_customer'), 'kode_otp'=>$kode_otp]));
+       
+    }
+
+    public function VerifikasiOTP(Request $request){
+
+        # Validasi
+        $validator = Validator::make($request->all(),[
+            'email_customer' => 'required|email',
+            'kode_otp' => 'required'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'code' => 404,
+                'success' => false,
+                'message' => $validator->errors()->first(),
+            ], 404);
+        }
+
+        # Cek Jika session token barrer kosong, harus login ulang
+        if($request->session()->get('token') == null){
+            return response()->json([
+                'code' => 402,
+                'message' => "Sesi anda untuk melakukan verifikasi kode OTP berakhir, silahkan login ulang untuk mendapatkan kode OTP lagi",
+                'success' => false
+            ], 402);
+        }
+
+        if($request->session()->get('kode_otp') == $request->input('kode_otp') && $request->session()->get('email_customer') == $request->input('email_customer')){
+
+            # Jika Kode OTP BENAR
+            $request->session()->remove('kode_otp');
+
+            foreach(Customer::where('email_customer', $request->input('email_customer'))->get() as $c){
+                $nama_customer = $c->nama_customer;
+                $email_customer = $c->email_customer;
+
+                $request->session()->put('id_customer', $c->id_customer);
+            }
+
+            return response()->json([
+                'code' => 200,
+                'success' => true,
+                'message' => 'Login Berhasil & Kode OTP berhasil terverifikasi',
+                'data' => [
+                    'email_customer'=>$email_customer,
+                    'nama_customer'=>$nama_customer,
+                    'id_customer' => $request->session()->get('id_customer')
+                ],
+                'token' => $request->session()->get('token'),
+                'token_type' => 'baerer'
             ]);
         
-        }elseif($request->session()->get('email_customer')[0] != $request->input('email_customer')){
+        }elseif($request->session()->get('email_customer') != $request->input('email_customer')){
 
             return response()->json([
                 'code' => 402,
