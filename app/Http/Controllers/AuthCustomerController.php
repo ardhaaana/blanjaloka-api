@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Mail\EmailVerification;
+use DateTime;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 
 
@@ -63,7 +64,7 @@ class AuthCustomerController extends Controller
 
         } catch (\Exception $e) {
             //return error message
-            return response()->json(['code' => 404 ,'success' => false,'message' => 'User Registration Failed!']);
+            return response()->json(['code' => 404 ,'success' => false,'message' => $e->getMessage()]);
         }
     }
 
@@ -96,14 +97,11 @@ class AuthCustomerController extends Controller
             return response()->json(['code' => 404,'success' => false, 'message' => 'Login Gagal, Email atau Password Salah']);
         } 
 
-        # DELETE SEMUA SESSION
-        $request->session()->flush();
-
         # Jika ada & login sukses, kirimkan kode OTP ke email
         $this->SendingKodeOTP($request);
         
-        # PUT BARRER TOKEN IN SESSION
-        $request->session()->put('token', $token);
+        # UPDATE BARRER TOKEN 
+        Customer::where('email_customer', $email_customer)->update(['token_barrer'=>$token]);
 
         # Return response sukses
         return response()->json([
@@ -138,18 +136,7 @@ class AuthCustomerController extends Controller
                 'success' => false
             ],402);
 
-        }elseif($request->session()->get('email_customer') != $request->input('email_customer') || $request->session()->get('token') == null){
-
-            return response()->json([
-                'code' => 402,
-                'message' => "Sesi anda untuk melakukan reload kode OTP berakhir, silahkan login ulang untuk mendapatkan kode OTP lagi",
-                'success' => false
-            ],402);
-
         }else{
-
-            # DROP SESSION KODE OTP LAMA
-            $request->session()->remove('kode_otp');
 
             # SENDING NEW KODE OTP
             $this->SendingKodeOTP($request);
@@ -171,17 +158,16 @@ class AuthCustomerController extends Controller
 
     public function SendingKodeOTP(Request $request){
 
-        # Remove ALL SESSION KECUALI SESSION TOKEN BARRER
-        $request->session()->remove('email_customer');
-        $request->session()->remove('kode_otp');
+        # Restart TOKEN dari database
+        $data = [
+            'otp' => mt_rand(100000,999999),
+            'created_otp' => date("Y-m-d H:i:s")
+        ];
 
-        # Buat Kode OTP
-        $kode_otp = mt_rand(100000,999999);
-        $request->session()->put('kode_otp', $kode_otp);
-        $request->session()->put('email_customer', $request->input('email_customer'));
+        Customer::where('email_customer', $request->input('email_customer'))->update($data);
 
         # Kirim Link Aktifasi Akun, Lewat Email
-        Mail::to($request->post('email_customer'))->send(new EmailVerification(['email_customer'=>$request->post('email_customer'), 'kode_otp'=>$kode_otp]));
+        Mail::to($request->post('email_customer'))->send(new EmailVerification(['email_customer'=>$request->post('email_customer'), 'kode_otp'=>$data['otp']]));
        
     }
 
@@ -201,8 +187,28 @@ class AuthCustomerController extends Controller
             ], 404);
         }
 
-        # Cek Jika session token barrer kosong, harus login ulang
-        if($request->session()->get('token') == null){
+        if(count(Customer::where('email_customer', $request->input('email_customer'))->get()) == null){
+            return response()->json([
+                'code' => 402,
+                'success' => false,
+                'message' => 'Email tidak terdaftar'
+            ]);
+        }
+
+        # GET CUSTOMER DATA
+        foreach(Customer::where('email_customer', $request->input('email_customer'))->get() as $cs){
+            $otp = $cs->otp;
+            $created_otp = $cs->created_otp;
+            $email_customer = $cs->email_customer;
+            $token = $cs->token_barrer;
+        }
+
+        $_created_otp = new DateTime($created_otp);
+        $_date_now = new DateTime(date("Y-m-d H:i:s"));
+        $interval = $_date_now->diff($_created_otp);
+
+        # Cek OTP KADALUARASA HARUS LOGIN ULANG
+        if($interval->i > 30){
             return response()->json([
                 'code' => 402,
                 'message' => "Sesi anda untuk melakukan verifikasi kode OTP berakhir, silahkan login ulang untuk mendapatkan kode OTP lagi",
@@ -210,10 +216,7 @@ class AuthCustomerController extends Controller
             ], 402);
         }
 
-        if($request->session()->get('kode_otp') == $request->input('kode_otp') && $request->session()->get('email_customer') == $request->input('email_customer')){
-
-            # Jika Kode OTP BENAR
-            $request->session()->remove('kode_otp');
+        if($otp == $request->input('kode_otp') && $email_customer = $request->input('email_customer')){
 
             foreach(Customer::where('email_customer', $request->input('email_customer'))->get() as $c){
                 $nama_customer = $c->nama_customer;
@@ -231,11 +234,12 @@ class AuthCustomerController extends Controller
                     'nama_customer'=>$nama_customer,
                     'id_customer' => $request->session()->get('id_customer')
                 ],
-                'token' => $request->session()->get('token'),
-                'token_type' => 'baerer'
+                'token' => $token,
+                'token_type' => 'baerer',
+                'interval' => $interval->i
             ]);
         
-        }elseif($request->session()->get('email_customer') != $request->input('email_customer')){
+        }elseif($email_customer != $request->input('email_customer')){
 
             return response()->json([
                 'code' => 402,
@@ -543,6 +547,15 @@ class AuthCustomerController extends Controller
     public function logout(Request $request)
     {
         $request->session()->flush();
+        # DELETE BARRER 
+        
+        $data = [
+            'token_barrer' => null,
+            'otp' => null,
+            'created_otp' => null
+        ];
+
+
         return response()->json([
             'code' => 200,
             'success' => true,
