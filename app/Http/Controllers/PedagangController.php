@@ -37,10 +37,10 @@ class PedagangController extends Controller
             'nomor_telepon.required' => 'Nomor Telepon Tidak Boleh Kosong',
             'alamat_pedagang.required' => 'Alamat Pedagang Tidak Boleh Kosongr',
             'tanggal_lahir.required' => 'Tanggal lahir Tidak Boleh Kosong',
-            'tanggal_lahir.required' => 'Nomor KTP Tidak Boleh Kosong',
-            'tanggal_lahir.required' => 'Foto Rekening Tidak Boleh Kosong',
-            'tanggal_lahir.required' => 'Nama Toko Tidak Boleh Kosong',
-            'tanggal_lahir.required' => 'Alamat Toko Tidak Boleh Kosong'
+            'nomor_ktp.required' => 'Nomor KTP Tidak Boleh Kosong',
+            'foto_rekening.required' => 'Foto Rekening Tidak Boleh Kosong',
+            'nama_toko.required' => 'Nama Toko Tidak Boleh Kosong',
+            'alamat_toko.required' => 'Alamat Toko Tidak Boleh Kosong'
         ];
 
         $validator = Validator::make($request->all(), $validate, $pesan);
@@ -177,10 +177,10 @@ class PedagangController extends Controller
             'nomor_telepon.required' => 'Nomor Telepon Tidak Boleh Kosong',
             'alamat_pedagang.required' => 'Alamat Pedagang Tidak Boleh Kosongr',
             'tanggal_lahir.required' => 'Tanggal lahir Tidak Boleh Kosong',
-            'tanggal_lahir.required' => 'Nomor KTP Tidak Boleh Kosong',
-            'tanggal_lahir.required' => 'Foto Rekening Tidak Boleh Kosong',
-            'tanggal_lahir.required' => 'Nama Toko Tidak Boleh Kosong',
-            'tanggal_lahir.required' => 'Alamat Toko Tidak Boleh Kosong'
+            'nomor_ktp.required' => 'Nomor KTP Tidak Boleh Kosong',
+            'foto_rekening.required' => 'Foto Rekening Tidak Boleh Kosong',
+            'nama_toko.required' => 'Nama Toko Tidak Boleh Kosong',
+            'alamat_toko.required' => 'Alamat Toko Tidak Boleh Kosong'
         ];
 
         $validator = Validator::make($request->all(), $validate, $pesan);
